@@ -2068,6 +2068,14 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     // End of variables declaration//GEN-END:variables
 
     public void tampilobat() {        
+        if(akses.getkuncitglf().equals("Yes")) {
+            DTPTgl.setDate(new Date());
+            DTPTgl.setEnabled(false);
+        }
+        else             
+        {   
+            DTPTgl.setEnabled(true);}
+
         z=0;
         for(i=0;i<tbObat.getRowCount();i++){
             if(!tbObat.getValueAt(i,0).toString().equals("")){

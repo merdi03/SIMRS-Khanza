@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
@@ -529,7 +530,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
                 if(rs.next()){
                     notapenjualan=rs.getString("cetaknotasimpanpenjualan");
                     verifikasi_penjualan_di_kasir=rs.getString("verifikasi_penjualan_di_kasir");
-                    tampilkan_ppnobat_ralan=rs.getString("verifikasi_penjualan_di_kasir");
+                    tampilkan_ppnobat_ralan=rs.getString("tampilkan_ppnobat_ralan");
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -1016,6 +1017,11 @@ public class DlgPenjualan extends javax.swing.JDialog {
         PersenppnObat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         PersenppnObat.setName("PersenppnObat"); // NOI18N
         PersenppnObat.setPreferredSize(new java.awt.Dimension(150, 23));
+        PersenppnObat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PersenppnObatActionPerformed(evt);
+            }
+        });
         PersenppnObat.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 PersenppnObatKeyPressed(evt);
@@ -1512,6 +1518,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 */
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+       Tgl.setDate(new Date());
         if(aktifkanbatch.equals("yes")){
             row=0;
             jml=tbObat.getRowCount();
@@ -1678,11 +1685,12 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     Valid.MyReportqry("rptItemResepPenjualan.jasper","report","::[ Aturan Pakai Obat ]::",
                                         "select penjualan.nota_jual,penjualan.tgl_jual, "+
                                         "penjualan.no_rkm_medis,penjualan.nm_pasien,databarang.nama_brng,"+
-                                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan "+
+                                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan,pasien.tgl_lahir "+
                                         "from penjualan inner join detailjual on penjualan.nota_jual=detailjual.nota_jual "+
                                         "inner join databarang on detailjual.kode_brng=databarang.kode_brng "+
                                         "inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
-                                        "where penjualan.nota_jual='"+NoNota.getText()+"' and detailjual.aturan_pakai<>''",param);
+                                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
+                                         "where penjualan.nota_jual='"+NoNota.getText()+"' and detailjual.aturan_pakai<>''",param);
                                 }
 
                                 if(Sequel.cariInteger(
@@ -1691,10 +1699,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     Valid.MyReportqry("rptItemResepPenjualan2.jasper","report","::[ Aturan Pakai Obat ]::",
                                         "select penjualan.nota_jual,penjualan.tgl_jual,metode_racik.nm_racik, "+
                                         "penjualan.no_rkm_medis,penjualan.nm_pasien,obat_racikan_jual.nama_racik,"+
-                                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr "+
+                                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr,pasien.tgl_lahir "+
                                         "from penjualan inner join obat_racikan_jual on penjualan.nota_jual=obat_racikan_jual.nota_jual "+
                                         "inner join metode_racik on obat_racikan_jual.kd_racik=metode_racik.kd_racik "+
-                                        "where obat_racikan_jual.nota_jual='"+NoNota.getText()+"' and obat_racikan_jual.aturan_pakai<>''",param);
+                                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
+                                       "where obat_racikan_jual.nota_jual='"+NoNota.getText()+"' and obat_racikan_jual.aturan_pakai<>''",param);
                                 }                
                                 this.setCursor(Cursor.getDefaultCursor());
                                 break;
@@ -2448,6 +2457,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         cariPPN(); 
         isKembali();
     }//GEN-LAST:event_BtnAll1ActionPerformed
+
+    private void PersenppnObatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PersenppnObatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PersenppnObatActionPerformed
 
     /**
     * @param args the command line arguments

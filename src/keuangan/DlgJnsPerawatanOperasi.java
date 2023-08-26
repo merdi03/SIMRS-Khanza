@@ -36,7 +36,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import restore.DlgRestoreTarifOperasi;
-import simrskhanza.DlgCariCaraBayar;
+import simrskhanza.DlgKlmpkTrf;
 
 /**
  *
@@ -56,7 +56,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
     private PreparedStatement pstampil;
     private ResultSet rs;
     private int i=0;
-    public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
 
     /** Creates new form DlgJnsPerawatan
      * @param parent
@@ -72,7 +72,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
                       "Asisten Op 1","Asisten Op 2","Asisten Op 3","Instrumen","dr Anestesi","Asisten Anes 1","Asisten Anes 2","dr Anak",
                       "Perawat Resus","Bidan 1","Bidan 2","Bidan 3","Perawat Luar","Alat","Sewa OK/VK",
                       "Akomodasi","N.M.S.","Onloop 1","Onloop 2","Onloop 3","Onloop 4","Onloop 5","Sarpras","dr Pj Anak","dr Umum",
-                      "Total","Jenis Bayar","Kelas"};
+                      "Total","Kel. Tarif","Kelas"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -179,16 +179,16 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
             });
         }  
         
-        penjab.addWindowListener(new WindowListener() {
+        klmpktrf.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                if(klmpktrf.getTable().getSelectedRow()!= -1){
+                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
+                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
                 } 
                 kdpnj.requestFocus();
             }
@@ -202,13 +202,13 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
             public void windowDeactivated(WindowEvent e) {}
         });
         
-        penjab.getTable().addKeyListener(new KeyListener() {
+        klmpktrf.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
+                    klmpktrf.dispose();
                 }
             }
             @Override
@@ -327,7 +327,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
 
         MnRestore.setBackground(new java.awt.Color(255, 255, 254));
         MnRestore.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnRestore.setForeground(new java.awt.Color(50,50,50));
+        MnRestore.setForeground(new java.awt.Color(50, 50, 50));
         MnRestore.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnRestore.setText("Data Sampah");
         MnRestore.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -353,7 +353,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Paket Tindakan Operasi/VK ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Paket Tindakan Operasi/VK ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -545,7 +545,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
-        TabRawat.setForeground(new java.awt.Color(50,50,50));
+        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1008,7 +1008,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         FormInput.add(TdrPJAnak);
         TdrPJAnak.setBounds(100, 312, 122, 23);
 
-        jLabel34.setText("Bayar :");
+        jLabel34.setText("Kel. Tarif :");
         jLabel34.setName("jLabel34"); // NOI18N
         FormInput.add(jLabel34);
         jLabel34.setBounds(225, 42, 140, 23);
@@ -1268,7 +1268,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         }else if(TdrUmum.getText().trim().equals("")){
             Valid.textKosong(TdrUmum,"Dokter Umum");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else{
             Sequel.menyimpan("paket_operasi","'"+TKd.getText()+"', '"+TNm.getText()+"','"+Kategori.getSelectedItem()+"','"+TOperator1.getText()+
                     "','"+TOperator2.getText()+"','"+TOperator3.getText()+"','"+TAsisOperator1.getText()+
@@ -1382,7 +1382,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         }else if(TdrUmum.getText().trim().equals("")){
             Valid.textKosong(TdrUmum,"Dokter Umum");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else{
             if(tbJnsPerawatan.getSelectedRow()!= -1){
                 Sequel.mengedit("paket_operasi","kode_paket='"+tbJnsPerawatan.getValueAt(tbJnsPerawatan.getSelectedRow(),1) +"'",
@@ -1445,11 +1445,11 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
                        "paket_operasi.sewa_ok+paket_operasi.akomodasi+paket_operasi.bagian_rs+"+
                        "paket_operasi.omloop+paket_operasi.omloop2+paket_operasi.omloop3+paket_operasi.omloop4+paket_operasi.omloop5+"+
                        "paket_operasi.sarpras+paket_operasi.dokter_pjanak+paket_operasi.dokter_umum) as jumlah "+
-                   "from paket_operasi inner join penjab on penjab.kd_pj=paket_operasi.kd_pj "+
+                   "from paket_operasi inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=paket_operasi.kd_pj "+
                    "where paket_operasi.status='1' and paket_operasi.kode_paket like '%"+TCari.getText()+"%' or "+
                    "paket_operasi.status='1' and paket_operasi.nm_perawatan like '%"+TCari.getText()+"%' or "+
                    "paket_operasi.status='1' and paket_operasi.kelas like '%"+TCari.getText()+"%' or "+
-                   "paket_operasi.status='1' and penjab.png_jawab like '%"+TCari.getText()+"%' order by paket_operasi.kode_paket ",param);
+                   "paket_operasi.status='1' and penjab_klmpk_tarif.nm_klmpk_trf like '%"+TCari.getText()+"%' order by paket_operasi.kode_paket ",param);
         }
         this.setCursor(Cursor.getDefaultCursor());
 }//GEN-LAST:event_BtnPrintActionPerformed
@@ -1801,12 +1801,12 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpnjKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             Kategori.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             TOperator1.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnPenjabActionPerformed(null);
@@ -1814,11 +1814,10 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_kdpnjKeyPressed
 
     private void BtnPenjabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPenjabActionPerformed
-        penjab.isCek();
-        penjab.onCari();
-        penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        penjab.setLocationRelativeTo(internalFrame1);
-        penjab.setVisible(true);
+        klmpktrf.emptTeks();
+        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        klmpktrf.setLocationRelativeTo(internalFrame1);
+        klmpktrf.setVisible(true);
     }//GEN-LAST:event_BtnPenjabActionPerformed
 
     private void MnRestoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRestoreActionPerformed
@@ -2036,11 +2035,11 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                        "paket_operasi.sewa_ok+paket_operasi.akomodasi+paket_operasi.bagian_rs+"+
                        "paket_operasi.omloop+paket_operasi.omloop2+paket_operasi.omloop3+paket_operasi.omloop4+paket_operasi.omloop5+"+
                        "paket_operasi.sarpras+paket_operasi.dokter_pjanak+paket_operasi.dokter_umum) as jumlah, "+
-                       "penjab.png_jawab,paket_operasi.kelas from paket_operasi inner join penjab on penjab.kd_pj=paket_operasi.kd_pj "+
+                       "penjab_klmpk_tarif.nm_klmpk_trf,paket_operasi.kelas from paket_operasi inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=paket_operasi.kd_pj "+
                        "where paket_operasi.status='1' and paket_operasi.kode_paket like ? or "+
                        "paket_operasi.status='1' and paket_operasi.nm_perawatan like ? or "+
                        "paket_operasi.status='1' and paket_operasi.kelas like ? or "+
-                       "paket_operasi.status='1' and penjab.png_jawab like ? order by paket_operasi.kode_paket ");
+                       "paket_operasi.status='1' and penjab_klmpk_tarif.nm_klmpk_trf like ? order by paket_operasi.kode_paket ");
             try{
                 pstampil.setString(1,"%"+TCari.getText()+"%");
                 pstampil.setString(2,"%"+TCari.getText()+"%");

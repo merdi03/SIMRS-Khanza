@@ -18,6 +18,7 @@ import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.validasi;
 import fungsi.akses;
+import fungsi.sekuel;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -40,6 +41,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    private sekuel Sequel=new sekuel();
     private PreparedStatement pstindakan,psset_tarif;
     private ResultSet rs,rsset_tarif;
     private int i=0,jml=0;
@@ -532,7 +534,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
     }
     
     public void setBayar(String penjab,String kelasoperasi){
-        this.kd_pj=penjab;
+        this.kd_pj=(Sequel.cariIsi("select penjab.kd_klmpk_trf from penjab where penjab.kd_pj=?",penjab));                    
         this.kelas=kelasoperasi;
         try {
             if(Valid.daysOld("./cache/paketoperasi.iyem")<8){

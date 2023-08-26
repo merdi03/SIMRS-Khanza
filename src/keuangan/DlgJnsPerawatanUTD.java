@@ -24,7 +24,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import restore.DlgRestoreTarifUTD;
-import simrskhanza.DlgCariCaraBayar;
+import simrskhanza.DlgKlmpkTrf;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;    
-    public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
     private int i=0;
     private DlgTemplateUTD template=new DlgTemplateUTD(null,false);
 
@@ -51,7 +51,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(628,674);
 
-        Object[] row={"P","Kode Periksa","Nama Pelayanan","J.S.Rumah Sakit","Paket BHP","J.M.Perujuk","J.M. Dokter","J.M. Petugas","K.S.O.","Manajemen","Total Tarif","Jenis Bayar"};
+        Object[] row={"P","Kode Periksa","Nama Pelayanan","J.S.Rumah Sakit","Paket BHP","J.M.Perujuk","J.M. Dokter","J.M. Petugas","K.S.O.","Manajemen","Total Tarif","Kel. Tarif"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -130,16 +130,16 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         ChkInput.setSelected(false);
         isForm(); 
         
-        penjab.addWindowListener(new WindowListener() {
+        klmpktrf.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                if(klmpktrf.getTable().getSelectedRow()!= -1){
+                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
+                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
                 }    
                 kdpnj.requestFocus();
             }
@@ -148,18 +148,18 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
             @Override
             public void windowDeiconified(WindowEvent e) {}
             @Override
-            public void windowActivated(WindowEvent e) {penjab.onCari();}
+            public void windowActivated(WindowEvent e) {klmpktrf.emptTeks();}
             @Override
             public void windowDeactivated(WindowEvent e) {}
         });
         
-        penjab.getTable().addKeyListener(new KeyListener() {
+        klmpktrf.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
+                    klmpktrf.dispose();
                 }
             }
             @Override
@@ -231,7 +231,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
 
         ppTemplate.setBackground(new java.awt.Color(255, 255, 254));
         ppTemplate.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppTemplate.setForeground(new java.awt.Color(50,50,50));
+        ppTemplate.setForeground(new java.awt.Color(50, 50, 50));
         ppTemplate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTemplate.setText("Template UTD");
         ppTemplate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -247,7 +247,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
 
         MnRestore.setBackground(new java.awt.Color(255, 255, 254));
         MnRestore.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnRestore.setForeground(new java.awt.Color(50,50,50));
+        MnRestore.setForeground(new java.awt.Color(50, 50, 50));
         MnRestore.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnRestore.setText("Data Sampah");
         MnRestore.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -270,7 +270,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Pelayanan Unit Tranfusi Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Pelayanan Unit Tranfusi Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -571,7 +571,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         FormInput.add(JMLaborat);
         JMLaborat.setBounds(127, 132, 170, 23);
 
-        jLabel18.setText("Jenis Bayar :");
+        jLabel18.setText("Kel. Tarif :");
         jLabel18.setName("jLabel18"); // NOI18N
         FormInput.add(jLabel18);
         jLabel18.setBounds(300, 132, 130, 23);
@@ -755,7 +755,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         }else if(TNm.getText().trim().equals("")){
             Valid.textKosong(TNm,"Nama Pemeriksaan");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else if(BagianRs.getText().trim().equals("")){
             Valid.textKosong(BagianRs,"J.S.Rumah Sakit");
         }else if(Bhp.getText().trim().equals("")){
@@ -824,7 +824,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         }else if(TNm.getText().trim().equals("")){
             Valid.textKosong(TNm,"Nama Pemeriksaan");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else if(BagianRs.getText().trim().equals("")){
             Valid.textKosong(BagianRs,"J.S.Rumah Sakit");
         }else if(Bhp.getText().trim().equals("")){
@@ -887,11 +887,11 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                 Valid.MyReportqry("rptTarifUtd.jasper","report","::[ Data Tarif Radiologi ]::","select jns_perawatan_utd.kd_jenis_prw,jns_perawatan_utd.nm_perawatan,jns_perawatan_utd.bagian_rs,"+
                     "jns_perawatan_utd.bhp,jns_perawatan_utd.tarif_perujuk,jns_perawatan_utd.tarif_tindakan_dokter,jns_perawatan_utd.tarif_tindakan_petugas,jns_perawatan_utd.kso,"+
-                    "jns_perawatan_utd.manajemen,jns_perawatan_utd.total_byr,penjab.png_jawab "+
-                    "from jns_perawatan_utd inner join penjab on penjab.kd_pj=jns_perawatan_utd.kd_pj where "+
+                    "jns_perawatan_utd.manajemen,jns_perawatan_utd.total_byr,penjab_klmpk_tarif.nm_klmpk_trf "+
+                    "from jns_perawatan_utd inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan_utd.kd_pj where "+
                     " jns_perawatan_utd.status='1' and jns_perawatan_utd.kd_jenis_prw like '%"+TCari.getText().trim()+"%' or "+
                     " jns_perawatan_utd.status='1' and jns_perawatan_utd.nm_perawatan like '%"+TCari.getText().trim()+"%' or "+
-                    " jns_perawatan_utd.status='1' and penjab.png_jawab like '%"+TCari.getText().trim()+"%' "+
+                    " jns_perawatan_utd.status='1' and penjab_klmpk_tarif.nm_klmpk_trf like '%"+TCari.getText().trim()+"%' "+
                     "order by jns_perawatan_utd.kd_jenis_prw",param);   
         }
         this.setCursor(Cursor.getDefaultCursor());
@@ -966,12 +966,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpnjKeyPressed
        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());         
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());         
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             TotalBiaya.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             BtnSimpan.requestFocus();   
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnPjActionPerformed(null);
@@ -979,10 +979,10 @@ private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdp
 }//GEN-LAST:event_kdpnjKeyPressed
 
 private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPjActionPerformed
-        penjab.isCek();
-        penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        penjab.setLocationRelativeTo(internalFrame1);
-        penjab.setVisible(true);
+        klmpktrf.emptTeks();
+        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        klmpktrf.setLocationRelativeTo(internalFrame1);
+        klmpktrf.setVisible(true);
 }//GEN-LAST:event_btnPjActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -1154,10 +1154,10 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
                         "select jns_perawatan_utd.kd_jenis_prw,jns_perawatan_utd.nm_perawatan,jns_perawatan_utd.bagian_rs,jns_perawatan_utd.bhp,"+
                         "jns_perawatan_utd.tarif_perujuk,jns_perawatan_utd.tarif_tindakan_dokter,jns_perawatan_utd.tarif_tindakan_petugas,"+
                         "jns_perawatan_utd.kso,jns_perawatan_utd.manajemen,jns_perawatan_utd.total_byr, "+
-                        "penjab.png_jawab from jns_perawatan_utd inner join penjab on penjab.kd_pj=jns_perawatan_utd.kd_pj where "+
+                        "penjab_klmpk_tarif.nm_klmpk_trf from jns_perawatan_utd inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan_utd.kd_pj where "+
                         "jns_perawatan_utd.status='1' and jns_perawatan_utd.kd_jenis_prw like ? or  "+
                         "jns_perawatan_utd.status='1' and jns_perawatan_utd.nm_perawatan like ? or "+
-                        "jns_perawatan_utd.status='1' and penjab.png_jawab like ? "+
+                        "jns_perawatan_utd.status='1' and penjab_klmpk_tarif.nm_klmpk_trf like ? "+
                         "order by jns_perawatan_utd.kd_jenis_prw");
             try {            
                 ps.setString(1,"%"+TCari.getText().trim()+"%");

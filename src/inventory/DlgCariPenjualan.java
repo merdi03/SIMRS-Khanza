@@ -1444,10 +1444,11 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     Valid.MyReportqry("rptItemResepPenjualan.jasper","report","::[ Aturan Pakai Obat ]::",
                         "select penjualan.nota_jual,penjualan.tgl_jual, "+
                         "penjualan.no_rkm_medis,penjualan.nm_pasien,databarang.nama_brng,"+
-                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan "+
+                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan,pasien.tgl_lahir "+
                         "from penjualan inner join detailjual on penjualan.nota_jual=detailjual.nota_jual "+
                         "inner join databarang on detailjual.kode_brng=databarang.kode_brng "+
                         "inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
+                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
                         "where penjualan.nota_jual='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString().trim()+"' and detailjual.aturan_pakai<>''",param);
                 }
 
@@ -1457,9 +1458,10 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     Valid.MyReportqry("rptItemResepPenjualan2.jasper","report","::[ Aturan Pakai Obat ]::",
                         "select penjualan.nota_jual,penjualan.tgl_jual,metode_racik.nm_racik, "+
                         "penjualan.no_rkm_medis,penjualan.nm_pasien,obat_racikan_jual.nama_racik,"+
-                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr "+
+                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr,pasien.tgl_lahir "+
                         "from penjualan inner join obat_racikan_jual on penjualan.nota_jual=obat_racikan_jual.nota_jual "+
                         "inner join metode_racik on obat_racikan_jual.kd_racik=metode_racik.kd_racik "+
+                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
                         "where obat_racikan_jual.nota_jual='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString().trim()+"' and obat_racikan_jual.aturan_pakai<>''",param);
                 }                
                 this.setCursor(Cursor.getDefaultCursor());

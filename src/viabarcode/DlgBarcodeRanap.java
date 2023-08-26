@@ -1194,6 +1194,7 @@ public final class DlgBarcodeRanap extends javax.swing.JDialog {
             
         TCariTindakan.requestFocus();
         kenaikan=Sequel.cariIsiAngka("select (hargajual/100) from set_harga_obat_ranap where kd_pj='"+this.kd_pj+"' and kelas='"+this.kelas+"'");
+        this.kd_pj=Sequel.cariIsi("select penjab.kd_klmpk_trf from reg_periksa left join penjab on reg_periksa.kd_pj=penjab.kd_pj where reg_periksa.no_rawat=?",norwt);        
         try {
             pstarif=koneksi.prepareStatement("select * from set_tarif");
             try {

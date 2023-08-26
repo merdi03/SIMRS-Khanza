@@ -1944,6 +1944,15 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     // End of variables declaration//GEN-END:variables
 
     public void tampil() {   
+        if(akses.getkuncitglf().equals("Yes")) {
+            DTPTgl.setDate(new Date());
+            DTPTgl.setEnabled(false);
+        }
+        else             
+        {   
+            DTPTgl.setEnabled(true);}
+            
+
         jml=0;
         for(i=0;i<tbObat.getRowCount();i++){
             if(!tbObat.getValueAt(i,0).toString().equals("")){
@@ -2855,6 +2864,14 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     public void tampildetailracikanobat() {        
+        if(akses.getkuncitglf().equals("Yes")) {
+            DTPTgl.setDate(new Date());
+            DTPTgl.setEnabled(false);
+        }
+        else             
+        {   
+            DTPTgl.setEnabled(true);}
+
         z=0;
         for(i=0;i<tbDetailObatRacikan.getRowCount();i++){
             if(Valid.SetAngka(tbDetailObatRacikan.getValueAt(i,10).toString())>0){

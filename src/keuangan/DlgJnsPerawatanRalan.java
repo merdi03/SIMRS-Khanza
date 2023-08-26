@@ -37,7 +37,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import simrskhanza.DlgCariPoli;
 import simrskhanza.DlgKtgPerawatan;
-import simrskhanza.DlgCariCaraBayar;
+import simrskhanza.DlgKlmpkTrf;
 
 /**
  *
@@ -74,7 +74,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
                       "Ttl Biaya Dr",
                       "Ttl Biaya Pr",
                       "Ttl Biaya Dr & Pr",
-                      "Jenis Bayar",
+                      "Kel. Tarif",
                       "Unit/Poli"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
@@ -211,16 +211,16 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             public void keyReleased(KeyEvent e) {}
         });
      
-        penjab.addWindowListener(new WindowListener() {
+        klmpktrf.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                if(klmpktrf.getTable().getSelectedRow()!= -1){
+                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
+                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
                 } 
                 kdpnj.requestFocus();
             }
@@ -234,13 +234,13 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             public void windowDeactivated(WindowEvent e) {}
         });
         
-        penjab.getTable().addKeyListener(new KeyListener() {
+        klmpktrf.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
+                    klmpktrf.dispose();
                 }
             }
             @Override
@@ -254,7 +254,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
     
     public DlgKtgPerawatan ktg=new DlgKtgPerawatan(null,false);
     public DlgCariPoli poli=new DlgCariPoli(null,false);
-    public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -327,7 +327,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
 
         MnRestore.setBackground(new java.awt.Color(255, 255, 254));
         MnRestore.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnRestore.setForeground(new java.awt.Color(50,50,50));
+        MnRestore.setForeground(new java.awt.Color(50, 50, 50));
         MnRestore.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnRestore.setText("Data Sampah");
         MnRestore.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -350,7 +350,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Tindakan/Perawatan/Tagihan Rawat Jalan]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Tindakan/Perawatan/Tagihan Rawat Jalan]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -774,10 +774,10 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
         FormInput.add(jLabel19);
         jLabel19.setBounds(4, 72, 92, 23);
 
-        jLabel18.setText("Bayar :");
+        jLabel18.setText("Kel. Tarif :");
         jLabel18.setName("jLabel18"); // NOI18N
         FormInput.add(jLabel18);
-        jLabel18.setBounds(390, 42, 50, 23);
+        jLabel18.setBounds(390, 42, 70, 23);
 
         kdpnj.setToolTipText("Tekan ENTER untuk lanjut ke field berikutnya, tekan PAGE UP untuk ke field sebelumnya, Tekan UP untuk menampilkan data Jenis Pembayaran");
         kdpnj.setHighlighter(null);
@@ -788,12 +788,12 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             }
         });
         FormInput.add(kdpnj);
-        kdpnj.setBounds(443, 42, 60, 23);
+        kdpnj.setBounds(470, 40, 60, 23);
 
         nmpnj.setEditable(false);
         nmpnj.setName("nmpnj"); // NOI18N
         FormInput.add(nmpnj);
-        nmpnj.setBounds(505, 42, 192, 23);
+        nmpnj.setBounds(530, 40, 192, 23);
 
         BtnPenjab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnPenjab.setMnemonic('2');
@@ -805,7 +805,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnPenjab);
-        BtnPenjab.setBounds(698, 42, 28, 23);
+        BtnPenjab.setBounds(720, 40, 28, 23);
 
         jLabel14.setText("Total Biaya Dokter & Pr : Rp.");
         jLabel14.setName("jLabel14"); // NOI18N
@@ -983,6 +983,10 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
 }//GEN-LAST:event_TTndPrKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+       int a=0;
+       if(Double.parseDouble(TJmlDr.getText())>0){ a=a+1;}
+       if(Double.parseDouble(TJmlPr.getText())>0){ a=a+1;}
+       if(Double.parseDouble(TJmlDrPr.getText())>0){ a=a+1;}
         if(TKd.getText().trim().equals("")){
             Valid.textKosong(TKd,"Kode Jenis");
         }else if(TNm.getText().trim().equals("")){
@@ -992,7 +996,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
         }else if(kdpoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(kdpoli,"Unit Poli");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else if(BagianRs.getText().trim().equals("")){
             Valid.textKosong(BagianRs,"Bagian RS");
         }else if(BhpMedis.getText().trim().equals("")){
@@ -1005,6 +1009,10 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             Valid.textKosong(KSO,"K.S.O.");
         }else if(Menejemen.getText().trim().equals("")){
             Valid.textKosong(Menejemen,"Menejemen");
+        }else if(a>1){
+            JOptionPane.showMessageDialog(null,"Maaf, Total Biaya Hanya Isi Salah Satu Saja...!!!");
+        }else if(a==0){
+            JOptionPane.showMessageDialog(null,"Maaf, Total Biaya Harus diisi Salah Satu Saja...!!!");
         }else{
             Sequel.menyimpan("jns_perawatan","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Kode Tarif",15,new String[]{
                 TKd.getText(),TNm.getText(),KdKtg.getText(),BagianRs.getText(),BhpMedis.getText(),TTndDr.getText(),
@@ -1055,6 +1063,10 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnHapusKeyPressed
 
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
+       int a=0;
+       if(Double.parseDouble(TJmlDr.getText())>0){ a=a+1;}
+       if(Double.parseDouble(TJmlPr.getText())>0){ a=a+1;}
+       if(Double.parseDouble(TJmlDrPr.getText())>0){ a=a+1;}
         if(TKd.getText().trim().equals("")){
             Valid.textKosong(TKd,"Kode Jenis");
         }else if(TNm.getText().trim().equals("")){
@@ -1073,6 +1085,10 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
             Valid.textKosong(KSO,"K.S.O.");
         }else if(Menejemen.getText().trim().equals("")){
             Valid.textKosong(Menejemen,"Menejemen");
+        }else if(a>1){
+            JOptionPane.showMessageDialog(null,"Maaf, Total Biaya Hanya Isi Salah Satu Saja...!!!");
+        }else if(a==0){
+            JOptionPane.showMessageDialog(null,"Maaf, Total Biaya Harus diisi Salah Satu Saja...!!!");
         }else{
             Sequel.mengedit("jns_perawatan","kd_jenis_prw=?","kd_jenis_prw=?,nm_perawatan=?,kd_kategori=?,material=?,"+
                     "tarif_tindakandr=?,tarif_tindakanpr=?,total_byrdr=?,total_byrpr=?,kd_pj=?,kd_poli=?,total_byrdrpr=?,bhp=?,kso=?,menejemen=?",15,new String[]{
@@ -1123,13 +1139,13 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
                 Valid.MyReportqry("rptJnsPrw.jasper","report","::[ Data Tarif Perawatan ]::",
                    "select jns_perawatan.kd_jenis_prw,jns_perawatan.nm_perawatan,kategori_perawatan.nm_kategori,"+
                    "jns_perawatan.material,jns_perawatan.bhp,jns_perawatan.tarif_tindakandr,jns_perawatan.tarif_tindakanpr,jns_perawatan.kso,jns_perawatan.menejemen,"+
-                   "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,penjab.png_jawab,poliklinik.nm_poli "+
+                   "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,penjab_klmpk_tarif.nm_klmpk_trf,poliklinik.nm_poli "+
                    "from jns_perawatan inner join kategori_perawatan on jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori "+
-                   "inner join penjab on penjab.kd_pj=jns_perawatan.kd_pj "+
+                   "inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan.kd_pj "+
                    "inner join poliklinik on poliklinik.kd_poli=jns_perawatan.kd_poli "+
                    "where jns_perawatan.status='1' "+(TCari.getText().trim().equals("")?"":"and (jns_perawatan.kd_jenis_prw like '%"+TCari.getText().trim()+"%' "+
                    "or jns_perawatan.nm_perawatan like '%"+TCari.getText().trim()+"%' or kategori_perawatan.nm_kategori like '%"+TCari.getText().trim()+"%' "+
-                   "or penjab.png_jawab like '%"+TCari.getText().trim()+"%' or poliklinik.nm_poli like '%"+TCari.getText().trim()+"%')")+"order by jns_perawatan.kd_jenis_prw",param);            
+                   "or penjab_klmpk_tarif.nm_klmpk_trf like '%"+TCari.getText().trim()+"%' or poliklinik.nm_poli like '%"+TCari.getText().trim()+"%')")+"order by jns_perawatan.kd_jenis_prw",param);            
         }
         this.setCursor(Cursor.getDefaultCursor());
 }//GEN-LAST:event_BtnPrintActionPerformed
@@ -1222,12 +1238,12 @@ private void BtnPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
 private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpnjKeyPressed
        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());     
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());     
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             KdKtg.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             kdpoli.requestFocus();       
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnPenjabActionPerformed(null);
@@ -1235,11 +1251,10 @@ private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdp
 }//GEN-LAST:event_kdpnjKeyPressed
 
 private void BtnPenjabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPenjabActionPerformed
-        penjab.isCek();
-        penjab.onCari();
-        penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        penjab.setLocationRelativeTo(internalFrame1);
-        penjab.setVisible(true);
+        klmpktrf.emptTeks();
+        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        klmpktrf.setLocationRelativeTo(internalFrame1);
+        klmpktrf.setVisible(true);
 }//GEN-LAST:event_BtnPenjabActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -1389,12 +1404,12 @@ private void BtnPenjabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         try{    
             ps=koneksi.prepareStatement("select jns_perawatan.kd_jenis_prw,jns_perawatan.nm_perawatan,kategori_perawatan.nm_kategori,"+
                        "jns_perawatan.material,jns_perawatan.bhp,jns_perawatan.tarif_tindakandr,jns_perawatan.tarif_tindakanpr,jns_perawatan.kso,jns_perawatan.menejemen,"+
-                       "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,penjab.png_jawab,poliklinik.nm_poli "+
+                       "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,penjab_klmpk_tarif.nm_klmpk_trf,poliklinik.nm_poli "+
                        "from jns_perawatan inner join kategori_perawatan on jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori "+
-                       "inner join penjab on penjab.kd_pj=jns_perawatan.kd_pj "+
+                       "inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan.kd_pj "+
                        "inner join poliklinik on poliklinik.kd_poli=jns_perawatan.kd_poli "+
                        "where jns_perawatan.status='1' "+(TCari.getText().trim().equals("")?"":"and (jns_perawatan.kd_jenis_prw like ? or jns_perawatan.nm_perawatan like ? "+
-                       "or kategori_perawatan.nm_kategori like ? or penjab.png_jawab like ? or poliklinik.nm_poli like ?)")+"order by jns_perawatan.kd_jenis_prw");
+                       "or kategori_perawatan.nm_kategori like ? or penjab_klmpk_tarif.nm_klmpk_trf like ? or poliklinik.nm_poli like ?)")+"order by jns_perawatan.kd_jenis_prw");
             try {
                 if(!TCari.getText().trim().equals("")){
                     ps.setString(1,"%"+TCari.getText().trim()+"%");

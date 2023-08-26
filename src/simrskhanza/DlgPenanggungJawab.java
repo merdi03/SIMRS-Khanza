@@ -20,6 +20,9 @@ import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,7 +60,7 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(628,674);
 
-        Object[] row={"P","Kode Asuransi","Nama Asuransi","Perusahaan Asuransi","Alamat Asuransi","No.Telp","Attn"};
+        Object[] row={"P","Kode Asuransi","Nama Asuransi","Perusahaan Asuransi","Alamat Asuransi","No.Telp","Attn","Klmpk","Nama Klmpk"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -67,7 +70,7 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
                 return a;
              }
              Class[] types = new Class[] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -152,7 +155,44 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
         
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        klmpktrf.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(klmpktrf.getTable().getSelectedRow()!= -1){                   
+                    KdKtg.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
+                    NmKtg.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
+                }     
+                KdKtg.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        klmpktrf.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    klmpktrf.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
     }
+    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
 
 
     /** This method is called from within the constructor to
@@ -200,6 +240,10 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
         label38 = new widget.Label();
         label39 = new widget.Label();
         Attn = new widget.TextBox();
+        KdKtg = new widget.TextBox();
+        NmKtg = new widget.TextBox();
+        btnKategori = new widget.Button();
+        jLabel4 = new widget.Label();
         PanelAccor = new widget.PanelBiasa();
         ChkAccor = new widget.CekBox();
         FormPhoto = new widget.PanelBiasa();
@@ -580,6 +624,50 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
         FormInput.add(Attn);
         Attn.setBounds(397, 40, 220, 23);
 
+        KdKtg.setToolTipText("Tekan ENTER untuk lanjut ke field berikutnya, tekan PAGE UP untuk ke field sebelumnya, Tekan UP untuk menampilkan data Kategori Perawatan");
+        KdKtg.setHighlighter(null);
+        KdKtg.setName("KdKtg"); // NOI18N
+        KdKtg.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                KdKtgKeyPressed(evt);
+            }
+        });
+        FormInput.add(KdKtg);
+        KdKtg.setBounds(710, 70, 60, 23);
+
+        NmKtg.setEditable(false);
+        NmKtg.setHighlighter(null);
+        NmKtg.setName("NmKtg"); // NOI18N
+        NmKtg.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                NmKtgKeyPressed(evt);
+            }
+        });
+        FormInput.add(NmKtg);
+        NmKtg.setBounds(770, 70, 200, 23);
+
+        btnKategori.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnKategori.setMnemonic('1');
+        btnKategori.setToolTipText("Alt+1");
+        btnKategori.setName("btnKategori"); // NOI18N
+        btnKategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKategoriActionPerformed(evt);
+            }
+        });
+        btnKategori.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnKategoriKeyPressed(evt);
+            }
+        });
+        FormInput.add(btnKategori);
+        btnKategori.setBounds(980, 70, 28, 23);
+
+        jLabel4.setText("Kelompok Tarif :");
+        jLabel4.setName("jLabel4"); // NOI18N
+        FormInput.add(jLabel4);
+        jLabel4.setBounds(620, 70, 90, 23);
+
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
@@ -589,7 +677,7 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
         PanelAccor.setPreferredSize(new java.awt.Dimension(445, 43));
         PanelAccor.setLayout(new java.awt.BorderLayout(1, 1));
 
-        ChkAccor.setBackground(new java.awt.Color(255,250,250));
+        ChkAccor.setBackground(new java.awt.Color(255, 250, 250));
         ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png"))); // NOI18N
         ChkAccor.setSelected(true);
         ChkAccor.setFocusable(false);
@@ -688,8 +776,10 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
             Valid.textKosong(NoTelp,"No.Telp Perusahaan Penanggung/Askes/Asuransi");
         }else if(Attn.getText().trim().equals("")){
             Valid.textKosong(Attn,"Attn");
+        }else if(KdKtg.getText().trim().equals("")){
+            Valid.textKosong(KdKtg,"Kode Kelompok Tarif");
         }else{
-            Sequel.menyimpan("penjab","'"+KdAsuransi.getText()+"','"+NmAsuransi.getText()+"','"+Perusahaan.getText()+"','"+AlamatAsuransi.getText()+"','"+NoTelp.getText()+"','"+Attn.getText()+"','1'","Kode Penanggung/Askes/Asuransi");
+            Sequel.menyimpan("penjab","'"+KdAsuransi.getText()+"','"+NmAsuransi.getText()+"','"+Perusahaan.getText()+"','"+AlamatAsuransi.getText()+"','"+NoTelp.getText()+"','"+Attn.getText()+"','1','"+KdKtg.getText()+"'","Kode Penanggung/Askes/Asuransi");
             BtnCariActionPerformed(evt);
             emptTeks();
         }
@@ -746,8 +836,10 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
             Valid.textKosong(NoTelp,"No.Telp Perusahaan Penanggung/Askes/Asuransi");
         }else if(Attn.getText().trim().equals("")){
             Valid.textKosong(Attn,"Attn");
+        }else if(KdKtg.getText().trim().equals("")){
+            Valid.textKosong(KdKtg,"Kode Kelompok Tarif");
         }else{
-            Valid.editTable(tabMode,"penjab","kd_pj",Kd2,"png_jawab='"+NmAsuransi.getText()+"',kd_pj='"+KdAsuransi.getText()+"',nama_perusahaan='"+Perusahaan.getText()+"',alamat_asuransi='"+AlamatAsuransi.getText()+"',no_telp='"+NoTelp.getText()+"',attn='"+Attn.getText()+"'");
+            Valid.editTable(tabMode,"penjab","kd_pj",Kd2,"png_jawab='"+NmAsuransi.getText()+"',kd_pj='"+KdAsuransi.getText()+"',nama_perusahaan='"+Perusahaan.getText()+"',alamat_asuransi='"+AlamatAsuransi.getText()+"',no_telp='"+NoTelp.getText()+"',attn='"+Attn.getText()+"',kd_klmpk_trf='"+KdKtg.getText()+"'");
             if(tabMode.getRowCount()!=0){BtnCariActionPerformed(evt);}
             emptTeks();
         }
@@ -925,6 +1017,29 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         panggilPhoto();
     }//GEN-LAST:event_BtnRefreshPhotoActionPerformed
 
+    private void KdKtgKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdKtgKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
+            isklp();
+        }else if(evt.getKeyCode()==KeyEvent.VK_UP){
+            btnKategoriActionPerformed(null);
+        }
+    }//GEN-LAST:event_KdKtgKeyPressed
+
+    private void NmKtgKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NmKtgKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NmKtgKeyPressed
+
+    private void btnKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKategoriActionPerformed
+        klmpktrf.emptTeks();
+        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        klmpktrf.setLocationRelativeTo(internalFrame1);
+        klmpktrf.setVisible(true);
+    }//GEN-LAST:event_btnKategoriActionPerformed
+
+    private void btnKategoriKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnKategoriKeyPressed
+        
+    }//GEN-LAST:event_btnKategoriKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -961,10 +1076,12 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.PanelBiasa FormPhoto;
     private widget.TextBox Kd2;
     private widget.TextBox KdAsuransi;
+    private widget.TextBox KdKtg;
     private widget.Label LCount;
     private widget.editorpane LoadHTML;
     private javax.swing.JMenuItem MnRestore;
     private widget.TextBox NmAsuransi;
+    private widget.TextBox NmKtg;
     private widget.TextBox NoTelp;
     private widget.PanelBiasa PanelAccor;
     private javax.swing.JPanel PanelInput;
@@ -974,7 +1091,9 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.ScrollPane Scroll4;
     private widget.TextBox TCari;
     private widget.Button btnAmbilPhoto;
+    private widget.Button btnKategori;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel4;
     private javax.swing.JPanel jPanel1;
     private widget.Label label10;
     private widget.Label label34;
@@ -993,14 +1112,14 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select penjab.kd_pj,penjab.png_jawab,penjab.nama_perusahaan,penjab.alamat_asuransi,penjab.no_telp,penjab.attn "+
-                    "from penjab where penjab.status='1' and (penjab.kd_pj like ? or penjab.png_jawab like ?) order by penjab.png_jawab ");
+                    "select penjab.kd_pj,penjab.png_jawab,penjab.nama_perusahaan,penjab.alamat_asuransi,penjab.no_telp,penjab.attn,penjab.kd_klmpk_trf,pkt.nm_klmpk_trf "+
+                    "from penjab left join penjab_klmpk_tarif as pkt on penjab.kd_klmpk_trf=pkt.kd_klmpk_trf where penjab.status='1' and (penjab.kd_pj like ? or penjab.png_jawab like ?) order by penjab.png_jawab ");
             try{
                 ps.setString(1,"%"+TCari.getText().trim()+"%");
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new Object[]{false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6)});
+                    tabMode.addRow(new Object[]{false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)});
                 }
             }catch(Exception ex){
                 System.out.println(ex);
@@ -1017,6 +1136,9 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         }
         LCount.setText(""+tabMode.getRowCount());
     }
+    private void isklp(){
+        Sequel.cariIsi("select nm_klmpk_tarif from penjab_klmpk_tarif where kd_klmpk_tarif=? ",NmKtg,KdKtg.getText());
+    }
 
     public void emptTeks() {
         KdAsuransi.setText("");
@@ -1026,6 +1148,8 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         AlamatAsuransi.setText("");
         Attn.setText("");
         NoTelp.setText("0");
+        KdKtg.setText("");
+        NmKtg.setText("");
         KdAsuransi.requestFocus();        
         Valid.autoNomer("penjab","A",2,KdAsuransi);
     }
@@ -1039,6 +1163,8 @@ private void NmAsuransiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             AlamatAsuransi.setText(tbKamar.getValueAt(tbKamar.getSelectedRow(),4).toString());
             NoTelp.setText(tbKamar.getValueAt(tbKamar.getSelectedRow(),5).toString());
             Attn.setText(tbKamar.getValueAt(tbKamar.getSelectedRow(),6).toString());
+            KdKtg.setText(tbKamar.getValueAt(tbKamar.getSelectedRow(),7).toString());
+            NmKtg.setText(tbKamar.getValueAt(tbKamar.getSelectedRow(),8).toString());
         }
     }
 

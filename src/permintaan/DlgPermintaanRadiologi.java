@@ -1190,7 +1190,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 rs=pspemeriksaan.executeQuery();
                 while(rs.next()){
                     TNoRM.setText(rs.getString("no_rkm_medis"));
-                    Penjab.setText(rs.getString("kd_pj"));
+                    Penjab.setText(Sequel.cariIsi("select penjab.kd_klmpk_trf from penjab where penjab.kd_pj=?",rs.getString("kd_pj")));                    
                     KodePerujuk.setText(rs.getString("kd_dokter"));
                     NmPerujuk.setText(rs.getString("nm_dokter"));
                     TPasien.setText(rs.getString("nm_pasien"));

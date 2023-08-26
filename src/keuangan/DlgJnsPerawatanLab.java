@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import simrskhanza.DlgCariCaraBayar;
+import simrskhanza.DlgKlmpkTrf;
 
 /**
  *
@@ -36,7 +36,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;    
-    public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
     public DlgTemplateLaboratorium template=new DlgTemplateLaboratorium(null,false);
     private int i=0;
     
@@ -53,7 +53,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
         Object[] row={
             "P","Kode Periksa","Nama Pemeriksaan","J.S. RS",
             "Paket BHP","J.M. Perujuk","J.M. Dokter","J.M. Petugas",
-            "K.S.O.","Menejemen","Total Tarif","Jenis Bayar","Kelas","Kategori"};
+            "K.S.O.","Menejemen","Total Tarif","Kel. Tarif","Kelas","Kategori"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -519,7 +519,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(-10, 132, 135, 23);
 
-        jLabel18.setText("Jenis Bayar :");
+        jLabel18.setText("Kel. Tarif :");
         jLabel18.setName("jLabel18"); // NOI18N
         FormInput.add(jLabel18);
         jLabel18.setBounds(300, 132, 130, 23);
@@ -671,6 +671,11 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
 
         Kelas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Rawat Jalan", "Kelas 1", "Kelas 2", "Kelas 3", "Kelas Utama", "Kelas VIP", "Kelas VVIP" }));
         Kelas.setName("Kelas"); // NOI18N
+        Kelas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                KelasActionPerformed(evt);
+            }
+        });
         Kelas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KelasKeyPressed(evt);
@@ -738,7 +743,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
         }else if(TNm.getText().trim().equals("")){
             Valid.textKosong(TNm,"Nama Pemeriksaan");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else if(BagianRs.getText().trim().equals("")){
             Valid.textKosong(BagianRs,"J.S.Rumah Sakit");
         }else if(Bhp.getText().trim().equals("")){
@@ -809,7 +814,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
         }else if(TNm.getText().trim().equals("")){
             Valid.textKosong(TNm,"Nama Pemeriksaan");
         }else if(kdpnj.getText().trim().equals("")||nmpnj.getText().trim().equals("")){
-            Valid.textKosong(kdpnj,"Jenis Bayar");
+            Valid.textKosong(kdpnj,"Kel. Tarif");
         }else if(BagianRs.getText().trim().equals("")){
             Valid.textKosong(BagianRs,"J.S.Rumah Sakit");
         }else if(JMDokter.getText().trim().equals("")){
@@ -871,12 +876,12 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
                     "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan,jns_perawatan_lab.bagian_rs,"+
                     "jns_perawatan_lab.bhp,jns_perawatan_lab.tarif_perujuk,jns_perawatan_lab.tarif_tindakan_dokter,"+
                     "jns_perawatan_lab.tarif_tindakan_petugas,jns_perawatan_lab.kso,jns_perawatan_lab.menejemen,"+
-                    "jns_perawatan_lab.total_byr,penjab.png_jawab "+
-                    "from jns_perawatan_lab inner join penjab on penjab.kd_pj=jns_perawatan_lab.kd_pj where "+
+                    "jns_perawatan_lab.total_byr,penjab_klmpk_tarif.nm_klmpk_trf "+
+                    "from jns_perawatan_lab inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan_lab.kd_pj where "+
                     " jns_perawatan_lab.status='1' and (jns_perawatan_lab.kd_jenis_prw like '%"+TCari.getText().trim()+"%' or "+
                     " jns_perawatan_lab.nm_perawatan like '%"+TCari.getText().trim()+"%' or "+
                     " jns_perawatan_lab.kelas like '%"+TCari.getText().trim()+"%' or "+
-                    " penjab.png_jawab like '%"+TCari.getText().trim()+"%' or "+
+                    " penjab_klmpk_tarif.nm_klmpk_trf like '%"+TCari.getText().trim()+"%' or "+
                     " jns_perawatan_lab.kategori like '%"+TCari.getText().trim()+"%') "+
                     "order by jns_perawatan_lab.kd_jenis_prw",param);   
         }
@@ -952,12 +957,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpnjKeyPressed
        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());         
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());         
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             TotalBiaya.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
             Kelas.requestFocus();   
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnPjActionPerformed(null);
@@ -965,10 +970,10 @@ private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdp
 }//GEN-LAST:event_kdpnjKeyPressed
 
 private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPjActionPerformed
-        penjab.isCek();
-        penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        penjab.setLocationRelativeTo(internalFrame1);
-        penjab.setVisible(true);
+        klmpktrf.emptTeks();
+        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        klmpktrf.setLocationRelativeTo(internalFrame1);
+        klmpktrf.setVisible(true);
 }//GEN-LAST:event_btnPjActionPerformed
 
     private void ppTemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppTemplateActionPerformed
@@ -989,16 +994,16 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
     }//GEN-LAST:event_ppTemplateActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        penjab.addWindowListener(new WindowListener() {
+        klmpktrf.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                if(klmpktrf.getTable().getSelectedRow()!= -1){
+                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
+                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
                 }    
                 kdpnj.requestFocus();
             }
@@ -1007,17 +1012,17 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
             @Override
             public void windowDeiconified(WindowEvent e) {}
             @Override
-            public void windowActivated(WindowEvent e) {penjab.onCari();}
+            public void windowActivated(WindowEvent e) {klmpktrf.emptTeks();}
             @Override
             public void windowDeactivated(WindowEvent e) {}
         });  
-        penjab.getTable().addKeyListener(new KeyListener() {
+        klmpktrf.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
+                    klmpktrf.dispose();
                 }
             }
             @Override
@@ -1026,8 +1031,8 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        penjab.removeWindowListener(null);
-        penjab.getTable().removeKeyListener(null);
+        klmpktrf.removeWindowListener(null);
+        klmpktrf.getTable().removeKeyListener(null);
     }//GEN-LAST:event_formWindowClosed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -1148,6 +1153,10 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         Valid.pindah(evt,Kelas,BtnSimpan);
     }//GEN-LAST:event_KategoriKeyPressed
 
+    private void KelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KelasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KelasActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1226,11 +1235,11 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
                         "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan,jns_perawatan_lab.bagian_rs,jns_perawatan_lab.bhp,"+
                         "jns_perawatan_lab.tarif_perujuk,jns_perawatan_lab.tarif_tindakan_dokter,jns_perawatan_lab.tarif_tindakan_petugas,"+
                         "jns_perawatan_lab.kso,jns_perawatan_lab.menejemen,jns_perawatan_lab.total_byr, "+
-                        "penjab.png_jawab,jns_perawatan_lab.kelas,jns_perawatan_lab.kategori "+
-                        "from jns_perawatan_lab inner join penjab on penjab.kd_pj=jns_perawatan_lab.kd_pj "+
+                        "penjab_klmpk_tarif.nm_klmpk_trf,jns_perawatan_lab.kelas,jns_perawatan_lab.kategori "+
+                        "from jns_perawatan_lab inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan_lab.kd_pj "+
                         "where jns_perawatan_lab.status='1' and (jns_perawatan_lab.kd_jenis_prw like ? or "+
                         "jns_perawatan_lab.nm_perawatan like ? or jns_perawatan_lab.kelas like ? or "+
-                        "penjab.png_jawab like ? or jns_perawatan_lab.kategori like ?) "+
+                        "penjab_klmpk_tarif.nm_klmpk_trf like ? or jns_perawatan_lab.kategori like ?) "+
                         "order by jns_perawatan_lab.kd_jenis_prw");
             try {    
                 ps.setString(1,"%"+TCari.getText().trim()+"%");

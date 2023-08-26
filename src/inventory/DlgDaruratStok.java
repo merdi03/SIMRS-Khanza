@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -27,8 +28,8 @@ public class DlgDaruratStok extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps,psstok;
     private ResultSet rs,rsstok;
-    private double stok=0;
-    private String aktifkanbatch="no";
+    private long stok=0;
+    private String aktifkanbatch="no",sqlx;
 
     /** 
      * @param parent
@@ -37,15 +38,23 @@ public class DlgDaruratStok extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Object[] row={"Kode Barang", "Nama Barang", "Satuan", "Jenis","Minimal","Saat Ini"};
+        Object[] row={"Kode Barang", "Nama Barang", "Satuan", "Jenis","Minimal","Saat Ini","Kekurangan"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+             Class[] types = new Class[] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
+                java.lang.Double.class, java.lang.Double.class, java.lang.Long.class 
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
         };
         tbDokter.setModel(tabMode);
 
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
+            
         for (int i = 0; i < 6; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
@@ -58,6 +67,7 @@ public class DlgDaruratStok extends javax.swing.JDialog {
                 column.setPreferredWidth(100);
             }else{
                 column.setPreferredWidth(80);
+                
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());         
@@ -250,6 +260,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         BtnCariActionPerformed(evt);
+        DecimalFormat df2 = new DecimalFormat("#,###");
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
             TCari.requestFocus();
@@ -263,8 +274,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 tabMode.getValueAt(i,1).toString()+"','"+
                                 tabMode.getValueAt(i,2).toString()+"','"+
                                 tabMode.getValueAt(i,3).toString()+"','"+
-                                tabMode.getValueAt(i,4).toString()+"','"+
-                                tabMode.getValueAt(i,5).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Sirkulasi Barang Keluar Masuk"); 
+                                df2.format(tabMode.getValueAt(i,4))+"','"+
+                                df2.format(tabMode.getValueAt(i,5))+"','"+
+                                tabMode.getValueAt(i,6).toString() +"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Sirkulasi Barang Keluar Masuk"); 
             }
             
             Map<String, Object> param = new HashMap<>(); 
@@ -370,42 +382,32 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void prosesCari() {
        Valid.tabelKosong(tabMode);      
        try{   
-            ps=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng, "
-                        + " kodesatuan.satuan,databarang.stokminimal, jenis.nama "
-                        + " from databarang inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "
-                        + " inner join jenis on databarang.kdjns=jenis.kdjns where databarang.status='1' "
-                        + " and (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?) order by databarang.nama_brng");
+           DecimalFormat df2 = new DecimalFormat("#,###");
+           sqlx="SELECT g.kode_brng, d.nama_brng,ks.satuan, j.nama,"
+                        + " ROUND((((SELECT ifnull(SUM(klr),0) FROM v_stok_farmasi2 WHERE kode_brng= g.kode_brng AND tgl_trans>=DATE_ADD(CURRENT_DATE(), INTERVAL -90 DAY) AND posisi<>'Mutasi' )/3)"
+                        + "+ ((SELECT ifnull(SUM(klr),0) FROM v_stok_farmasi2 WHERE kode_brng= g.kode_brng AND tgl_trans>=DATE_ADD(CURRENT_DATE(), INTERVAL -30 DAY) AND posisi<>'Mutasi' )*40/100)) ,2) AS stokminimal, round(SUM(g.stok),2) AS stok"
+                        + " from gudangbarang  AS g LEFT JOIN databarang AS d  ON g.kode_brng= d.kode_brng "
+                        + " LEFT JOIN kodesatuan AS ks ON d.kode_sat= ks.kode_sat "
+                        + " LEFT JOIN jenis AS j ON d.kdjns= j.kdjns"
+                        + "  where d.status='1' and (g.kd_bangsal='AP' OR g.kd_bangsal='B0052' OR g.kd_bangsal='B0055'  OR g.kd_bangsal='DPGD'  )";
+                    if(aktifkanbatch.equals("yes")){
+                        sqlx=sqlx+ " and g.no_batch<>'' and g.no_faktur<>'' ";
+                    }else{
+                        sqlx=sqlx+ " and g.no_batch='' and g.no_faktur='' ";}
+                      sqlx=sqlx+ " and (d.kode_brng like ? or d.nama_brng like ? or j.nama like ?) GROUP BY g.kode_brng order by d.nama_brng";
+            ps=koneksi.prepareStatement(sqlx);
             try {
                 ps.setString(1,"%"+TCari.getText().trim()+"%");
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
                 ps.setString(3,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();            
                 while(rs.next()){ 
-                    if(aktifkanbatch.equals("yes")){
-                        psstok=koneksi.prepareStatement("select sum(gudangbarang.stok) from gudangbarang inner join bangsal on gudangbarang.kd_bangsal=bangsal.kd_bangsal where bangsal.status='1' and gudangbarang.no_batch<>'' and gudangbarang.no_faktur<>'' and gudangbarang.kode_brng=?"); 
-                    }else{
-                        psstok=koneksi.prepareStatement("select sum(gudangbarang.stok) from gudangbarang inner join bangsal on gudangbarang.kd_bangsal=bangsal.kd_bangsal where bangsal.status='1' and gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.kode_brng=?"); 
-                    }
-                               
-                    try {
-                        psstok.setString(1,rs.getString(1));
-                        rsstok=psstok.executeQuery();
-                        if(rsstok.next()){
-                            stok=rsstok.getDouble(1);
-                        }
-                    } finally{
-                        if(rsstok!=null){
-                            rsstok.close();
-                        }
-                        if(psstok!=null){
-                            psstok.close();
-                        }
-                    }
-                    if(stok<=rs.getDouble("stokminimal")){
+                    if(rs.getDouble("stok")<=rs.getDouble("stokminimal") && rs.getDouble("stokminimal")>0){
+                        stok=(long)(rs.getDouble("stokminimal")-rs.getDouble("stok"));
                         tabMode.addRow(new Object[]{
                             rs.getString("kode_brng"),rs.getString("nama_brng"),
                             rs.getString("satuan"),rs.getString("nama"),
-                            rs.getDouble("stokminimal"),stok
+                            rs.getLong("stokminimal"),rs.getLong("stok"),df2.format(stok)
                         });
                     }
                 }                  

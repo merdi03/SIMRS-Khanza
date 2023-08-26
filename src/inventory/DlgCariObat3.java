@@ -995,7 +995,15 @@ private void TanggalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
 
     
     public void tampil() {         
-        try {             
+        try {
+        if(akses.getkuncitglf().equals("Yes")) {
+            Tanggal.setDate(new Date());
+            Tanggal.setEnabled(false);
+        }
+        else             
+        {   
+            Tanggal.setEnabled(true);}
+    
             Valid.tabelKosong(tabMode);
             pstampilbarang=koneksi.prepareStatement(
                     "select stok_obat_pasien.kode_brng,databarang.nama_brng,sum(stok_obat_pasien.jumlah) as jumlah, "+

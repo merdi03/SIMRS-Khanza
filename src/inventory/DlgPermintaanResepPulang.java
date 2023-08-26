@@ -1055,6 +1055,13 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 index++;
             }
         }
+        if(akses.getkuncitglf().equals("Yes")) {
+            DTPBeri.setEnabled(false);
+            ChkJln.setEnabled(false);} 
+        else             
+        {   
+            DTPBeri.setEnabled(true);
+            ChkJln.setEnabled(true);}
         
         Valid.tabelKosong(tabMode);
         for(i=0;i<jml;i++){

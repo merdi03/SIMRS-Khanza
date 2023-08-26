@@ -21295,7 +21295,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     
     public void isWall(){
         try{            
-            ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk from setting");
+            ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kunci_tgl_farmasi from setting");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
@@ -21308,6 +21308,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                     akses.setpropinsirs(rs.getString("propinsi"));
                     akses.setkontakrs(rs.getString("kontak"));
                     akses.setemailrs(rs.getString("email"));
+                    akses.setkuncitglf(rs.getString("kunci_tgl_farmasi"));                    
                     akses.setkodeppkbpjs(rs.getString("kode_ppk"));
                     if(rs.getString(5).equals("Yes")){
                         Blob blob = rs.getBlob(6);
