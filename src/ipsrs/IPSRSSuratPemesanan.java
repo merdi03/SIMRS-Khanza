@@ -363,7 +363,7 @@ public class IPSRSSuratPemesanan extends javax.swing.JDialog {
         panelBiasa4.add(KabidKeu);
         KabidKeu.setBounds(150, 40, 340, 23);
 
-        jLabel24.setText("Kepala Bagian Keuangan :");
+        jLabel24.setText("Wakil Direktur:");
         jLabel24.setName("jLabel24"); // NOI18N
         jLabel24.setPreferredSize(new java.awt.Dimension(60, 23));
         panelBiasa4.add(jLabel24);
@@ -747,11 +747,11 @@ public class IPSRSSuratPemesanan extends javax.swing.JDialog {
         Meterai.setBounds(520, 26, 100, 23);
 
         label24.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        label24.setText("Meterai :");
+        label24.setText("Ongkir/Parkir/BBM (Biaya Tambahan):");
         label24.setName("label24"); // NOI18N
         label24.setPreferredSize(new java.awt.Dimension(60, 30));
         panelisi1.add(label24);
-        label24.setBounds(520, 0, 90, 30);
+        label24.setBounds(420, 0, 190, 30);
 
         label19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         label19.setText("Jumlah Tagihan :");
