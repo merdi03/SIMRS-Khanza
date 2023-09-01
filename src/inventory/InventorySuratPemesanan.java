@@ -200,8 +200,10 @@ public class InventorySuratPemesanan extends javax.swing.JDialog {
                         kdptg.requestFocus();
                     }else if(pilihan==2){
                         Apoteker.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());                        
+                        BtnSeek6.requestFocus();
                     }else if(pilihan==3){
                         KabidKeu.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());                        
+                        BtnSeek5.requestFocus();
                     }                        
                 }                   
             }

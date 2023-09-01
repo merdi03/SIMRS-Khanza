@@ -11,7 +11,7 @@
     <entry key="PORT">nioxtijcpDaKSUiUiP5FAg==</entry>
     <entry key="USER">JQaP+LYE5t2ClrKPgi1wgQ==</entry>
     <entry key="PAS">24Zjleh/NddAF+cWIONttA==</entry>
-    <entry key="CARICEPAT">nonaktif</entry>
+<entry key="CARICEPAT">nonaktif</entry>
     <entry key="HOSTHYBRIDWEB">gkuO5iBLvMy7EA+91lRrEQ==</entry>
     <entry key="USERHYBRIDWEB">nmXqCKzrz9i8GTZlq7JruQ==</entry>
     <entry key="PASHYBRIDWEB">AsJ/0/gCnYnD+gK4fw9uKA==</entry>
@@ -40,23 +40,23 @@
     <entry key="CONSIDAPIBPJS">M12HVFLwamgLsjJ23WXKHA==</entry>
     <entry key="USERKEYAPIBPJS">ZXvKqK67BgwR7ihZ0CaMV0qHgjGdEULSPSysp9Y0Il8W+SIt6joj90D/4HOjchxg</entry>
     <entry key="DIAGNOSARUJUKANMASUKAPIBPJS">no</entry>
-    <entry key="JADIKANBOOKINGSURATKONTROLAPIBPJS">no</entry>
+	<entry key="JADIKANBOOKINGSURATKONTROLAPIBPJS">no</entry>	
     <entry key="URLAPIAPLICARE">https://new-api.bpjs-kesehatan.go.id/aplicaresws</entry>
     <entry key="SECRETKEYAPIAPLICARE">vM/MYVtDPtJHCuLRgUuZ5w==</entry>
     <entry key="CONSIDAPIAPLICARE">M12HVFLwamgLsjJ23WXKHA==</entry>
     <entry key="USERKEYAPIAPLICARE">ZXvKqK67BgwR7ihZ0CaMV0qHgjGdEULSPSysp9Y0Il8W+SIt6joj90D/4HOjchxg</entry>
-    <entry key="URLAPIMOBILEJKN">https://apijkn-dev.bpjs-kesehatan.go.id/antreanrs_dev</entry>
-    <entry key="SECRETKEYAPIMOBILEJKN">1Yzn4t3pOpSL9Mn3+kNCQw==</entry>
-    <entry key="CONSIDAPIMOBILEJKN">v3T1zRosOHd7zwKXxkyrEQ==</entry>
-    <entry key="USERKEYAPIMOBILEJKN">Hf8hFxj41PboOD1yBjXNydwRxsv4HTG4Dxg/JrjVChzxcOtYid/8xWsYl73DhVD1</entry>
+    <entry key="URLAPIMOBILEJKN">https://apijkn.bpjs-kesehatan.go.id/antreanrs</entry>
+    <entry key="SECRETKEYAPIMOBILEJKN">vM/MYVtDPtJHCuLRgUuZ5w==</entry>
+    <entry key="CONSIDAPIMOBILEJKN">M12HVFLwamgLsjJ23WXKHA==</entry>
+    <entry key="USERKEYAPIMOBILEJKN">2VLdSC4Ysf72ULAH6P0diWp48va461VRPsOv65FUbBZom1Ffp+wDy2rFuGS9UAtv</entry>
     <entry key="ADDANTRIANAPIMOBILEJKN">no</entry>
     <entry key="URLAPIAPOTEKBPJS">https://dev-soa.bpjs-kesehatan.go.id/apotek-rest</entry>
     <entry key="SECRETKEYAPIAPOTEKBPJS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="CONSIDAPIAPOTEKBPJS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="USERKEYAPIAPOTEKBPJS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
-	<entry key="URLAPIICARE">https://apijkn-dev.bpjs-kesehatan.go.id/ihs_dev</entry>
-    <entry key="SECRETKEYAPIICARE">l4nh5eVYrLAER/I2A4b3Tw==</entry>
-    <entry key="CONSIDAPIICARE">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="URLAPIPCARE">https://apijkn-dev.bpjs-kesehatan.go.id/pcare-rest-dev</entry>
+    <entry key="SECRETKEYAPIPCARE">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="CONSIDAPIPCARE">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="USERKEYAPIICARE">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="URLAPISMARTCLAIM">https://dvlp.bpjs-kesehatan.go.id/eRekamMedis</entry>
     <entry key="SECRETKEYAPISMARTCLAIM">l4nh5eVYrLAER/I2A4b3Tw==</entry>
@@ -108,7 +108,7 @@
     <entry key="CETAKRINCIANOBAT">no</entry>
     <entry key="DEPOAKTIFOBAT"></entry>
     <entry key="VALIDASIULANGBERIOBAT">no</entry>
-    <entry key="AKTIFKANBILLINGPARSIAL">no</entry>
+    <entry key="AKTIFKANBILLINGPARSIAL">yes</entry>
     <entry key="URLDUKCAPILJAKARTA">http://kependudukan.jakarta.go.id/wsrs/xml.jsp</entry>
     <entry key="USERDUKCAPILJAKARTA">eYTbZ3SMrmsvkl4t8u0zrA==</entry>
     <entry key="PASSDUKCAPILJAKARTA">iDrX7PhhkIwMup7YcS2RFg==</entry>
@@ -158,5 +158,4 @@
     <entry key="URLORTHANC">http://localhost</entry>
     <entry key="PORTORTHANC">4xOkFa6gxM9Bc/dkpEtJ+A==</entry>
     <entry key="USERORTHANC">V9bi0P2HgAq8Nn8lUyS6/A==</entry>
-    <entry key="PASSORTHANC">V9bi0P2HgAq8Nn8lUyS6/A==</entry>	
-</properties>
+    <entry key="PASSORTHANC">V9bi0P2HgAq8Nn8lUyS6/A==</entry>	</properties>
