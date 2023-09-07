@@ -1824,18 +1824,14 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public void isCek(){   
         BtnTambah.setEnabled(akses.getresep_dokter());
         TCari.requestFocus();
-        if(!DEPOAKTIFOBAT.equals("")){
-            bangsal=DEPOAKTIFOBAT;
-        }else{
             if(status.equals("ralan")){
                 bangsal=Sequel.cariIsi("select set_depo_ralan.kd_bangsal from set_depo_ralan where set_depo_ralan.kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
                 if(bangsal.equals("")){
                     bangsal=bangsaldefault;
                 }
             }else if(status.equals("ranap")){
-                bangsal=akses.getkdbangsal();
+                bangsal=akses.getkdbangsal();               
             } 
-        } 
     }
     
     public void setNoRm(String norwt,Date tanggal, String jam,String menit,String detik,String KodeDokter,String NamaDokter,String status) {        
