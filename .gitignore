@@ -41,3 +41,4 @@ replay_pid*
 sync.ffs_lock
 nbproject/private/private.xml
 nbproject/private/private.xml
+*.class
