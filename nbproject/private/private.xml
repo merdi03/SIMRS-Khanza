@@ -20,12 +20,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/permintaan/DlgBookingOperasi.java</file>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/inventory/DlgPeresepanDokter.java</file>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/inventory/DlgResepPulang.java</file>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/kepegawaian/DlgCariPegawai.java</file>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/fungsi/akses.java</file>
-            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/simrskhanza/DlgKamarInap.java</file>
+            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/simrskhanza/DlgPeriksaLaboratorium.java</file>
+            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/bridging/BPJSCekNIK.java</file>
+            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/simrskhanza/DlgCariPeriksaLab.java</file>
+            <file>file:/D:/My%20Project/Khanza-source/SIMRS-Khanza-Clone/SIMRS-Khanza-New/src/simrskhanza/DlgPasien.java</file>
         </group>
     </open-files>
 </project-private>
