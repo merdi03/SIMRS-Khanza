@@ -2079,7 +2079,7 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                    rs.getDouble("dokter_pjanak"), 
                                    rs.getDouble("dokter_umum"), 
                                    rs.getDouble("jumlah"),
-                                   rs.getString("png_jawab"),
+                                   rs.getString("nm_klmpk_trf"),
                                    rs.getString("kelas")
                     });
                 }  
