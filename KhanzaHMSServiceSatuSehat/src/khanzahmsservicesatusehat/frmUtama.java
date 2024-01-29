@@ -214,15 +214,17 @@ public class frmUtama extends javax.swing.JFrame {
                     date = new Date();  
                     Tanggal1.setText(tanggalFormat.format(date)); 
                     Tanggal2.setText(tanggalFormat.format(date)); 
+                    medication();
                 }
                 
-                if((detik.equals("01")&&menit.equals("01"))||(detik.equals("01")&&menit.equals("30"))){
+                if((detik.equals("01")&&menit.equals("01"))){
                     encounter();
                     observationTTV();
                     vaksin();
                     prosedur();
                     condition();
                     clinicalimpression();
+                    dietgizi();
                 }
             }
         };
@@ -2464,7 +2466,7 @@ public class frmUtama extends javax.swing.JFrame {
                                 json = "{" +
                                             "\"resourceType\": \"ClinicalImpression\"," +
                                             "\"status\": \"completed\"," +
-                                            "\"description\" : \""+rs.getString("keluhan")+", "+rs.getString("pemeriksaan")+"\"," +
+                                            "\"description\" : \""+rs.getString("keluhan")+", "+rs.getString("pemeriksaan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\"," +
                                             "\"subject\" : {"+
                                                 "\"reference\" : \"Patient/"+idpasien+"\""+
                                             "},"+
@@ -2476,7 +2478,7 @@ public class frmUtama extends javax.swing.JFrame {
                                             "\"assessor\" : {"+
                                                 "\"reference\" : \"Practitioner/"+iddokter+"\""+
                                             "},"+
-                                            "\"summary\" : \""+rs.getString("penilaian")+"\","+
+                                            "\"summary\" : \""+rs.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\","+
                                             "\"finding\": [" +
                                                 "{" +
                                                     "\"itemCodeableConcept\": {"+
@@ -2569,7 +2571,7 @@ public class frmUtama extends javax.swing.JFrame {
                                 json = "{" +
                                             "\"resourceType\": \"ClinicalImpression\"," +
                                             "\"status\": \"completed\"," +
-                                            "\"description\" : \""+rs.getString("keluhan")+", "+rs.getString("pemeriksaan")+"\"," +
+                                            "\"description\" : \""+rs.getString("keluhan")+", "+rs.getString("pemeriksaan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\"," +
                                             "\"subject\" : {"+
                                                 "\"reference\" : \"Patient/"+idpasien+"\""+
                                             "},"+
@@ -2581,7 +2583,7 @@ public class frmUtama extends javax.swing.JFrame {
                                             "\"assessor\" : {"+
                                                 "\"reference\" : \"Practitioner/"+iddokter+"\""+
                                             "},"+
-                                            "\"summary\" : \""+rs.getString("penilaian")+"\","+
+                                            "\"summary\" : \""+rs.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\","+
                                             "\"finding\": [" +
                                                 "{" +
                                                     "\"itemCodeableConcept\": {"+
@@ -3227,6 +3229,347 @@ public class frmUtama extends javax.swing.JFrame {
                             }
                         } catch (Exception e) {
                             System.out.println("Notifikasi : "+e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+    
+    private void dietgizi(){
+        try{
+            ps=koneksi.prepareStatement(
+                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+                   "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,catatan_adime_gizi.instruksi,"+
+                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,catatan_adime_gizi.tanggal,"+
+                   "ifnull(satu_sehat_diet.id_diet,'') as satu_sehat_diet "+
+                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                   "inner join nota_jalan on nota_jalan.no_rawat=reg_periksa.no_rawat "+
+                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+                   "inner join catatan_adime_gizi on catatan_adime_gizi.no_rawat=reg_periksa.no_rawat "+
+                   "inner join pegawai on catatan_adime_gizi.nip=pegawai.nik "+
+                   "left join satu_sehat_diet on satu_sehat_diet.no_rawat=catatan_adime_gizi.no_rawat "+
+                   "and satu_sehat_diet.tanggal=catatan_adime_gizi.tanggal "+
+                   "where catatan_adime_gizi.instruksi<>'' and nota_jalan.tanggal between ? and ? "+
+                   "order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,catatan_adime_gizi.tanggal");
+            try {
+                ps.setString(1,Tanggal1.getText()+" ");
+                ps.setString(2,Tanggal2.getText()+" ");
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("satu_sehat_diet").equals("")){
+                        try {
+                            iddokter=cekViaSatuSehat.tampilIDParktisi(rs.getString("ktppraktisi"));
+                            idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
+                            try{
+                                headers = new HttpHeaders();
+                                headers.setContentType(MediaType.APPLICATION_JSON);
+                                headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
+                                json = "{" +
+                                            "\"resourceType\" : \"Composition\"," +
+                                            "\"identifier\" : {" +
+                                                "\"system\" : \"http://sys-ids.kemkes.go.id/composition/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                "\"value\" : \""+rs.getString("no_rawat")+"\"" +
+                                            "}," +
+                                            "\"status\" : \"final\"," +
+                                            "\"type\" : {" +
+                                                "\"coding\" : [" +
+                                                    "{" +
+                                                        "\"system\" : \"http://loinc.org\"," +
+                                                        "\"code\" : \"18842-5\"," +
+                                                        "\"display\" : \"Discharge summary\"" +
+                                                    "}" +
+                                                "]" +
+                                            "}," +
+                                            "\"category\" : [" +
+                                                "{" +
+                                                    "\"coding\" : [" +
+                                                        "{" +
+                                                            "\"system\" : \"http://loinc.org\"," +
+                                                            "\"code\" : \"LP173421-1\"," +
+                                                            "\"display\" : \"Report\"" +
+                                                        "}" +
+                                                    "]" +
+                                                "}" +
+                                            "]," +
+                                            "\"subject\" : {" +
+                                                "\"reference\" : \"Patient/"+idpasien+"\"," +
+                                                "\"display\" : \""+rs.getString("nm_pasien")+"\"" +
+                                            "}," +
+                                            "\"encounter\" : {" +
+                                                "\"reference\" : \"Encounter/"+rs.getString("id_encounter")+"\","+
+                                                "\"display\" : \"Kunjungan "+rs.getString("nm_pasien")+" pada tanggal "+rs.getString("tgl_registrasi")+" dengan nomor kunjungan "+rs.getString("no_rawat")+"\""+
+                                            "}," +
+                                            "\"date\" : \""+rs.getString("tanggal").replaceAll(" ","T")+"01+07:00\" ," +
+                                            "\"author\" : [" +
+                                                "{" +
+                                                    "\"reference\" : \"Practitioner/"+iddokter+"\"," +
+                                                    "\"display\" : \""+rs.getString("nama")+"\"" +
+                                                "}" +
+                                            "]," +
+                                            "\"title\" : \"Modul Gizi\"," +
+                                            "\"custodian\" : {" +
+                                                "\"reference\" : \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"" +
+                                            "}," +
+                                            "\"section\" : [" +
+                                                "{" +
+                                                    "\"code\" : {" +
+                                                        "\"coding\" : [" +
+                                                            "{" +
+                                                                "\"system\" : \"http://loinc.org\"," +
+                                                                "\"code\" : \"42344-2\" ," +
+                                                                "\"display\" : \"Discharge diet (narrative)\"" +
+                                                            "}" +
+                                                        "]" +
+                                                    "}," +
+                                                    "\"text\" : {" +
+                                                        "\"status\" : \"additional\"," +
+                                                        "\"div\" : \""+rs.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\"" +
+                                                    "}" +
+                                                "}" +
+                                            "]" +
+                                        "}";
+                                System.out.println("URL : "+link+"/Composition");
+                                System.out.println("Request JSON : "+json);
+                                requestEntity = new HttpEntity(json,headers);
+                                json=api.getRest().exchange(link+"/Composition", HttpMethod.POST, requestEntity, String.class).getBody();
+                                System.out.println("Result JSON : "+json);
+                                root = mapper.readTree(json);
+                                response = root.path("id");
+                                if(!response.asText().equals("")){
+                                    Sequel.menyimpan2("satu_sehat_diet","?,?,?","Diet/Gizi",3,new String[]{
+                                        rs.getString("no_rawat"),rs.getString("tanggal"),response.asText()
+                                    });
+                                }
+                            }catch(Exception e){
+                                System.out.println("Notifikasi Bridging : "+e);
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+            
+            ps=koneksi.prepareStatement(
+                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+                   "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,catatan_adime_gizi.instruksi,"+
+                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,catatan_adime_gizi.tanggal,"+
+                   "ifnull(satu_sehat_diet.id_diet,'') as satu_sehat_diet "+
+                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                   "inner join nota_inap on nota_inap.no_rawat=reg_periksa.no_rawat "+
+                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+                   "inner join catatan_adime_gizi on catatan_adime_gizi.no_rawat=reg_periksa.no_rawat "+
+                   "inner join pegawai on catatan_adime_gizi.nip=pegawai.nik "+
+                   "left join satu_sehat_diet on satu_sehat_diet.no_rawat=catatan_adime_gizi.no_rawat "+
+                   "and satu_sehat_diet.tanggal=catatan_adime_gizi.tanggal "+
+                   "where catatan_adime_gizi.instruksi<>'' and nota_inap.tanggal between ? and ? "+
+                   "order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,catatan_adime_gizi.tanggal");
+            try {
+                ps.setString(1,Tanggal1.getText()+" ");
+                ps.setString(2,Tanggal2.getText()+" ");
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("satu_sehat_diet").equals("")){
+                        try {
+                            iddokter=cekViaSatuSehat.tampilIDParktisi(rs.getString("ktppraktisi"));
+                            idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
+                            try{
+                                headers = new HttpHeaders();
+                                headers.setContentType(MediaType.APPLICATION_JSON);
+                                headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
+                                json = "{" +
+                                            "\"resourceType\" : \"Composition\" ," +
+                                            "\"identifier\" : {" +
+                                                "\"system\" : \"http://sys-ids.kemkes.go.id/composition/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                "\"value\" : \""+rs.getString("no_rawat")+"\"" +
+                                            "}," +
+                                            "\"status\" : \"final\"," +
+                                            "\"type\" : {" +
+                                                "\"coding\" : [" +
+                                                    "{" +
+                                                        "\"system\" : \"http://loinc.org\" ," +
+                                                        "\"code\" : \"18842-5\" ," +
+                                                        "\"display\" : \"Discharge summary\"" +
+                                                    "}" +
+                                                "]" +
+                                            "}," +
+                                            "\"category\" : [" +
+                                                "{" +
+                                                    "\"coding\" : [" +
+                                                        "{" +
+                                                            "\"system\" : \"http://loinc.org\" ," +
+                                                            "\"code\" : \"LP173421-1\"," +
+                                                            "\"display\" : \"Report\"" +
+                                                        "}" +
+                                                    "]" +
+                                                "}" +
+                                            "]," +
+                                            "\"subject\" : {" +
+                                                "\"reference\" : \"Patient/"+idpasien+"\" ," +
+                                                "\"display\" : \""+rs.getString("nm_pasien")+"\"" +
+                                            "}," +
+                                            "\"encounter\" : {" +
+                                                "\"reference\" : \"Encounter/"+rs.getString("id_encounter")+"\","+
+                                                "\"display\" : \"Kunjungan "+rs.getString("nm_pasien")+" pada tanggal "+rs.getString("tgl_registrasi")+" dengan nomor kunjungan "+rs.getString("no_rawat")+"\""+
+                                            "}," +
+                                            "\"date\" : \""+rs.getString("tanggal").replaceAll(" ","T")+"01+07:00\"," +
+                                            "\"author\" : [" +
+                                                "{" +
+                                                    "\"reference\" : \"Practitioner/"+iddokter+"\"," +
+                                                    "\"display\" : \""+rs.getString("nama")+"\"" +
+                                                "}" +
+                                            "]," +
+                                            "\"title\" : \"Modul Gizi\"," +
+                                            "\"custodian\" : {" +
+                                                "\"reference\" : \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"" +
+                                            "}," +
+                                            "\"section\" : [" +
+                                                "{" +
+                                                    "\"code\" : {" +
+                                                        "\"coding\" : [" +
+                                                            "{" +
+                                                                "\"system\" : \"http://loinc.org\"," +
+                                                                "\"code\" : \"42344-2\" ," +
+                                                                "\"display\" : \"Discharge diet (narrative)\"" +
+                                                            "}" +
+                                                        "]" +
+                                                    "}," +
+                                                    "\"text\" : {" +
+                                                        "\"status\" : \"additional\" ," +
+                                                        "\"div\" : \""+rs.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\"" +
+                                                    "}" +
+                                                "}" +
+                                            "]" +
+                                        "}";
+                                System.out.println("URL : "+link+"/Composition");
+                                System.out.println("Request JSON : "+json);
+                                requestEntity = new HttpEntity(json,headers);
+                                json=api.getRest().exchange(link+"/Composition", HttpMethod.POST, requestEntity, String.class).getBody();
+                                System.out.println("Result JSON : "+json);
+                                root = mapper.readTree(json);
+                                response = root.path("id");
+                                if(!response.asText().equals("")){
+                                    Sequel.menyimpan2("satu_sehat_diet","?,?,?","Diet/Gizi",3,new String[]{
+                                        rs.getString("no_rawat"),rs.getString("tanggal"),response.asText()
+                                    });
+                                }
+                            }catch(Exception e){
+                                System.out.println("Notifikasi Bridging : "+e);
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+    
+    private void medication(){
+        try{
+            ps=koneksi.prepareStatement(
+                   "select satu_sehat_mapping_obat.obat_code,satu_sehat_mapping_obat.obat_system,databarang.status,"+
+                   "satu_sehat_mapping_obat.kode_brng,satu_sehat_mapping_obat.obat_display,satu_sehat_mapping_obat.form_code,"+
+                   "satu_sehat_mapping_obat.form_system,satu_sehat_mapping_obat.form_display,ifnull(satu_sehat_medication.id_medication,'') as id_medication "+
+                   "from satu_sehat_mapping_obat inner join databarang on satu_sehat_mapping_obat.kode_brng=databarang.kode_brng "+
+                   "left join satu_sehat_medication on satu_sehat_medication.kode_brng=satu_sehat_mapping_obat.kode_brng "+
+                   "order by satu_sehat_mapping_obat.obat_display");
+            try {
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if(!rs.getString("id_medication").equals("")){
+                        try{
+                            headers = new HttpHeaders();
+                            headers.setContentType(MediaType.APPLICATION_JSON);
+                            headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
+                            json = "{" +
+                                        "\"resourceType\": \"Medication\"," +
+                                        "\"id\": \""+rs.getString("id_medication")+"\"," +
+                                        "\"meta\": {" +
+                                            "\"profile\": [" +
+                                                "\"https://fhir.kemkes.go.id/r4/StructureDefinition/Medication\"" +
+                                            "]" +
+                                        "}," +
+                                        "\"identifier\": [" +
+                                            "{" +
+                                                "\"system\" : \"http://sys-ids.kemkes.go.id/medication/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                "\"use\": \"official\"," +
+                                                "\"value\" : \""+rs.getString("kode_brng")+"\"" +
+                                            "}" +
+                                        "]," +
+                                        "\"code\": {" +
+                                            "\"coding\": [" +
+                                                "{" +
+                                                    "\"system\": \""+rs.getString("obat_system")+"\"," +
+                                                    "\"code\": \""+rs.getString("obat_code")+"\"," +
+                                                    "\"display\": \""+rs.getString("obat_display")+"\"" +
+                                                "}" +
+                                            "]" +
+                                        "}," +
+                                        "\"status\": \""+rs.getString("status").replaceAll("0","inactive").replaceAll("1","active")+"\"," +
+                                        "\"form\": {" +
+                                            "\"coding\": [" +
+                                                "{" +
+                                                    "\"system\": \""+rs.getString("form_system")+"\"," +
+                                                    "\"code\": \""+rs.getString("form_code")+"\"," +
+                                                    "\"display\": \""+rs.getString("form_display")+"\"" +
+                                                "}" +
+                                            "]" +
+                                        "}," +
+                                        "\"extension\": [" +
+                                            "{" +
+                                                "\"url\": \"https://fhir.kemkes.go.id/r4/StructureDefinition/MedicationType\"," +
+                                                    "\"valueCodeableConcept\": {" +
+                                                    "\"coding\": [" +
+                                                        "{" +
+                                                            "\"system\": \"http://terminology.kemkes.go.id/CodeSystem/medication-type\"," +
+                                                            "\"code\": \"NC\"," +
+                                                            "\"display\": \"Non-compound\"" +
+                                                        "}" +
+                                                    "]" +
+                                                "}" +
+                                            "}" +
+                                        "]" +
+                                    "}";
+                            System.out.println("URL : "+link+"/Medication/"+rs.getString("id_medication"));
+                            System.out.println("Request JSON : "+json);
+                            requestEntity = new HttpEntity(json,headers);
+                            json=api.getRest().exchange(link+"/Medication/"+rs.getString("id_medication"), HttpMethod.PUT, requestEntity, String.class).getBody();
+                            System.out.println("Result JSON : "+json);
+                        }catch(Exception e){
+                            System.out.println("Notifikasi Bridging : "+e);
                         }
                     }
                 }

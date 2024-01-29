@@ -111,6 +111,12 @@
                                       </a>
                                     </td>
                                     <td width='33%' align='center'>
+                                      <a target=_blank href=pengkajianrestrain/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/3841816_chain_hyperlink_interface_link_multimedia_icon.png'/><br>
+                                         Persetujuan Restrain                                               
+                                      </a>
+                                    </td>
+                                    <td width='33%' align='center'>
                                       <a href='?aksi=Keluar'>                                                 
                                          <img src='images/1360484978_application-pgp-signature.png'/><br>
                                          Keluar                                               
@@ -194,4 +200,3 @@
     </div>    
 </body>
 </html>
-

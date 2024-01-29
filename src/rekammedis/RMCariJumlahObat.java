@@ -14,6 +14,7 @@ package rekammedis;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
+import fungsi.sekuel;
 import fungsi.validasi;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -33,6 +34,7 @@ public final class RMCariJumlahObat extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    private sekuel Sequel=new sekuel();
     private PreparedStatement ps;
     private ResultSet rs;
     private String norawat="";
@@ -46,22 +48,37 @@ public final class RMCariJumlahObat extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(656,250);
 
-        Object[] row={"Tanggal","Jam","Obat Diberikan"};
+        Object[] row={"P","Tanggal","Jam","Obat Diberikan"};
         tabMode=new DefaultTableModel(null,row){
-              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+              @Override public boolean isCellEditable(int rowIndex, int colIndex){
+                boolean a = false;
+                if (colIndex==0) {
+                    a=true;
+                }
+                return a;
+             }
+             Class[] types = new Class[] {
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
         };
         tbKamar.setModel(tabMode);
         //tbPenyakit.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbPenyakit.getBackground()));
         tbKamar.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        for (z= 0; z < 3; z++) {
+        for (z= 0; z < 4; z++) {
             TableColumn column = tbKamar.getColumnModel().getColumn(z);
             if(z==0){
-                column.setPreferredWidth(65);
+                column.setPreferredWidth(20);
             }else if(z==1){
-                column.setPreferredWidth(50);
+                column.setPreferredWidth(65);
             }else if(z==2){
-                column.setPreferredWidth(750);
+                column.setPreferredWidth(50);
+            }else if(z==3){
+                column.setPreferredWidth(730);
             }
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
@@ -317,7 +334,7 @@ public final class RMCariJumlahObat extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private widget.Button BtnAll;
     private widget.Button BtnCari;
-    private widget.Button BtnKeluar;
+    public widget.Button BtnKeluar;
     private widget.Label LCount;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
@@ -332,18 +349,18 @@ public final class RMCariJumlahObat extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select detail_pemberian_obat.tgl_perawatan,detail_pemberian_obat.jam,databarang.nama_brng, detail_pemberian_obat.jml, "+
-                    "databarang.kode_sat from detail_pemberian_obat inner join databarang on detail_pemberian_obat.kode_brng=databarang.kode_brng where "+
-                    "detail_pemberian_obat.no_rawat=? and (detail_pemberian_obat.tgl_perawatan like ? or databarang.nama_brng like ?) "+
-                    "order by detail_pemberian_obat.tgl_perawatan, detail_pemberian_obat.jam");
+                    "select detail_pemberian_obat.tgl_perawatan,detail_pemberian_obat.jam,databarang.nama_brng,detail_pemberian_obat.jml,databarang.kode_sat,"+
+                    "detail_pemberian_obat.no_rawat,detail_pemberian_obat.kode_brng from detail_pemberian_obat inner join databarang "+
+                    "on detail_pemberian_obat.kode_brng=databarang.kode_brng where detail_pemberian_obat.no_rawat=? and "+
+                    "(detail_pemberian_obat.tgl_perawatan like ? or databarang.nama_brng like ?) order by detail_pemberian_obat.tgl_perawatan, detail_pemberian_obat.jam");
             try{
                 ps.setString(1,norawat);
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
                 ps.setString(3,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[] {
-                        rs.getString(1),rs.getString(2),rs.getString(3)+" : "+rs.getString(4)+" "+rs.getString(5)
+                    tabMode.addRow(new Object[]{
+                        false,rs.getString(1),rs.getString(2),rs.getString(3)+" : "+rs.getString(4)+" "+rs.getString(5)+" "+Sequel.cariIsi("select aturan_pakai.aturan from aturan_pakai where aturan_pakai.tgl_perawatan='"+rs.getString("tgl_perawatan")+"' and aturan_pakai.jam='"+rs.getString("jam")+"' and aturan_pakai.no_rawat='"+rs.getString("no_rawat")+"' and aturan_pakai.kode_brng='"+rs.getString("kode_brng")+"'")
                     });
                 }
             }catch(Exception ex){

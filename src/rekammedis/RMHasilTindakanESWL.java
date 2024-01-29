@@ -126,7 +126,18 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
         
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
-        UraianTindakan.setDocument(new batasInput((int)500).getKata(UraianTindakan));
+        Diagnosa.setDocument(new batasInput((int)50).getKata(Diagnosa));
+        Tindakan.setDocument(new batasInput((int)50).getKata(Tindakan));
+        ObatAnastesi.setDocument(new batasInput((int)150).getKata(ObatAnastesi));
+        ObatLainLain.setDocument(new batasInput((int)150).getKata(ObatLainLain));
+        UraianTindakan.setDocument(new batasInput((int)300).getKata(UraianTindakan));
+        Focus.setDocument(new batasInput((int)50).getKata(Focus));
+        Rate.setDocument(new batasInput((int)50).getKata(Rate));
+        Power.setDocument(new batasInput((int)50).getKata(Power));
+        Shock.setDocument(new batasInput((int)50).getKata(Shock));
+        Diintegrasi.setDocument(new batasInput((int)50).getKata(Diintegrasi));
+        Kekurangan.setDocument(new batasInput((int)50).getKata(Kekurangan));
+        Anjungan.setDocument(new batasInput((int)50).getKata(Anjungan));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
         if(koneksiDB.CARICEPAT().equals("aktif")){
@@ -472,11 +483,6 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setPreferredSize(new java.awt.Dimension(457, 480));
-        TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TabRawatMouseClicked(evt);
-            }
-        });
 
         internalFrame2.setBorder(null);
         internalFrame2.setName("internalFrame2"); // NOI18N
@@ -591,7 +597,7 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         label11.setBounds(475, 40, 110, 23);
 
         WaktuSelesai.setForeground(new java.awt.Color(50, 70, 50));
-        WaktuSelesai.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2023 15:04:58" }));
+        WaktuSelesai.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023 10:12:53" }));
         WaktuSelesai.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         WaktuSelesai.setName("WaktuSelesai"); // NOI18N
         WaktuSelesai.setOpaque(false);
@@ -632,7 +638,7 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         label12.setBounds(181, 40, 110, 23);
 
         WaktuMulai.setForeground(new java.awt.Color(50, 70, 50));
-        WaktuMulai.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2023 17:16:35" }));
+        WaktuMulai.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023 10:12:54" }));
         WaktuMulai.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         WaktuMulai.setName("WaktuMulai"); // NOI18N
         WaktuMulai.setOpaque(false);
@@ -922,7 +928,7 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2023" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -936,7 +942,7 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2023" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1024,7 +1030,15 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
                     NIP.getText(),Diagnosa.getText(),Tindakan.getText(),ObatAnastesi.getText(),ObatLainLain.getText(),UraianTindakan.getText(), 
                     Focus.getText(),Rate.getText(),Power.getText(),Shock.getText(),Diintegrasi.getText(),Kekurangan.getText(),Anjungan.getText()
                 })==true){
-                    emptTeks();
+                tabMode.addRow(new String[]{
+                    TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),KdDokter.getText(),NmDokter.getText(),NIP.getText(),
+                    NmPetugas.getText(),Valid.SetTgl(WaktuMulai.getSelectedItem()+"")+" "+WaktuMulai.getSelectedItem().toString().substring(11,19),
+                    Valid.SetTgl(WaktuSelesai.getSelectedItem()+"")+" "+WaktuSelesai.getSelectedItem().toString().substring(11,19),Diagnosa.getText(),
+                    Tindakan.getText(),ObatAnastesi.getText(),ObatLainLain.getText(),UraianTindakan.getText(),Focus.getText(),Rate.getText(),Power.getText(),
+                    Shock.getText(),Diintegrasi.getText(),Kekurangan.getText(),Anjungan.getText()
+                });
+                LCount.setText(""+tabMode.getRowCount());
+                emptTeks();
             }
         }
     
@@ -1316,12 +1330,6 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
     private void BtnDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnDokterKeyPressed
         Valid.pindah(evt,WaktuSelesai,BtnPetugas);
     }//GEN-LAST:event_BtnDokterKeyPressed
-
-    private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
-        if(TabRawat.getSelectedIndex()==1){
-            tampil();
-        }
-    }//GEN-LAST:event_TabRawatMouseClicked
 
     private void WaktuSelesaiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_WaktuSelesaiKeyPressed
         Valid.pindah2(evt,WaktuMulai,BtnDokter);

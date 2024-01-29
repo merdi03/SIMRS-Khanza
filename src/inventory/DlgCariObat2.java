@@ -1242,7 +1242,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                                 } 
                                                 simpanObatPCare(
                                                     nokunjungan,"false",Sequel.cariIsi("select kode_brng_pcare from maping_obat_pcare where kode_brng=?",tbObat.getValueAt(i,2).toString()),
-                                                    signa1,signa2,""+(Double.parseDouble(tbObat.getValueAt(i,1).toString())/carikapasitas.getDouble(1)),"0","",TNoRw.getText(),
+                                                    signa1,signa2,""+(Double.parseDouble(tbObat.getValueAt(i,1).toString())/carikapasitas.getDouble(1)),""+(Double.parseDouble(tbObat.getValueAt(i,1).toString())/carikapasitas.getDouble(1)),"",TNoRw.getText(),
                                                     Valid.SetTgl(DTPTgl.getSelectedItem()+""),cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                                                     tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,16).toString()
                                                 );
@@ -1303,7 +1303,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                                 } 
                                                 simpanObatPCare(
                                                     nokunjungan,"false",Sequel.cariIsi("select kode_brng_pcare from maping_obat_pcare where kode_brng=?",tbObat.getValueAt(i,2).toString()),
-                                                    signa1,signa2,""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),"0","",TNoRw.getText(),
+                                                    signa1,signa2,""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),"",TNoRw.getText(),
                                                     Valid.SetTgl(DTPTgl.getSelectedItem()+""),cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                                                     tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,16).toString()
                                                 );
@@ -1375,7 +1375,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                         } 
                                         simpanObatPCare(
                                             nokunjungan,"false",Sequel.cariIsi("select kode_brng_pcare from maping_obat_pcare where kode_brng=?",tbObat.getValueAt(i,2).toString()),
-                                            signa1,signa2,""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),"0","",TNoRw.getText(),
+                                            signa1,signa2,""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),""+Double.parseDouble(tbObat.getValueAt(i,1).toString()),"",TNoRw.getText(),
                                             Valid.SetTgl(DTPTgl.getSelectedItem()+""),cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                                             tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,16).toString()
                                         );
@@ -1457,7 +1457,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                         } 
                                         simpanObatPCare(
                                             nokunjungan,"true",Sequel.cariIsi("select kode_brng_pcare from maping_obat_pcare where kode_brng=?",tbDetailObatRacikan.getValueAt(i,1).toString()),
-                                            signa1,signa2,""+Double.parseDouble(tbDetailObatRacikan.getValueAt(i,10).toString()),"0","",TNoRw.getText(),
+                                            signa1,signa2,""+Double.parseDouble(tbDetailObatRacikan.getValueAt(i,10).toString()),""+Double.parseDouble(tbDetailObatRacikan.getValueAt(i,10).toString()),"",TNoRw.getText(),
                                             Valid.SetTgl(DTPTgl.getSelectedItem()+""),cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                                             tbDetailObatRacikan.getValueAt(i,1).toString(),tbDetailObatRacikan.getValueAt(i,16).toString()
                                         );
@@ -1955,7 +1955,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
         jml=0;
         for(i=0;i<tbObat.getRowCount();i++){
-            if(!tbObat.getValueAt(i,0).toString().equals("")){
+            if(Valid.SetAngka(tbObat.getValueAt(i,1).toString())>0){
                 jml++;
             }
         }
@@ -1998,7 +1998,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         
         jml=0;        
         for(i=0;i<tbObat.getRowCount();i++){
-            if(!tbObat.getValueAt(i,1).toString().equals("")){
+            if(Valid.SetAngka(tbObat.getValueAt(i,1).toString())>0){
                 pilih[jml]=Boolean.parseBoolean(tbObat.getValueAt(i,0).toString());                
                 try {
                     jumlah[jml]=Double.parseDouble(tbObat.getValueAt(i,1).toString());

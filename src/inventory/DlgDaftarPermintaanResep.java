@@ -1,4 +1,5 @@
 package inventory;
+import bridging.BPJSDataSEP;
 import fungsi.BackgroundMusic;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
@@ -560,6 +561,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         BtnPiutangObat = new widget.Button();
         BtnKonselingFarmasi = new widget.Button();
         BtnInformasiObat = new widget.Button();
+        BtnSEPBPJS = new widget.Button();
+        BtnObat23HariBPJS = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -596,7 +599,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel20);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-11-2022" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-09-2023" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -610,7 +613,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-11-2022" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-09-2023" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1177,7 +1180,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         PanelAccor.setPreferredSize(new java.awt.Dimension(155, 43));
         PanelAccor.setLayout(new java.awt.BorderLayout());
 
-        ChkAccor.setBackground(new java.awt.Color(255,250,250));
+        ChkAccor.setBackground(new java.awt.Color(255, 250, 250));
         ChkAccor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(250, 255, 248)));
         ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png"))); // NOI18N
         ChkAccor.setFocusable(false);
@@ -1289,6 +1292,40 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
             }
         });
         FormMenu.add(BtnInformasiObat);
+
+        BtnSEPBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnSEPBPJS.setText("Data SEP BPJS");
+        BtnSEPBPJS.setFocusPainted(false);
+        BtnSEPBPJS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSEPBPJS.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnSEPBPJS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnSEPBPJS.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnSEPBPJS.setName("BtnSEPBPJS"); // NOI18N
+        BtnSEPBPJS.setPreferredSize(new java.awt.Dimension(135, 23));
+        BtnSEPBPJS.setRoundRect(false);
+        BtnSEPBPJS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSEPBPJSActionPerformed(evt);
+            }
+        });
+        FormMenu.add(BtnSEPBPJS);
+
+        BtnObat23HariBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnObat23HariBPJS.setText("Obat 23 Hari BPJS");
+        BtnObat23HariBPJS.setFocusPainted(false);
+        BtnObat23HariBPJS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnObat23HariBPJS.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnObat23HariBPJS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnObat23HariBPJS.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnObat23HariBPJS.setName("BtnObat23HariBPJS"); // NOI18N
+        BtnObat23HariBPJS.setPreferredSize(new java.awt.Dimension(135, 23));
+        BtnObat23HariBPJS.setRoundRect(false);
+        BtnObat23HariBPJS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnObat23HariBPJSActionPerformed(evt);
+            }
+        });
+        FormMenu.add(BtnObat23HariBPJS);
 
         ScrollMenu.setViewportView(FormMenu);
 
@@ -2680,6 +2717,38 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
     }//GEN-LAST:event_BtnInformasiObatActionPerformed
 
+    private void BtnSEPBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSEPBPJSActionPerformed
+        if(TabPilihRawat.getSelectedIndex()==0){
+            if(TabRawatJalan.getSelectedIndex()==0){
+                if(tabMode.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TCari.requestFocus();
+                }else if(NoRawat.equals("")){
+                    JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data pasien terlebih dahulu..!!");
+                }else{
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    BPJSDataSEP dlgki=new BPJSDataSEP(null,false);
+                    dlgki.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    dlgki.setLocationRelativeTo(internalFrame1);
+                    dlgki.isCek();
+                    dlgki.setNoRm3(NoRawat,DTPCari1.getDate());  
+                    dlgki.tampil();
+                    dlgki.setVisible(true);
+                    this.setCursor(Cursor.getDefaultCursor());
+                }
+            }else if(TabRawatJalan.getSelectedIndex()==1){
+                JOptionPane.showMessageDialog(null,"Maaf, hanya untuk rawat jalan kebutuhan klaim 23 hari...!!!!");
+                TCari.requestFocus();
+            }
+        }else if(TabPilihRawat.getSelectedIndex()==1){
+            JOptionPane.showMessageDialog(null,"Maaf, hanya untuk rawat jalan kebutuhan klaim 23 hari...!!!!");     
+        }
+    }//GEN-LAST:event_BtnSEPBPJSActionPerformed
+
+    private void BtnObat23HariBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnObat23HariBPJSActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnObat23HariBPJSActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2704,12 +2773,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Button BtnInformasiObat;
     private widget.Button BtnKeluar;
     private widget.Button BtnKonselingFarmasi;
+    private widget.Button BtnObat23HariBPJS;
     private widget.Button BtnPemberianObat;
     private widget.Button BtnPenyerahan;
     private widget.Button BtnPiutangObat;
     private widget.Button BtnPrint;
     private widget.Button BtnRekap;
     private widget.Button BtnRiwayat;
+    private widget.Button BtnSEPBPJS;
     private widget.Button BtnSeek3;
     private widget.Button BtnSeek4;
     private widget.Button BtnSeek5;
@@ -2942,6 +3013,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         BtnKonselingFarmasi.setEnabled(akses.getkonseling_farmasi());
         BtnInformasiObat.setEnabled(akses.getpelayanan_informasi_obat());
         BtnRiwayat.setEnabled(akses.getresume_pasien()); 
+        BtnSEPBPJS.setEnabled(akses.getbpjs_sep()); 
+        BtnObat23HariBPJS.setEnabled(akses.getbpjs_obat_23hari_apotek()); 
     }
     
     public void setCari(String cari){

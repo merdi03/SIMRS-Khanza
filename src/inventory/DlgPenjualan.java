@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
@@ -222,7 +221,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
             }
             
             Class[] types = new Class[] {
-                java.lang.Object.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
+                java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
                 java.lang.String.class,java.lang.Double.class,java.lang.Double.class,
                 java.lang.String.class,java.lang.Double.class,java.lang.Double.class,
                 java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,
@@ -1017,11 +1016,6 @@ public class DlgPenjualan extends javax.swing.JDialog {
         PersenppnObat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         PersenppnObat.setName("PersenppnObat"); // NOI18N
         PersenppnObat.setPreferredSize(new java.awt.Dimension(150, 23));
-        PersenppnObat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PersenppnObatActionPerformed(evt);
-            }
-        });
         PersenppnObat.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 PersenppnObatKeyPressed(evt);
@@ -1518,9 +1512,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 */
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-       Tgl.setDate(new Date());
+        row=0;
         if(aktifkanbatch.equals("yes")){
-            row=0;
             jml=tbObat.getRowCount();
             for(i=0;i<jml;i++){
                 if((Valid.SetAngka(tbObat.getValueAt(i,0).toString())>0)&&(tbObat.getValueAt(i,16).toString().trim().equals("")||tbObat.getValueAt(i,17).toString().trim().equals(""))){
@@ -1530,7 +1523,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             
             jml=tbDetailObatRacikan.getRowCount();
             for(i=0;i<jml;i++){
-                if((Valid.SetAngka(tbObat.getValueAt(i,8).toString())>0)&&(tbObat.getValueAt(i,18).toString().trim().equals("")||tbObat.getValueAt(i,19).toString().trim().equals(""))){
+                if((Valid.SetAngka(tbDetailObatRacikan.getValueAt(i,8).toString())>0)&&(tbDetailObatRacikan.getValueAt(i,18).toString().trim().equals("")||tbDetailObatRacikan.getValueAt(i,19).toString().trim().equals(""))){
                     row++;
                 }
             }
@@ -1685,12 +1678,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     Valid.MyReportqry("rptItemResepPenjualan.jasper","report","::[ Aturan Pakai Obat ]::",
                                         "select penjualan.nota_jual,penjualan.tgl_jual, "+
                                         "penjualan.no_rkm_medis,penjualan.nm_pasien,databarang.nama_brng,"+
-                                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan,pasien.tgl_lahir "+
+                                        "detailjual.aturan_pakai,detailjual.jumlah,kodesatuan.satuan "+
                                         "from penjualan inner join detailjual on penjualan.nota_jual=detailjual.nota_jual "+
                                         "inner join databarang on detailjual.kode_brng=databarang.kode_brng "+
                                         "inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
-                                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
-                                         "where penjualan.nota_jual='"+NoNota.getText()+"' and detailjual.aturan_pakai<>''",param);
+                                        "where penjualan.nota_jual='"+NoNota.getText()+"' and detailjual.aturan_pakai<>''",param);
                                 }
 
                                 if(Sequel.cariInteger(
@@ -1699,11 +1691,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     Valid.MyReportqry("rptItemResepPenjualan2.jasper","report","::[ Aturan Pakai Obat ]::",
                                         "select penjualan.nota_jual,penjualan.tgl_jual,metode_racik.nm_racik, "+
                                         "penjualan.no_rkm_medis,penjualan.nm_pasien,obat_racikan_jual.nama_racik,"+
-                                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr,pasien.tgl_lahir "+
+                                        "obat_racikan_jual.aturan_pakai,obat_racikan_jual.jml_dr "+
                                         "from penjualan inner join obat_racikan_jual on penjualan.nota_jual=obat_racikan_jual.nota_jual "+
                                         "inner join metode_racik on obat_racikan_jual.kd_racik=metode_racik.kd_racik "+
-                                        "inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
-                                       "where obat_racikan_jual.nota_jual='"+NoNota.getText()+"' and obat_racikan_jual.aturan_pakai<>''",param);
+                                        "where obat_racikan_jual.nota_jual='"+NoNota.getText()+"' and obat_racikan_jual.aturan_pakai<>''",param);
                                 }                
                                 this.setCursor(Cursor.getDefaultCursor());
                                 break;
@@ -1803,9 +1794,6 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             Valid.textKosong(kdmem,"Pasien");
         }else if(nmptg.getText().trim().equals("")||nmptg.getText().trim().equals("")){
             Valid.textKosong(kdptg,"Petugas");
-        }else if(tabMode.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
-            tbObat.requestFocus();
         }else if(ttl<=0){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan masukkan penjualan...!!!!");
             tbObat.requestFocus();
@@ -2458,10 +2446,6 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         isKembali();
     }//GEN-LAST:event_BtnAll1ActionPerformed
 
-    private void PersenppnObatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PersenppnObatActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PersenppnObatActionPerformed
-
     /**
     * @param args the command line arguments
     */
@@ -2948,22 +2932,75 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         namabarang[index]=tabModeDetailRacikan.getValueAt(i,2).toString();
                         kategori[index]=tabModeDetailRacikan.getValueAt(i,3).toString();
                         satuan[index]=tabModeDetailRacikan.getValueAt(i,4).toString();
-                        harga[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,5).toString());
-                        kps[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,6).toString());
-                        kandungan[index]=tabModeDetailRacikan.getValueAt(i,7).toString();                    
-                        jumlah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,8).toString());
-                        subtotal[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,9).toString());
-                        diskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,10).toString());
-                        besardiskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,11).toString());
-                        tambahan[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,12).toString());
-                        embalase[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,13).toString());
-                        tuslah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,14).toString());
-                        totaljual[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,15).toString());
-                        stok[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,16).toString());
-                        hbeli[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,17).toString());
+                        try {
+                            harga[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,5).toString());
+                        } catch (Exception e) {
+                            harga[index]=0;
+                        }   
+                        try {
+                            kps[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,6).toString());
+                        } catch (Exception e) {
+                            kps[index]=0;
+                        }   
+                        kandungan[index]=tabModeDetailRacikan.getValueAt(i,7).toString();      
+                        try {
+                            jumlah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,8).toString());
+                        } catch (Exception e) {
+                            jumlah[index]=0;
+                        }
+                        try {
+                            subtotal[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,9).toString());
+                        } catch (Exception e) {
+                            subtotal[index]=0;
+                        }   
+                        try {
+                            diskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,10).toString());
+                        } catch (Exception e) {
+                            diskon[index]=0;
+                        }
+                        try {
+                            besardiskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,11).toString());
+                        } catch (Exception e) {
+                            besardiskon[index]=0;
+                        }
+                        try {
+                            tambahan[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,12).toString());
+                        } catch (Exception e) {
+                            tambahan[index]=0;
+                        }
+                        try {
+                            embalase[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,13).toString());
+                        } catch (Exception e) {
+                            embalase[index]=0;
+                        }   
+                        try {
+                            tuslah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,14).toString());
+                        } catch (Exception e) {
+                            tuslah[index]=0;
+                        }
+                            
+                        try {
+                            totaljual[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,15).toString());
+                        } catch (Exception e) {
+                            totaljual[index]=0;
+                        }   
+                        try {
+                            stok[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,16).toString());
+                        } catch (Exception e) {
+                            stok[index]=0;
+                        }   
+                        try {
+                            hbeli[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,17).toString());
+                        } catch (Exception e) {
+                            hbeli[index]=0;
+                        }   
                         nobatch[index]=tabModeDetailRacikan.getValueAt(i,18).toString();
                         nofaktur[index]=tabModeDetailRacikan.getValueAt(i,19).toString();
-                        kadaluarsa[index]=tabModeDetailRacikan.getValueAt(i,20).toString();
+                        try {
+                            kadaluarsa[index]=tabModeDetailRacikan.getValueAt(i,20).toString();
+                        } catch (Exception e) {
+                            kadaluarsa[index]="0000-00-00";
+                        }
                         index++;
                     }
                 } catch (Exception e) {
@@ -2987,16 +3024,13 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 " databarang.kelas3,databarang.utama,databarang.vip,databarang.vvip,databarang."+hppfarmasi+" as dasar "+
                 " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                 " inner join gudangbarang on databarang.kode_brng=gudangbarang.kode_brng "+
-                " where gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.status='1' and databarang.kode_brng like ? or "+
-                " gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.status='1' and databarang.nama_brng like ? or "+
-                " gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.status='1' and jenis.nama like ? order by databarang.nama_brng");
+                " where gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.status='1' and "+
+                " (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?) order by databarang.nama_brng");
             try {
                 ps.setString(1,kdgudang.getText());
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,kdgudang.getText());
+                ps.setString(3,"%"+TCari.getText().trim()+"%");
                 ps.setString(4,"%"+TCari.getText().trim()+"%");
-                ps.setString(5,kdgudang.getText());
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 if(Jenisjual.getSelectedItem().equals("Karyawan")){
                     while(rs.next()){ 
@@ -3138,22 +3172,75 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         namabarang[index]=tabModeDetailRacikan.getValueAt(i,2).toString();
                         kategori[index]=tabModeDetailRacikan.getValueAt(i,3).toString();
                         satuan[index]=tabModeDetailRacikan.getValueAt(i,4).toString();
-                        harga[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,5).toString());
-                        kps[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,6).toString());
-                        kandungan[index]=tabModeDetailRacikan.getValueAt(i,7).toString();                    
-                        jumlah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,8).toString());
-                        subtotal[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,9).toString());
-                        diskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,10).toString());
-                        besardiskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,11).toString());
-                        tambahan[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,12).toString());
-                        embalase[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,13).toString());
-                        tuslah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,14).toString());
-                        totaljual[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,15).toString());
-                        stok[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,16).toString());
-                        hbeli[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,17).toString());
+                        try {
+                            harga[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,5).toString());
+                        } catch (Exception e) {
+                            harga[index]=0;
+                        }   
+                        try {
+                            kps[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,6).toString());
+                        } catch (Exception e) {
+                            kps[index]=0;
+                        }   
+                        kandungan[index]=tabModeDetailRacikan.getValueAt(i,7).toString();      
+                        try {
+                            jumlah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,8).toString());
+                        } catch (Exception e) {
+                            jumlah[index]=0;
+                        }
+                        try {
+                            subtotal[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,9).toString());
+                        } catch (Exception e) {
+                            subtotal[index]=0;
+                        }   
+                        try {
+                            diskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,10).toString());
+                        } catch (Exception e) {
+                            diskon[index]=0;
+                        }
+                        try {
+                            besardiskon[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,11).toString());
+                        } catch (Exception e) {
+                            besardiskon[index]=0;
+                        }
+                        try {
+                            tambahan[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,12).toString());
+                        } catch (Exception e) {
+                            tambahan[index]=0;
+                        }
+                        try {
+                            embalase[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,13).toString());
+                        } catch (Exception e) {
+                            embalase[index]=0;
+                        }   
+                        try {
+                            tuslah[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,14).toString());
+                        } catch (Exception e) {
+                            tuslah[index]=0;
+                        }
+                            
+                        try {
+                            totaljual[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,15).toString());
+                        } catch (Exception e) {
+                            totaljual[index]=0;
+                        }   
+                        try {
+                            stok[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,16).toString());
+                        } catch (Exception e) {
+                            stok[index]=0;
+                        }   
+                        try {
+                            hbeli[index]=Valid.SetAngka(tabModeDetailRacikan.getValueAt(i,17).toString());
+                        } catch (Exception e) {
+                            hbeli[index]=0;
+                        }   
                         nobatch[index]=tabModeDetailRacikan.getValueAt(i,18).toString();
                         nofaktur[index]=tabModeDetailRacikan.getValueAt(i,19).toString();
-                        kadaluarsa[index]=tabModeDetailRacikan.getValueAt(i,20).toString();
+                        try {
+                            kadaluarsa[index]=tabModeDetailRacikan.getValueAt(i,20).toString();
+                        } catch (Exception e) {
+                            kadaluarsa[index]="0000-00-00";
+                        }
                         index++;
                     }
                 } catch (Exception e) {
@@ -3179,22 +3266,15 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 " from data_batch inner join databarang on data_batch.kode_brng=databarang.kode_brng "+
                 " inner join jenis on databarang.kdjns=jenis.kdjns "+
                 " inner join gudangbarang on gudangbarang.kode_brng=data_batch.kode_brng and gudangbarang.no_batch=data_batch.no_batch and gudangbarang.no_faktur=data_batch.no_faktur "+
-                " where gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and data_batch.kode_brng like ? or "+
-                " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.nama_brng like ? or "+
-                " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and data_batch.no_batch like ? or "+
-                " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and data_batch.no_faktur like ? or "+
-                " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and jenis.nama like ? order by data_batch.tgl_kadaluarsa");
+                " where gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and (data_batch.kode_brng like ? or "+
+                " databarang.nama_brng like ? or data_batch.no_batch like ? or data_batch.no_faktur like ? or jenis.nama like ?) order by data_batch.tgl_kadaluarsa");
             try {
                 ps.setString(1,kdgudang.getText());
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,kdgudang.getText());
+                ps.setString(3,"%"+TCari.getText().trim()+"%");
                 ps.setString(4,"%"+TCari.getText().trim()+"%");
-                ps.setString(5,kdgudang.getText());
+                ps.setString(5,"%"+TCari.getText().trim()+"%");
                 ps.setString(6,"%"+TCari.getText().trim()+"%");
-                ps.setString(7,kdgudang.getText());
-                ps.setString(8,"%"+TCari.getText().trim()+"%");
-                ps.setString(9,kdgudang.getText());
-                ps.setString(10,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 if(Jenisjual.getSelectedItem().equals("Karyawan")){
                     while(rs.next()){ 

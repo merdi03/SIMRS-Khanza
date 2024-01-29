@@ -3383,7 +3383,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel18);
         jLabel18.setBounds(402, 12, 90, 23);
 
-        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONG HU CHU", "-" }));
+        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ISLAM", "KRISTEN", "KATOLIK", "HINDU", "BUDHA", "KONG HU CHU", "-" }));
         cmbAgama.setLightWeightPopupEnabled(false);
         cmbAgama.setName("cmbAgama"); // NOI18N
         cmbAgama.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -3399,7 +3399,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel19);
         jLabel19.setBounds(629, 12, 100, 23);
 
-        CmbStts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MENIKAH", "BELUM MENIKAH", "JANDA", "DUDA" }));
+        CmbStts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MENIKAH", "BELUM MENIKAH", "JANDA", "DUDHA" }));
         CmbStts.setLightWeightPopupEnabled(false);
         CmbStts.setName("CmbStts"); // NOI18N
         CmbStts.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -4372,7 +4372,6 @@ public class DlgPasien extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbPasien.setAutoCreateRowSorter(true);
         tbPasien.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPasien.setComponentPopupMenu(jPopupMenu1);
         tbPasien.setName("tbPasien"); // NOI18N
@@ -4405,7 +4404,6 @@ public class DlgPasien extends javax.swing.JDialog {
         Scroll2.setName("Scroll2"); // NOI18N
         Scroll2.setOpaque(true);
 
-        tbPasien2.setAutoCreateRowSorter(true);
         tbPasien2.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPasien2.setComponentPopupMenu(jPopupMenu1);
         tbPasien2.setName("tbPasien2"); // NOI18N
@@ -4438,7 +4436,6 @@ public class DlgPasien extends javax.swing.JDialog {
         Scroll3.setName("Scroll3"); // NOI18N
         Scroll3.setOpaque(true);
 
-        tbPasien3.setAutoCreateRowSorter(true);
         tbPasien3.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPasien3.setComponentPopupMenu(jPopupMenu1);
         tbPasien3.setName("tbPasien3"); // NOI18N
@@ -7065,8 +7062,8 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             CmbJk.setSelectedItem(cekViaBPJS.sex);
             TNoPeserta.setText(cekViaBPJS.noKartu);
             Pekerjaan.setText(cekViaBPJS.jenisPesertaketerangan);
-            
             Valid.SetTgl(DTPLahir,cekViaBPJS.tglLahir);
+            DTPLahirItemStateChanged(null);
             this.setCursor(Cursor.getDefaultCursor());
         }   
     }//GEN-LAST:event_MnViaBPJSNikActionPerformed
@@ -7083,8 +7080,8 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             CmbJk.setSelectedItem(cekViaBPJSKartu.sex);
             TKtp.setText(cekViaBPJSKartu.nik);
             Pekerjaan.setText(cekViaBPJSKartu.jenisPesertaketerangan);
-            TUmurTh.setText(cekViaBPJSKartu.umurumurSekarang);
             Valid.SetTgl(DTPLahir,cekViaBPJSKartu.tglLahir);
+            DTPLahirItemStateChanged(null);
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_MnViaBPJSNoKartuActionPerformed
@@ -8589,6 +8586,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             TNm.setText(cekViaSatuSehat.name);
             CmbJk.setSelectedItem(cekViaSatuSehat.gender.toUpperCase());
             Valid.SetTgl(DTPLahir,cekViaSatuSehat.birthDate);
+            DTPLahirItemStateChanged(null);
             Propinsi.setText(cekViaSatuSehat.provincename);
             PropinsiPj.setText(cekViaSatuSehat.provincename);
             Kabupaten.setText(cekViaSatuSehat.cityname);

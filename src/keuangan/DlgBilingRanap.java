@@ -209,7 +209,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             sqlpsanak="select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2 from reg_periksa inner join pasien inner join ranap_gabung on "+
                     "pasien.no_rkm_medis=reg_periksa.no_rkm_medis and ranap_gabung.no_rawat2=reg_periksa.no_rawat where ranap_gabung.no_rawat=?",
             sqlpstemporary="insert into temporary_bayar_ranap values('0',?,?,?,?,?,?,?,?,'','','','','','','','','')",
-            Host_to_Host_Bank_Jateng="",Akun_BRI_API="",Host_to_Host_Bank_Papua="",Host_to_Host_Bank_Jabar="",KodeBankJabar="",PPN_Keluaran="";    
+            Host_to_Host_Bank_Jateng="",Akun_BRI_API="",Host_to_Host_Bank_Papua="",Host_to_Host_Bank_Jabar="",KodeBankJabar="",PPN_Keluaran="",Host_to_Host_Bank_Mandiri="";    
     private double ttl=0,y=0,subttl=0,lab,ttlobat,ttlretur,ppnobat,piutang=0,kekurangan=0,itembayar=0,itempiutang=0, 
             tamkur=0,detailjs=0,detailbhp=0,besarppn=0,tagihanppn=0,bayar=0,total=0,uangdeposit=0,sisadeposit=0,
             ttlLaborat=0,ttlRadiologi=0,ttlOperasi=0,ttlObat=0,ttlRanap_Dokter=0,ttlRanap_Paramedis=0,ttlRalan_Dokter=0,
@@ -2642,7 +2642,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnSimpanKeyPressed
 
     private void BtnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnViewActionPerformed
-           Object[] options = {"Tagihan Masuk", "Piutang Pasien","Data Pembayaran HtH BPD Jateng","Data Pembayaran HtH BPD Papua","Data Pembayaran HtH BPD Jabar"};
+           Object[] options = {"Tagihan Masuk", "Piutang Pasien","Data Pembayaran HtH BPD Jateng","Data Pembayaran HtH BPD Papua","Data Pembayaran HtH BPD Jabar","Data Pembayaran HtH Mandiri"};
             
             String input;
             int pilih = 0;
@@ -2659,10 +2659,13 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                         i=3;
                         break;
                     case "Data Pembayaran HtH BPD Papua":
-                        i=4;
+                        pilih=4;
                         break;
                     case "Data Pembayaran HtH BPD Jabar":
-                        i=5;
+                        pilih=5;
+                    case "Data Pembayaran HtH Mandiri":
+                        pilih=6;
+                        break;
                 }
             }catch(Exception e){
                 pilih=0;
@@ -2694,7 +2697,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     billing.setAlwaysOnTop(false);
                     billing.setVisible(true);
                     this.setCursor(Cursor.getDefaultCursor());
-                } else if(i==4){
+                } else if(pilih==4){
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     DlgLhtBankPapua billing=new DlgLhtBankPapua(null,false);
                     billing.tampil();   
@@ -2703,7 +2706,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     billing.setAlwaysOnTop(false);
                     billing.setVisible(true);
                     this.setCursor(Cursor.getDefaultCursor());
-                }else if(i==5){
+                }else if(pilih==5){
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     DlgLhtBankJabar billing=new DlgLhtBankJabar(null,false);
                     billing.tampil();   
@@ -2712,7 +2715,16 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     billing.setAlwaysOnTop(false);
                     billing.setVisible(true);
                     this.setCursor(Cursor.getDefaultCursor());
-                }  
+                }else if(pilih==6){
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    DlgLhtBankMandiri billing=new DlgLhtBankMandiri(null,false);
+                    billing.tampil();   
+                    billing.setSize(this.getWidth(),this.getHeight());
+                    billing.setLocationRelativeTo(this);
+                    billing.setAlwaysOnTop(false);
+                    billing.setVisible(true);
+                    this.setCursor(Cursor.getDefaultCursor());
+                }   
             }   
     }//GEN-LAST:event_BtnViewActionPerformed
 
@@ -3274,6 +3286,7 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                  Sequel.queryu2("delete from tagihan_bpd_papua where no_rkm_medis='"+TNoRM.getText()+"' and no_rawat='"+TNoRw.getText()+"' and status_lanjut='Ranap' and status_bayar='Pending'");
                  Sequel.queryu2("delete from tagihan_bpd_jabar where no_rkm_medis='"+TNoRM.getText()+"' and no_rawat='"+TNoRw.getText()+"' and status_lanjut='Ranap' and status_bayar='Pending'");
                  Sequel.queryu2("delete from tagihan_briva where no_rkm_medis='"+TNoRM.getText()+"' and no_tagihan='"+TNoRw.getText().replaceAll("/","").substring(2,8)+TNoRw.getText().replaceAll("/","").substring(10,14)+"' and status_tagihan='Ranap' and status_bayar='Pending'");
+                 Sequel.queryu2("delete from tagihan_mandiri where no_rkm_medis='"+TNoRM.getText()+"' and no_rawat='"+TNoRw.getText()+"' and status_lanjut='Ranap' and status_bayar='Pending'");
                  Valid.hapusTable(tabModeRwJlDr,TNoRw,"billing","no_rawat");
                  Valid.hapusTable(tabModeRwJlDr,TNoRw,"tagihan_sadewa","no_nota");
                  Sequel.Commit();
@@ -4406,6 +4419,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             tampilAkunBankPapua();
             tampilAkunBankBRI();
             tampilAkunBankJabar();
+            tampilAkunBankMandiri();
         }else if(status.equals("sudah")){
             tampilAkunBayarTersimpan();
         }
@@ -4474,6 +4488,12 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 tampilAkunBankBRI();
             }else{
                 tampilAkunBankBRI2();
+            }
+            
+            if(Valid.daysOld("./cache/akunbankmandiri.iyem")>6){
+                tampilAkunBankMandiri();
+            }else{
+                tampilAkunBankMandiri2();
             }
         } catch (Exception e) {
         }
@@ -6562,6 +6582,20 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void tampilAkunBankMandiri() { 
+        try{      
+             file=new File("./cache/akunbankmandiri.iyem");
+             file.createNewFile();
+             fileWriter = new FileWriter(file);
+             Host_to_Host_Bank_Mandiri=Sequel.cariIsi("select set_akun_mandiri.kd_rek from set_akun_mandiri");
+             fileWriter.write("{\"akunbankmandiri\":\""+Host_to_Host_Bank_Mandiri+"\"}");
+             fileWriter.flush();
+             fileWriter.close();
+        } catch (Exception e) {
+             Host_to_Host_Bank_Mandiri="";
+        }
+    }
+    
     private void tampilAkunBankJateng2() { 
         try{      
              myObj = new FileReader("./cache/akunbankjateng.iyem");
@@ -6610,6 +6644,18 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
              myObj.close();
         } catch (Exception e) {
              Akun_BRI_API="";
+        }
+    }
+    
+    private void tampilAkunBankMandiri2() { 
+        try{      
+             myObj = new FileReader("./cache/akunbankmandiri.iyem");
+             root = mapper.readTree(myObj);
+             response = root.path("akunbankmandiri");
+             Host_to_Host_Bank_Mandiri=response.asText();
+             myObj.close();
+        } catch (Exception e) {
+             Host_to_Host_Bank_Mandiri="";
         }
     }
     
@@ -7100,6 +7146,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                             }
                                         }
                                     }
+                                    if(Host_to_Host_Bank_Mandiri.equals(tbAkunBayar.getValueAt(r,1).toString())){
+                                        if(Sequel.menyimpantf2("tagihan_mandiri","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,''",22,new String[]{
+                                            no_rkm_medis, nm_pasien, alamat, jk, tgl_lahir, umurdaftar, tgl_registrasi,no_nota.replaceAll("/","").replaceAll("RI","02"),Double.toString(itembayar),TNoRw.getText(),TNoRw.getText().replaceAll("/",""),"Ranap",Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+DTPTgl.getSelectedItem().toString().substring(11,19),"Pending","","","0",akses.getkode(),"","","","0000-00-00",""
+                                        })==false){
+                                            sukses=false;
+                                        }
+                                    }
                             }else{
                                 sukses=false;
                             }
@@ -7140,6 +7193,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                                 }
                                             }
                                         }
+                                        if(Host_to_Host_Bank_Mandiri.equals(tbAkunBayar.getValueAt(r,1).toString())){
+                                            if(Sequel.menyimpantf2("tagihan_mandiri","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,''",22,new String[]{
+                                                no_rkm_medis, nm_pasien, alamat, jk, tgl_lahir, umurdaftar, tgl_registrasi,no_nota.replaceAll("/","").replaceAll("RI","02"),Double.toString(itembayar-kekurangan),TNoRw.getText(),TNoRw.getText().replaceAll("/",""),"Ranap",Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+DTPTgl.getSelectedItem().toString().substring(11,19),"Pending","","","0",akses.getkode(),"","","","0000-00-00",""
+                                            })==false){
+                                                sukses=false;
+                                            }
+                                        }
                                 }else{
                                     sukses=false;
                                 } 
@@ -7177,6 +7237,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                                 })==false){
                                                     sukses=false;
                                                 }
+                                            }
+                                        }
+                                        if(Host_to_Host_Bank_Mandiri.equals(tbAkunBayar.getValueAt(r,1).toString())){
+                                            if(Sequel.menyimpantf2("tagihan_mandiri","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,''",22,new String[]{
+                                                no_rkm_medis, nm_pasien, alamat, jk, tgl_lahir, umurdaftar, tgl_registrasi,no_nota.replaceAll("/","").replaceAll("RI","02"),Double.toString(itembayar),TNoRw.getText(),TNoRw.getText().replaceAll("/",""),"Ranap",Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+DTPTgl.getSelectedItem().toString().substring(11,19),"Pending","","","0",akses.getkode(),"","","","0000-00-00",""
+                                            })==false){
+                                                sukses=false;
                                             }
                                         }
                                 }else{
