@@ -2257,7 +2257,7 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 rstindakan=pstindakan.executeQuery();
                 while(rstindakan.next()){
                     TNoRM.setText(rstindakan.getString("no_rkm_medis"));
-                    Penjab.setText(rstindakan.getString("kd_pj"));
+                    Penjab.setText(Sequel.cariIsi("select penjab.kd_klmpk_trf from penjab where penjab.kd_pj=?",rstindakan.getString("kd_pj")));                    
                     KodePerujuk.setText(rstindakan.getString("kd_dokter"));
                     NmPerujuk.setText(rstindakan.getString("nm_dokter"));
                     TPasien.setText(rstindakan.getString("nm_pasien"));
