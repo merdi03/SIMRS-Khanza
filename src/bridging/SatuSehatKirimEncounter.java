@@ -580,7 +580,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                         headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
                         json = "{" +
                                     "\"resourceType\": \"Encounter\"," +
-                                    "\"status\": \"finished\"," +
+                                    "\"status\": \"arrived\"," +
                                     "\"class\": {" +
                                         "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActCode\"," +
                                         "\"code\": \""+(tbObat.getValueAt(i,13).toString().equals("Ralan")?"AMB":"IMP")+"\"," +
@@ -622,7 +622,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                     "]," +
                                     "\"statusHistory\": [" +
                                         "{" +
-                                            "\"status\": \"finished\"," +
+                                            "\"status\": \"arrived\"," +
                                             "\"period\": {" +
                                                 "\"start\": \""+tbObat.getValueAt(i,1).toString()+"\"," +
                                                 "\"end\": \""+tbObat.getValueAt(i,14).toString()+"\"" +
@@ -651,6 +651,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                 tbObat.getValueAt(i,2).toString(),response.asText()
                             })==true){
                                 tbObat.setValueAt(response.asText(),i,15);
+                                tbObat.setValueAt(false,i,0);
                             }
                         }
                     }catch(Exception e){
@@ -694,7 +695,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                             "\"value\": \""+tbObat.getValueAt(i,2).toString()+"\"" +
                                         "}" +
                                     "]," +
-                                    "\"status\": \"finished\"," +
+                                    "\"status\": \"arrived\"," +
                                     "\"class\": {" +
                                         "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActCode\"," +
                                         "\"code\": \""+(tbObat.getValueAt(i,11).toString().equals("Ralan")?"AMB":"IMP")+"\"," +
@@ -736,7 +737,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                     "]," +
                                     "\"statusHistory\": [" +
                                         "{" +
-                                            "\"status\": \"finished\"," +
+                                            "\"status\": \"arrived\"," +
                                             "\"period\": {" +
                                                 "\"start\": \""+tbObat.getValueAt(i,1).toString()+"\"," +
                                                 "\"end\": \""+tbObat.getValueAt(i,14).toString()+"\"" +
@@ -752,6 +753,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                         requestEntity = new HttpEntity(json,headers);
                         json=api.getRest().exchange(link+"/Encounter/"+tbObat.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                         System.out.println("Result JSON : "+json);
+                        tbObat.setValueAt(false,i,0);
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -831,7 +833,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                    "where nota_jalan.tanggal between ? and ? "+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.nama like ? or poliklinik.nm_poli like ? or "+
-                   "reg_periksa.stts like ? or reg_periksa.status_lanjut like ?)")+" order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg");
+                   "reg_periksa.stts like ? or reg_periksa.status_lanjut like ?)"));
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -874,7 +876,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                    "where nota_inap.tanggal between ? and ? "+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.nama like ? or poliklinik.nm_poli like ? or "+
-                   "reg_periksa.stts like ? or reg_periksa.status_lanjut like ?)")+" order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg");
+                   "reg_periksa.stts like ? or reg_periksa.status_lanjut like ?)"));
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));

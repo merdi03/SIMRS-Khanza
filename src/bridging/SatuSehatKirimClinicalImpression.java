@@ -601,7 +601,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                         json = "{" +
                                     "\"resourceType\": \"ClinicalImpression\"," +
                                     "\"status\": \"completed\"," +
-                                    "\"description\" : \""+tbObat.getValueAt(i,10).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>") +"\"," +
+                                    "\"description\" : \""+tbObat.getValueAt(i,10).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ") +"\"," +
                                     "\"subject\" : {"+
                                        "\"reference\" : \"Patient/"+idpasien+"\","+
                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\""+
@@ -615,7 +615,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                                     "\"assessor\" : {"+
                                       "\"reference\" : \"Practitioner/"+iddokter+"\""+
                                     "},"+
-                                    "\"summary\" : \""+tbObat.getValueAt(i,11).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\","+
+                                    "\"summary\" : \""+tbObat.getValueAt(i,11).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\","+
                                     "\"finding\": [" +
                                         "{" +
                                             "\"itemCodeableConcept\": {"+
@@ -656,6 +656,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                                 tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,14).toString(),tbObat.getValueAt(i,15).toString(),tbObat.getValueAt(i,7).toString(),response.asText()
                             })==true){
                                 tbObat.setValueAt(response.asText(),i,19);
+                                tbObat.setValueAt(false,i,0);
                             }
                         }
                     }catch(Exception e){
@@ -694,7 +695,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                                     "\"resourceType\": \"ClinicalImpression\"," +
                                     "\"id\": \""+tbObat.getValueAt(i,19).toString()+"\"," +
                                     "\"status\": \"completed\"," +
-                                    "\"description\" : \""+tbObat.getValueAt(i,10).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\"," +
+                                    "\"description\" : \""+tbObat.getValueAt(i,10).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\"," +
                                     "\"subject\" : {"+
                                        "\"reference\" : \"Patient/"+idpasien+"\","+
                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\""+
@@ -708,7 +709,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                                     "\"assessor\" : {"+
                                       "\"reference\" : \"Practitioner/"+iddokter+"\""+
                                     "},"+
-                                    "\"summary\" : \""+tbObat.getValueAt(i,11).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"\","+
+                                    "\"summary\" : \""+tbObat.getValueAt(i,11).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\","+
                                     "\"finding\": [" +
                                         "{" +
                                             "\"itemCodeableConcept\": {"+
@@ -742,6 +743,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                         requestEntity = new HttpEntity(json,headers);
                         json=api.getRest().exchange(link+"/ClinicalImpression/"+tbObat.getValueAt(i,19).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                         System.out.println("Result JSON : "+json);
+                        tbObat.setValueAt(false,i,0);
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -834,8 +836,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                    "and nota_jalan.tanggal between ? and ? "+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)")+" order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
-                   "reg_periksa.no_rawat,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat");
+                   "reg_periksa.stts like ?)"));
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -887,7 +888,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                    "and satu_sehat_clinicalimpression.status='Ranap' where pemeriksaan_ranap.penilaian<>'' and nota_inap.tanggal between ? and ? "+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)")+" order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat");
+                   "reg_periksa.stts like ?)"));
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));

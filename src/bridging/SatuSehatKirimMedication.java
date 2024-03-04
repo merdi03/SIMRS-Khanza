@@ -54,7 +54,6 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
-    private SatuSehatCekNIK cekViaSatuSehat=new SatuSehatCekNIK();   
     private StringBuilder htmlContent;   
     
     /** Creates new form DlgKamar
@@ -548,7 +547,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
 
     private void BtnKirimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimActionPerformed
         for(i=0;i<tbObat.getRowCount();i++){
-            if(tbObat.getValueAt(i,0).toString().equals("true")&&(!tbObat.getValueAt(i,9).toString().equals(""))){
+            if(tbObat.getValueAt(i,0).toString().equals("true")&&tbObat.getValueAt(i,9).toString().equals("")){
                 try {
                     try{
                         headers = new HttpHeaders();
@@ -614,6 +613,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
                                 tbObat.getValueAt(i,3).toString(),response.asText()
                             })==true){
                                 tbObat.setValueAt(response.asText(),i,9);
+                                tbObat.setValueAt(false,i,0);
                             }
                         }
                     }catch(Exception e){
@@ -640,7 +640,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
 
     private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
         for(i=0;i<tbObat.getRowCount();i++){
-            if(tbObat.getValueAt(i,0).toString().equals("true")&&(!tbObat.getValueAt(i,5).toString().equals(""))&&(!tbObat.getValueAt(i,8).toString().equals(""))&&(!tbObat.getValueAt(i,28).toString().equals(""))){
+            if(tbObat.getValueAt(i,0).toString().equals("true")&&(!tbObat.getValueAt(i,9).toString().equals(""))){
                 try {
                     try{
                         headers = new HttpHeaders();
@@ -700,6 +700,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
                         requestEntity = new HttpEntity(json,headers);
                         json=api.getRest().exchange(link+"/Medication/"+tbObat.getValueAt(i,9).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                         System.out.println("Result JSON : "+json);
+                        tbObat.setValueAt(false,i,0);
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -777,8 +778,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
                    "from satu_sehat_mapping_obat inner join databarang on satu_sehat_mapping_obat.kode_brng=databarang.kode_brng "+
                    "left join satu_sehat_medication on satu_sehat_medication.kode_brng=satu_sehat_mapping_obat.kode_brng "+
                    (TCari.getText().equals("")?"":"where (satu_sehat_mapping_obat.obat_code like ? or satu_sehat_mapping_obat.kode_brng like ? or "+
-                   "satu_sehat_mapping_obat.obat_display like ? or satu_sehat_mapping_obat.form_code like ? or satu_sehat_mapping_obat.form_display like ?) ")+
-                   "order by satu_sehat_mapping_obat.obat_display");
+                   "satu_sehat_mapping_obat.obat_display like ? or satu_sehat_mapping_obat.form_code like ? or satu_sehat_mapping_obat.form_display like ?) "));
             try {
                 if(!TCari.getText().equals("")){
                     ps.setString(1,"%"+TCari.getText()+"%");

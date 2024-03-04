@@ -352,8 +352,12 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkAsuhanGizi = new widget.CekBox();
         chkHasilPemeriksaanUSG = new widget.CekBox();
         chkHasilPemeriksaanUSGUrologi = new widget.CekBox();
+        chkHasilPemeriksaanUSGNeonatus = new widget.CekBox();
         chkHasilPemeriksaanUSGGynecologi = new widget.CekBox();
         chkHasilPemeriksaanEKG = new widget.CekBox();
+        chkHasilPemeriksaanEndoskopiFaringLaring = new widget.CekBox();
+        chkHasilPemeriksaanEndoskopiHidung = new widget.CekBox();
+        chkHasilPemeriksaanEndoskopiTelinga = new widget.CekBox();
         chkCatatanPersalinan = new widget.CekBox();
         chkDokumentasiTindakanESWL = new widget.CekBox();
         chkPerencanaanPemulangan = new widget.CekBox();
@@ -642,7 +646,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         FormMenu.setBackground(new java.awt.Color(255, 255, 255));
         FormMenu.setBorder(null);
         FormMenu.setName("FormMenu"); // NOI18N
-        FormMenu.setPreferredSize(new java.awt.Dimension(255, 2950));
+        FormMenu.setPreferredSize(new java.awt.Dimension(255, 3075));
         FormMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 1, 1));
 
         chkSemua.setSelected(true);
@@ -1330,6 +1334,14 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkHasilPemeriksaanUSGUrologi.setPreferredSize(new java.awt.Dimension(245, 22));
         FormMenu.add(chkHasilPemeriksaanUSGUrologi);
 
+        chkHasilPemeriksaanUSGNeonatus.setSelected(true);
+        chkHasilPemeriksaanUSGNeonatus.setText("Hasil USG Neonatus");
+        chkHasilPemeriksaanUSGNeonatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        chkHasilPemeriksaanUSGNeonatus.setName("chkHasilPemeriksaanUSGNeonatus"); // NOI18N
+        chkHasilPemeriksaanUSGNeonatus.setOpaque(false);
+        chkHasilPemeriksaanUSGNeonatus.setPreferredSize(new java.awt.Dimension(245, 22));
+        FormMenu.add(chkHasilPemeriksaanUSGNeonatus);
+
         chkHasilPemeriksaanUSGGynecologi.setSelected(true);
         chkHasilPemeriksaanUSGGynecologi.setText("Hasil USG Gynecologi");
         chkHasilPemeriksaanUSGGynecologi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1345,6 +1357,30 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkHasilPemeriksaanEKG.setOpaque(false);
         chkHasilPemeriksaanEKG.setPreferredSize(new java.awt.Dimension(245, 22));
         FormMenu.add(chkHasilPemeriksaanEKG);
+
+        chkHasilPemeriksaanEndoskopiFaringLaring.setSelected(true);
+        chkHasilPemeriksaanEndoskopiFaringLaring.setText("Hasil Pemeriksaan Endoskopi Faring/Laring");
+        chkHasilPemeriksaanEndoskopiFaringLaring.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        chkHasilPemeriksaanEndoskopiFaringLaring.setName("chkHasilPemeriksaanEndoskopiFaringLaring"); // NOI18N
+        chkHasilPemeriksaanEndoskopiFaringLaring.setOpaque(false);
+        chkHasilPemeriksaanEndoskopiFaringLaring.setPreferredSize(new java.awt.Dimension(245, 22));
+        FormMenu.add(chkHasilPemeriksaanEndoskopiFaringLaring);
+
+        chkHasilPemeriksaanEndoskopiHidung.setSelected(true);
+        chkHasilPemeriksaanEndoskopiHidung.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        chkHasilPemeriksaanEndoskopiHidung.setLabel("Hasil Pemeriksaan Endoskopi Hidung");
+        chkHasilPemeriksaanEndoskopiHidung.setName("chkHasilPemeriksaanEndoskopiHidung"); // NOI18N
+        chkHasilPemeriksaanEndoskopiHidung.setOpaque(false);
+        chkHasilPemeriksaanEndoskopiHidung.setPreferredSize(new java.awt.Dimension(245, 22));
+        FormMenu.add(chkHasilPemeriksaanEndoskopiHidung);
+
+        chkHasilPemeriksaanEndoskopiTelinga.setSelected(true);
+        chkHasilPemeriksaanEndoskopiTelinga.setText("Hasil Pemeriksaan Endoskopi Telinga");
+        chkHasilPemeriksaanEndoskopiTelinga.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        chkHasilPemeriksaanEndoskopiTelinga.setName("chkHasilPemeriksaanEndoskopiTelinga"); // NOI18N
+        chkHasilPemeriksaanEndoskopiTelinga.setOpaque(false);
+        chkHasilPemeriksaanEndoskopiTelinga.setPreferredSize(new java.awt.Dimension(245, 22));
+        FormMenu.add(chkHasilPemeriksaanEndoskopiTelinga);
 
         chkCatatanPersalinan.setSelected(true);
         chkCatatanPersalinan.setText("Catatan Persalinan");
@@ -2198,6 +2234,10 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             chkHasilPemeriksaanUSGGynecologi.setSelected(true);
             chkHasilPemeriksaanEKG.setSelected(true);
             chkPenatalaksanaanTerapiOkupasi.setSelected(true);
+            chkHasilPemeriksaanUSGNeonatus.setSelected(true);
+            chkHasilPemeriksaanEndoskopiFaringLaring.setSelected(true);
+            chkHasilPemeriksaanEndoskopiHidung.setSelected(true);
+            chkHasilPemeriksaanEndoskopiTelinga.setSelected(true);
         }else{
             chkTriase.setSelected(false);
             chkAsuhanKeperawatanRalan.setSelected(false);
@@ -2327,6 +2367,10 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             chkHasilPemeriksaanUSGGynecologi.setSelected(false);
             chkHasilPemeriksaanEKG.setSelected(false);
             chkPenatalaksanaanTerapiOkupasi.setSelected(false);
+            chkHasilPemeriksaanUSGNeonatus.setSelected(false);
+            chkHasilPemeriksaanEndoskopiFaringLaring.setSelected(false);
+            chkHasilPemeriksaanEndoskopiHidung.setSelected(false);
+            chkHasilPemeriksaanEndoskopiTelinga.setSelected(false);
         }
     }//GEN-LAST:event_chkSemuaItemStateChanged
 
@@ -2472,8 +2516,12 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.CekBox chkEdukasiPasienTerintegrasiRawatJalan;
     private widget.CekBox chkFollowUpDBD;
     private widget.CekBox chkHasilPemeriksaanEKG;
+    private widget.CekBox chkHasilPemeriksaanEndoskopiFaringLaring;
+    private widget.CekBox chkHasilPemeriksaanEndoskopiHidung;
+    private widget.CekBox chkHasilPemeriksaanEndoskopiTelinga;
     private widget.CekBox chkHasilPemeriksaanUSG;
     private widget.CekBox chkHasilPemeriksaanUSGGynecologi;
+    private widget.CekBox chkHasilPemeriksaanUSGNeonatus;
     private widget.CekBox chkHasilPemeriksaanUSGUrologi;
     private widget.CekBox chkHemodialisa;
     private widget.CekBox chkKonselingFarmasi;
@@ -3079,10 +3127,18 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     menampilkanHasilPemeriksaanUSG(rs.getString("no_rawat"));
                     //menampilkan hasil pemeriksaan USG Urologi
                     menampilkanHasilPemeriksaanUSGUrologi(rs.getString("no_rawat"));
+                    //menampilkan hasil pemeriksaan USG Neonatus
+                    menampilkanHasilPemeriksaanUSGNeonatus(rs.getString("no_rawat"));
                     //menampilkan hasil pemeriksaan USG Gynecologi
                     menampilkanHasilPemeriksaanUSGGynocologi(rs.getString("no_rawat"));
                     //menampilkan hasil pemeriksaan EKG
                     menampilkanHasilPemeriksaanEKG(rs.getString("no_rawat"));
+                    //menampilkan hasil Endoskopi Laring Faring
+                    menampilkanHasilEndoskopiFaringLaring(rs.getString("no_rawat"));
+                    //menampilkan hasil Endoskopi Hidung
+                    menampilkanHasilEndoskopiHidung(rs.getString("no_rawat"));
+                    //menampilkan hasil Endoskopi Telinga
+                    menampilkanHasilEndoskopiTelinga(rs.getString("no_rawat"));
                     //menampilkan catatan persalinan
                     menampilkanCatatanPersalinan(rs.getString("no_rawat"));
                     //menampilkan dokumentasi tindakan ESWL
@@ -12575,7 +12631,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             "hasil_pemeriksaan_usg.indek_cairan_ketuban,hasil_pemeriksaan_usg.kelainan_kongenital,hasil_pemeriksaan_usg.peluang_sex,"+
                             "hasil_pemeriksaan_usg.kesimpulan,hasil_pemeriksaan_usg.tanggal "+
                             "from hasil_pemeriksaan_usg inner join dokter on hasil_pemeriksaan_usg.kd_dokter=dokter.kd_dokter "+
-                            "where hasil_pemeriksaan_usg.no_rawat='"+norawat+"' order by hasil_pemeriksaan_usg.tanggal").executeQuery();
+                            "where hasil_pemeriksaan_usg.no_rawat='"+norawat+"'").executeQuery();
                     if(rs2.next()){
                         htmlContent.append(
                           "<tr class='isi'>"+ 
@@ -15049,11 +15105,19 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                         rs2.beforeFirst();
                         w=1;
                         while(rs2.next()){
-                            htmlContent.append(
-                                 "<tr>"+
-                                    "<td valign='top' align='center'>"+w+"</td>"+
-                                    "<td valign='top'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/berkasrawat/"+rs2.getString("lokasi_file")+"'>"+rs2.getString("nama")+"_"+rs2.getString("lokasi_file").replaceAll("pages/upload/","")+"</a></td>"+
-                                 "</tr>"); 
+                            if(rs2.getString("lokasi_file").toLowerCase().contains(".jpg")||rs2.getString("lokasi_file").toLowerCase().contains(".jpeg")){
+                                htmlContent.append(
+                                     "<tr>"+
+                                        "<td valign='top' align='center'>"+w+"</td>"+
+                                        "<td valign='top' align='center'>"+rs2.getString("nama")+"<br><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/berkasrawat/"+rs2.getString("lokasi_file")+"'><img alt='Berkas Digital' src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/berkasrawat/"+rs2.getString("lokasi_file")+"' width='450' height='450'/></a></td>"+
+                                     "</tr>"); 
+                            }else{
+                                htmlContent.append(
+                                     "<tr>"+
+                                        "<td valign='top' align='center'>"+w+"</td>"+
+                                        "<td valign='top'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/berkasrawat/"+rs2.getString("lokasi_file")+"'>"+rs2.getString("nama")+"_"+rs2.getString("lokasi_file").replaceAll("pages/upload/","")+"</a></td>"+
+                                     "</tr>"); 
+                            }
                             w++;
                         }
                         htmlContent.append(
@@ -22834,7 +22898,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             "hasil_pemeriksaan_usg_urologi.kiriman_dari,hasil_pemeriksaan_usg_urologi.ginjal_kanan,hasil_pemeriksaan_usg_urologi.ginjal_kiri,hasil_pemeriksaan_usg_urologi.vesica_urinaria,"+
                             "hasil_pemeriksaan_usg_urologi.tambahan,hasil_pemeriksaan_usg_urologi.tanggal "+
                             "from hasil_pemeriksaan_usg_urologi inner join dokter on hasil_pemeriksaan_usg_urologi.kd_dokter=dokter.kd_dokter "+
-                            "where hasil_pemeriksaan_usg_urologi.no_rawat='"+norawat+"' order by hasil_pemeriksaan_usg_urologi.tanggal").executeQuery();
+                            "where hasil_pemeriksaan_usg_urologi.no_rawat='"+norawat+"'").executeQuery();
                     if(rs2.next()){
                         htmlContent.append(
                           "<tr class='isi'>"+ 
@@ -22922,7 +22986,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     
     private void menampilkanHasilPemeriksaanUSGGynocologi(String norawat) {
         try {
-            if(chkHasilPemeriksaanUSGUrologi.isSelected()==true){
+            if(chkHasilPemeriksaanUSGGynecologi.isSelected()==true){
                 try {
                     rs2=koneksi.prepareStatement(
                             "select hasil_pemeriksaan_usg_gynecologi.tanggal,hasil_pemeriksaan_usg_gynecologi.kd_dokter,dokter.nm_dokter,hasil_pemeriksaan_usg_gynecologi.diagnosa_klinis,hasil_pemeriksaan_usg_gynecologi.kiriman_dari,"+
@@ -22930,7 +22994,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             "hasil_pemeriksaan_usg_gynecologi.doppler,hasil_pemeriksaan_usg_gynecologi.kesimpulan from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                             "inner join hasil_pemeriksaan_usg_gynecologi on reg_periksa.no_rawat=hasil_pemeriksaan_usg_gynecologi.no_rawat "+
                             "inner join dokter on hasil_pemeriksaan_usg_gynecologi.kd_dokter=dokter.kd_dokter "+
-                            "where hasil_pemeriksaan_usg_gynecologi.no_rawat='"+norawat+"' order by hasil_pemeriksaan_usg_gynecologi.tanggal").executeQuery();
+                            "where hasil_pemeriksaan_usg_gynecologi.no_rawat='"+norawat+"'").executeQuery();
                     if(rs2.next()){
                         htmlContent.append(
                           "<tr class='isi'>"+ 
@@ -23234,6 +23298,567 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             }
         } catch (Exception e) {
             System.out.println("Notif Penatalaksanaan Terapi Okupasi : "+e);
+        }
+    }
+    
+    private void menampilkanHasilPemeriksaanUSGNeonatus(String norawat) {
+        try {
+            if(chkHasilPemeriksaanUSGNeonatus.isSelected()==true){
+                try {
+                    rs2=koneksi.prepareStatement(
+                            "select hasil_pemeriksaan_usg_neonatus.tanggal,hasil_pemeriksaan_usg_neonatus.kd_dokter,dokter.nm_dokter,hasil_pemeriksaan_usg_neonatus.diagnosa_klinis,"+
+                            "hasil_pemeriksaan_usg_neonatus.kiriman_dari,hasil_pemeriksaan_usg_neonatus.ventrikal_sinistra,hasil_pemeriksaan_usg_neonatus.ventrikal_dextra,hasil_pemeriksaan_usg_neonatus.kesan,"+
+                            "hasil_pemeriksaan_usg_neonatus.kesimpulan,hasil_pemeriksaan_usg_neonatus.saran from hasil_pemeriksaan_usg_neonatus inner join dokter on hasil_pemeriksaan_usg_neonatus.kd_dokter=dokter.kd_dokter "+
+                            "where hasil_pemeriksaan_usg_neonatus.no_rawat='"+norawat+"'").executeQuery();
+                    if(rs2.next()){
+                        htmlContent.append(
+                          "<tr class='isi'>"+ 
+                            "<td valign='top' width='2%'></td>"+        
+                            "<td valign='top' width='18%'>Hasil USG Kepala Neonatus</td>"+
+                            "<td valign='top' width='1%' align='center'>:</td>"+
+                            "<td valign='top' width='79%'>"+
+                              "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                        );
+                        rs2.beforeFirst();
+                        while(rs2.next()){
+                            file=Sequel.cariIsi("select hasil_pemeriksaan_usg_neonatus_gambar.photo from hasil_pemeriksaan_usg_neonatus_gambar where hasil_pemeriksaan_usg_neonatus_gambar.no_rawat='"+rs.getString("no_rawat")+"'");
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "YANG MELAKUKAN PENGKAJIAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Tanggal : "+rs2.getString("tanggal")+"</td>"+
+                                              "<td width='50%' border='0'>Dokter : "+rs2.getString("kd_dokter")+" "+rs2.getString("nm_dokter")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Kiriman Dari : "+rs2.getString("kiriman_dari")+"</td>"+
+                                              "<td width='50%' border='0'>Diagnosa Klinis : "+rs2.getString("diagnosa_klinis")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            ); 
+                            
+                            if(!file.equals("")){
+                                htmlContent.append(
+                                    "<tr>"+
+                                        "<td valign='top'>"+
+                                           "PHOTO USG"+  
+                                           "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                              "<tr>"+
+                                                  "<td valign='top' border='0' width='100%' align='center'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusgneonatus/"+file+"'><img alt='Gambar USG' src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusgneonatus/"+file+"' width='450' height='450'/></a></td>"+
+                                              "</tr>"+
+                                           "</table>"+
+                                        "</td>"+
+                                    "</tr>"
+                                );
+                            }
+                            
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "PEMERIKSAAN SAGITAL & CORONAL :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Ventrikel Sinistra : "+rs2.getString("ventrikal_sinistra").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Ventrikel Dextra : "+rs2.getString("ventrikal_dextra").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Kesan : "+rs2.getString("kesan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Kesimpulan : "+rs2.getString("kesimpulan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Saran : "+rs2.getString("saran").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            );
+                        }
+                        htmlContent.append(
+                              "</table>"+
+                            "</td>"+
+                          "</tr>");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rs2!=null){
+                        rs2.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Hasil Pemeriksaan USG Neonatus : "+e);
+        }
+    }
+    
+    private void menampilkanHasilEndoskopiFaringLaring(String norawat) {
+        try {
+            if(chkHasilPemeriksaanEndoskopiFaringLaring.isSelected()==true){
+                try {
+                    rs2=koneksi.prepareStatement(
+                            "select hasil_endoskopi_faring_laring.tanggal,hasil_endoskopi_faring_laring.kd_dokter,dokter.nm_dokter,hasil_endoskopi_faring_laring.diagnosa_klinis,hasil_endoskopi_faring_laring.kiriman_dari,"+
+                            "hasil_endoskopi_faring_laring.faring_uvula,hasil_endoskopi_faring_laring.faring_arkus_faring,hasil_endoskopi_faring_laring.faring_dinding_posterior,"+
+                            "hasil_endoskopi_faring_laring.faring_tonsil,hasil_endoskopi_faring_laring.laring_tonsil_lingual,hasil_endoskopi_faring_laring.laring_valekula,"+
+                            "hasil_endoskopi_faring_laring.laring_sinus_piriformis,hasil_endoskopi_faring_laring.laring_epiglotis,hasil_endoskopi_faring_laring.laring_arytenoid,"+
+                            "hasil_endoskopi_faring_laring.laring_plika_ventrikularis,hasil_endoskopi_faring_laring.laring_pita_suara,hasil_endoskopi_faring_laring.laring_rima_vocalis,"+
+                            "hasil_endoskopi_faring_laring.laring_lainlain,hasil_endoskopi_faring_laring.kesan,hasil_endoskopi_faring_laring.saran "+
+                            "from hasil_endoskopi_faring_laring inner join dokter on hasil_endoskopi_faring_laring.kd_dokter=dokter.kd_dokter where hasil_endoskopi_faring_laring.no_rawat='"+norawat+"'").executeQuery();
+                    if(rs2.next()){
+                        htmlContent.append(
+                          "<tr class='isi'>"+ 
+                            "<td valign='top' width='2%'></td>"+        
+                            "<td valign='top' width='18%'>Hasil Pemeriksaan Tele Endoskopi Faring/Tele Laringoskopi</td>"+
+                            "<td valign='top' width='1%' align='center'>:</td>"+
+                            "<td valign='top' width='79%'>"+
+                              "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                        );
+                        rs2.beforeFirst();
+                        while(rs2.next()){
+                            file=Sequel.cariIsi("select hasil_endoskopi_faring_laring_gambar.photo from hasil_endoskopi_faring_laring_gambar where hasil_endoskopi_faring_laring_gambar.no_rawat='"+rs.getString("no_rawat")+"'");
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "YANG MELAKUKAN PENGKAJIAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Tanggal : "+rs2.getString("tanggal")+"</td>"+
+                                              "<td width='50%' border='0'>Dokter : "+rs2.getString("kd_dokter")+" "+rs2.getString("nm_dokter")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Kiriman Dari : "+rs2.getString("kiriman_dari")+"</td>"+
+                                              "<td width='50%' border='0'>Diagnosa Klinis : "+rs2.getString("diagnosa_klinis")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            ); 
+                            
+                            if(!file.equals("")){
+                                htmlContent.append(
+                                    "<tr>"+
+                                        "<td valign='top'>"+
+                                           "PHOTO ENDOSKOPI"+  
+                                           "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                              "<tr>"+
+                                                  "<td valign='top' border='0' width='100%' align='center'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopifaringlaring/"+file+"'><img alt='Gambar Endoskopi' src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopifaringlaring/"+file+"' width='450' height='450'/></a></td>"+
+                                              "</tr>"+
+                                           "</table>"+
+                                        "</td>"+
+                                    "</tr>"
+                                );
+                            }
+                            
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "FARING :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Dinding Posterior : "+rs2.getString("faring_dinding_posterior")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Uvula : "+rs2.getString("faring_uvula")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Arkus Faring : "+rs2.getString("faring_arkus_faring")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Tonsil : "+rs2.getString("faring_tonsil")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "LARING :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Tonsil Lingual : "+rs2.getString("laring_tonsil_lingual")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Valekula : "+rs2.getString("laring_valekula")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Sinus Piriformis : "+rs2.getString("laring_sinus_piriformis")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Epiglotis : "+rs2.getString("laring_epiglotis")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Plika Ventrikularis : "+rs2.getString("laring_plika_ventrikularis")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Arytenoid : "+rs2.getString("laring_arytenoid")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Rima Vocalis : "+rs2.getString("laring_rima_vocalis")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Pita Suara : "+rs2.getString("laring_pita_suara")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Lain-lain : "+rs2.getString("laring_lainlain")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "KESAN :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>"+rs2.getString("kesan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "SARAN :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>"+rs2.getString("saran").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            );
+                        }
+                        htmlContent.append(
+                              "</table>"+
+                            "</td>"+
+                          "</tr>");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rs2!=null){
+                        rs2.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Hasil Pemeriksaan Endoskopi Faring/Laring : "+e);
+        }
+    }
+    
+    private void menampilkanHasilEndoskopiHidung(String norawat) {
+        try {
+            if(chkHasilPemeriksaanEndoskopiHidung.isSelected()==true){
+                try {
+                    rs2=koneksi.prepareStatement(
+                            "select hasil_endoskopi_hidung.tanggal,hasil_endoskopi_hidung.kd_dokter,dokter.nm_dokter,hasil_endoskopi_hidung.diagnosa_klinis,hasil_endoskopi_hidung.kiriman_dari,"+
+                            "hasil_endoskopi_hidung.kondisi_hidung_kanan,hasil_endoskopi_hidung.kondisi_hidung_kiri,hasil_endoskopi_hidung.kavum_nasi_kanan,"+
+                            "hasil_endoskopi_hidung.kavum_nasi_kiri,hasil_endoskopi_hidung.konka_inferior_kanan,hasil_endoskopi_hidung.konka_inferior_kiri,"+
+                            "hasil_endoskopi_hidung.meatus_medius_kanan,hasil_endoskopi_hidung.meatus_medius_kiri,hasil_endoskopi_hidung.septum_kanan,"+
+                            "hasil_endoskopi_hidung.septum_kiri,hasil_endoskopi_hidung.nasofaring_kanan,hasil_endoskopi_hidung.nasofaring_kiri,"+
+                            "hasil_endoskopi_hidung.lainlain_kanan,hasil_endoskopi_hidung.lainlain_kiri,hasil_endoskopi_hidung.kesimpulan "+
+                            "from hasil_endoskopi_hidung inner join dokter on hasil_endoskopi_hidung.kd_dokter=dokter.kd_dokter where hasil_endoskopi_hidung.no_rawat='"+norawat+"'").executeQuery();
+                    if(rs2.next()){
+                        htmlContent.append(
+                          "<tr class='isi'>"+ 
+                            "<td valign='top' width='2%'></td>"+        
+                            "<td valign='top' width='18%'>Hasil Pemeriksaan Tele Endoskopi Hidung</td>"+
+                            "<td valign='top' width='1%' align='center'>:</td>"+
+                            "<td valign='top' width='79%'>"+
+                              "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                        );
+                        rs2.beforeFirst();
+                        while(rs2.next()){
+                            file=Sequel.cariIsi("select hasil_endoskopi_hidung_gambar.photo from hasil_endoskopi_hidung_gambar where hasil_endoskopi_hidung_gambar.no_rawat='"+rs.getString("no_rawat")+"'");
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "YANG MELAKUKAN PENGKAJIAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Tanggal : "+rs2.getString("tanggal")+"</td>"+
+                                              "<td width='50%' border='0'>Dokter : "+rs2.getString("kd_dokter")+" "+rs2.getString("nm_dokter")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Kiriman Dari : "+rs2.getString("kiriman_dari")+"</td>"+
+                                              "<td width='50%' border='0'>Diagnosa Klinis : "+rs2.getString("diagnosa_klinis")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            ); 
+                            
+                            if(!file.equals("")){
+                                htmlContent.append(
+                                    "<tr>"+
+                                        "<td valign='top'>"+
+                                           "PHOTO ENDOSKOPI"+  
+                                           "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                              "<tr>"+
+                                                  "<td valign='top' border='0' width='100%' align='center'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopihidung/"+file+"'><img alt='Gambar Endoskopi' src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopihidung/"+file+"' width='450' height='450'/></a></td>"+
+                                              "</tr>"+
+                                           "</table>"+
+                                        "</td>"+
+                                    "</tr>"
+                                );
+                            }
+                            
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "HASIL PEMERIKSAAN NASOLARINGOSKOPI :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='30%' align='center'>Pemeriksaan</td>"+
+                                              "<td width='35%' align='center'>Kanan</td>"+
+                                              "<td width='35%' align='center'>Kiri</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>Hidung</td>"+
+                                              "<td align='center'>"+rs2.getString("kondisi_hidung_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kondisi_hidung_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Kavum Nasi</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_nasi_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_nasi_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Konka Inferior</td>"+
+                                              "<td align='center'>"+rs2.getString("konka_inferior_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("konka_inferior_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Meatus Medius</td>"+
+                                              "<td align='center'>"+rs2.getString("meatus_medius_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("meatus_medius_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Septum</td>"+
+                                              "<td align='center'>"+rs2.getString("septum_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("septum_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Nasofaring</td>"+
+                                              "<td align='center'>"+rs2.getString("nasofaring_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("nasofaring_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Lain-lain</td>"+
+                                              "<td align='center'>"+rs2.getString("lainlain_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("lainlain_kiri")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "KESIMPULAN :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' border='0'>"+rs2.getString("kesimpulan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            );
+                        }
+                        htmlContent.append(
+                              "</table>"+
+                            "</td>"+
+                          "</tr>");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rs2!=null){
+                        rs2.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Hasil Pemeriksaan Endoskopi Hidung : "+e);
+        }
+    }
+    
+    private void menampilkanHasilEndoskopiTelinga(String norawat) {
+        try {
+            if(chkHasilPemeriksaanEndoskopiTelinga.isSelected()==true){
+                try {
+                    rs2=koneksi.prepareStatement(
+                            "select hasil_endoskopi_telinga.tanggal,hasil_endoskopi_telinga.kd_dokter,dokter.nm_dokter,hasil_endoskopi_telinga.diagnosa_klinis,"+
+                            "hasil_endoskopi_telinga.kiriman_dari,hasil_endoskopi_telinga.bentuk_liang_telinga_kanan,hasil_endoskopi_telinga.bentuk_liang_telinga_kiri,"+
+                            "hasil_endoskopi_telinga.kondisi_liang_telinga_kanan,hasil_endoskopi_telinga.keterangan_kondisi_liang_telinga_kanan,"+
+                            "hasil_endoskopi_telinga.kondisi_liang_telinga_kiri,hasil_endoskopi_telinga.keterangan_kondisi_liang_telinga_kiri,"+
+                            "hasil_endoskopi_telinga.membran_timpani_intak_kanan,hasil_endoskopi_telinga.membran_timpani_intak_kiri,"+
+                            "hasil_endoskopi_telinga.membran_timpani_perforasi_kanan,hasil_endoskopi_telinga.keterangan_membran_timpani_perforasi_kanan,"+
+                            "hasil_endoskopi_telinga.membran_timpani_perforasi_kiri,hasil_endoskopi_telinga.keterangan_membran_timpani_perforasi_kiri,"+
+                            "hasil_endoskopi_telinga.kavum_timpani_mukosa_kanan,hasil_endoskopi_telinga.kavum_timpani_mukosa_kiri,"+
+                            "hasil_endoskopi_telinga.kavum_timpani_osikel_kanan,hasil_endoskopi_telinga.kavum_timpani_osikel_kiri,"+
+                            "hasil_endoskopi_telinga.kavum_timpani_isthmus_kanan,hasil_endoskopi_telinga.kavum_timpani_isthmus_kiri,"+
+                            "hasil_endoskopi_telinga.kavum_timpani_anterior_kanan,hasil_endoskopi_telinga.kavum_timpani_anterior_kiri,"+
+                            "hasil_endoskopi_telinga.kavum_timpani_posterior_kanan,hasil_endoskopi_telinga.kavum_timpani_posterior_kiri,"+
+                            "hasil_endoskopi_telinga.lainlain_kanan,hasil_endoskopi_telinga.lainlain_kiri,hasil_endoskopi_telinga.kesimpulan,"+
+                            "hasil_endoskopi_telinga.anjuran from hasil_endoskopi_telinga inner join dokter on hasil_endoskopi_telinga.kd_dokter=dokter.kd_dokter "+
+                            "where hasil_endoskopi_telinga.no_rawat='"+norawat+"'").executeQuery();
+                    if(rs2.next()){
+                        htmlContent.append(
+                          "<tr class='isi'>"+ 
+                            "<td valign='top' width='2%'></td>"+        
+                            "<td valign='top' width='18%'>Hasil Pemeriksaan Tele Endoskopi Telinga</td>"+
+                            "<td valign='top' width='1%' align='center'>:</td>"+
+                            "<td valign='top' width='79%'>"+
+                              "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                        );
+                        rs2.beforeFirst();
+                        while(rs2.next()){
+                            file=Sequel.cariIsi("select hasil_endoskopi_telinga_gambar.photo from hasil_endoskopi_telinga_gambar where hasil_endoskopi_telinga_gambar.no_rawat='"+rs.getString("no_rawat")+"'");
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "YANG MELAKUKAN PENGKAJIAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Tanggal : "+rs2.getString("tanggal")+"</td>"+
+                                              "<td width='50%' border='0'>Dokter : "+rs2.getString("kd_dokter")+" "+rs2.getString("nm_dokter")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='50%' border='0'>Kiriman Dari : "+rs2.getString("kiriman_dari")+"</td>"+
+                                              "<td width='50%' border='0'>Diagnosa Klinis : "+rs2.getString("diagnosa_klinis")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            ); 
+                            
+                            if(!file.equals("")){
+                                htmlContent.append(
+                                    "<tr>"+
+                                        "<td valign='top'>"+
+                                           "PHOTO ENDOSKOPI"+  
+                                           "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                              "<tr>"+
+                                                  "<td valign='top' border='0' width='100%' align='center'><a href='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopitelinga/"+file+"'><img alt='Gambar Endoskopi' src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanendoskopitelinga/"+file+"' width='450' height='450'/></a></td>"+
+                                              "</tr>"+
+                                           "</table>"+
+                                        "</td>"+
+                                    "</tr>"
+                                );
+                            }
+                            
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "HASIL PEMERIKSAAN MIKROSKOPIK/ENDOSKOPI TELINGA :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='30%' align='center'>Pemeriksaan</td>"+
+                                              "<td width='35%' align='center'>Kanan</td>"+
+                                              "<td width='35%' align='center'>Kiri</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>Telinga</td>"+
+                                              "<td align='center'>"+rs2.getString("bentuk_liang_telinga_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("bentuk_liang_telinga_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Liang Telinga</td>"+
+                                              "<td align='center'>"+rs2.getString("kondisi_liang_telinga_kanan")+(rs2.getString("keterangan_kondisi_liang_telinga_kanan").equals("")?"":", "+rs2.getString("keterangan_kondisi_liang_telinga_kanan"))+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kondisi_liang_telinga_kiri")+(rs2.getString("keterangan_kondisi_liang_telinga_kiri").equals("")?"":", "+rs2.getString("keterangan_kondisi_liang_telinga_kiri"))+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Membran Timpani</td>"+
+                                              "<td align='center'>&nbsp;</td>"+
+                                              "<td align='center'>&nbsp;</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Perforasi</td>"+
+                                              "<td align='center'>"+rs2.getString("membran_timpani_perforasi_kanan")+(rs2.getString("keterangan_membran_timpani_perforasi_kanan").equals("")?"":", "+rs2.getString("keterangan_membran_timpani_perforasi_kanan"))+"</td>"+
+                                              "<td align='center'>"+rs2.getString("membran_timpani_perforasi_kiri")+(rs2.getString("keterangan_membran_timpani_perforasi_kiri").equals("")?"":", "+rs2.getString("keterangan_membran_timpani_perforasi_kiri"))+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Intak</td>"+
+                                              "<td align='center'>"+rs2.getString("membran_timpani_intak_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("membran_timpani_intak_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Kavum Timpani</td>"+
+                                              "<td align='center'>&nbsp;</td>"+
+                                              "<td align='center'>&nbsp;</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Mukosa</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_mukosa_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_mukosa_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Osikel</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_osikel_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_osikel_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Isthmus</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_isthmus_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_isthmus_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Anterior</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_anterior_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_anterior_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td style='margin-left: 15px'>Posterior</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_posterior_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("kavum_timpani_posterior_kiri")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>- Lain-lain</td>"+
+                                              "<td align='center'>"+rs2.getString("lainlain_kanan")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("lainlain_kiri")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "KESIMPULAN :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' border='0'>"+rs2.getString("kesimpulan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "ANJURAN :"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' border='0'>"+rs2.getString("anjuran").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            );
+                        }
+                        htmlContent.append(
+                              "</table>"+
+                            "</td>"+
+                          "</tr>");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rs2!=null){
+                        rs2.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Hasil Pemeriksaan Endoskopi Telinga : "+e);
         }
     }
 }

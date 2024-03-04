@@ -220,7 +220,10 @@ public final class akses {
             catatan_keperawatan_ralan=false,catatan_persalinan=false,skor_aldrette_pasca_anestesi=false,skor_steward_pasca_anestesi=false,skor_bromage_pasca_anestesi=false,
             penilaian_pre_induksi=false,hasil_usg_urologi=false,hasil_usg_gynecologi=false,hasil_pemeriksaan_ekg=false,hapus_edit_sep_bpjs=false,satu_sehat_kirim_diet=false,
             satu_sehat_mapping_obat=false,dapur_ringkasan_pembelian=false,satu_sehat_kirim_medication=false,satu_sehat_kirim_medicationrequest=false,
-            penatalaksanaan_terapi_okupasi=false;
+            penatalaksanaan_terapi_okupasi=false,satu_sehat_kirim_medicationdispense=false,hasil_usg_neonatus=false,hasil_endoskopi_faring_laring=false,
+            satu_sehat_mapping_radiologi=false,satu_sehat_kirim_servicerequest_radiologi=false,hasil_endoskopi_hidung=false,satu_sehat_kirim_specimen_radiologi=false,
+            master_masalah_keperawatan_neonatus=false,master_rencana_keperawatan_neonatus=false,penilaian_awal_keperawatan_ranap_neonatus=false,
+            satu_sehat_kirim_observation_radiologi=false,satu_sehat_kirim_diagnosticreport_radiologi=false,hasil_endoskopi_telinga=false;
     
     public static void setData(String user, String pass) {
         try {        
@@ -1249,6 +1252,19 @@ public final class akses {
                         akses.satu_sehat_kirim_medication=true;
                         akses.satu_sehat_kirim_medicationrequest=true;
                         akses.penatalaksanaan_terapi_okupasi=true;
+                        akses.satu_sehat_kirim_medicationdispense=true;
+                        akses.hasil_usg_neonatus=true;
+                        akses.hasil_endoskopi_faring_laring=true;
+                        akses.satu_sehat_mapping_radiologi=true;
+                        akses.satu_sehat_kirim_servicerequest_radiologi=true;
+                        akses.hasil_endoskopi_hidung=true;
+                        akses.satu_sehat_kirim_specimen_radiologi=true;
+                        akses.master_masalah_keperawatan_neonatus=true;
+                        akses.master_rencana_keperawatan_neonatus=true;
+                        akses.penilaian_awal_keperawatan_ranap_neonatus=true;
+                        akses.satu_sehat_kirim_observation_radiologi=true;
+                        akses.satu_sehat_kirim_diagnosticreport_radiologi=true;
+                        akses.hasil_endoskopi_telinga=true;
                     }else if(rs2.getRow()>=1){   
                         rs2.beforeFirst();
                         rs2.next();
@@ -2261,6 +2277,19 @@ public final class akses {
                         akses.satu_sehat_kirim_medication=rs2.getBoolean("satu_sehat_kirim_medication");
                         akses.satu_sehat_kirim_medicationrequest=rs2.getBoolean("satu_sehat_kirim_medicationrequest");
                         akses.penatalaksanaan_terapi_okupasi=rs2.getBoolean("penatalaksanaan_terapi_okupasi");
+                        akses.satu_sehat_kirim_medicationdispense=rs2.getBoolean("satu_sehat_kirim_medicationdispense");
+                        akses.hasil_usg_neonatus=rs2.getBoolean("hasil_usg_neonatus");
+                        akses.hasil_endoskopi_faring_laring=rs2.getBoolean("hasil_endoskopi_faring_laring");
+                        akses.satu_sehat_mapping_radiologi=rs2.getBoolean("satu_sehat_mapping_radiologi");
+                        akses.satu_sehat_kirim_servicerequest_radiologi=rs2.getBoolean("satu_sehat_kirim_servicerequest_radiologi");
+                        akses.hasil_endoskopi_hidung=rs2.getBoolean("hasil_endoskopi_hidung");
+                        akses.satu_sehat_kirim_specimen_radiologi=rs2.getBoolean("satu_sehat_kirim_specimen_radiologi");
+                        akses.master_masalah_keperawatan_neonatus=rs2.getBoolean("master_masalah_keperawatan_neonatus");
+                        akses.master_rencana_keperawatan_neonatus=rs2.getBoolean("master_rencana_keperawatan_neonatus");
+                        akses.penilaian_awal_keperawatan_ranap_neonatus=rs2.getBoolean("penilaian_awal_keperawatan_ranap_neonatus");
+                        akses.satu_sehat_kirim_observation_radiologi=rs2.getBoolean("satu_sehat_kirim_observation_radiologi");
+                        akses.satu_sehat_kirim_diagnosticreport_radiologi=rs2.getBoolean("satu_sehat_kirim_diagnosticreport_radiologi");
+                        akses.hasil_endoskopi_telinga=rs2.getBoolean("hasil_endoskopi_telinga");
                     }else if((rs.getRow()==0)&&(rs2.getRow()==0)){
                         akses.kode="";                  
                         akses.penyakit= false;
@@ -3271,6 +3300,19 @@ public final class akses {
                         akses.satu_sehat_kirim_medication=false;
                         akses.satu_sehat_kirim_medicationrequest=false;
                         akses.penatalaksanaan_terapi_okupasi=false;
+                        akses.satu_sehat_kirim_medicationdispense=false;
+                        akses.hasil_usg_neonatus=false;
+                        akses.hasil_endoskopi_faring_laring=false;
+                        akses.satu_sehat_mapping_radiologi=false;
+                        akses.satu_sehat_kirim_servicerequest_radiologi=false;
+                        akses.hasil_endoskopi_hidung=false;
+                        akses.satu_sehat_kirim_specimen_radiologi=false;
+                        akses.master_masalah_keperawatan_neonatus=false;
+                        akses.master_rencana_keperawatan_neonatus=false;
+                        akses.penilaian_awal_keperawatan_ranap_neonatus=false;
+                        akses.satu_sehat_kirim_observation_radiologi=false;
+                        akses.satu_sehat_kirim_diagnosticreport_radiologi=false;
+                        akses.hasil_endoskopi_telinga=false;
                     }
                 } catch (Exception e) {
                     System.out.println("Notifikasi : "+e);
@@ -4304,6 +4346,19 @@ public final class akses {
         akses.satu_sehat_kirim_medication=false;
         akses.satu_sehat_kirim_medicationrequest=false;
         akses.penatalaksanaan_terapi_okupasi=false;
+        akses.satu_sehat_kirim_medicationdispense=false;
+        akses.hasil_usg_neonatus=false;
+        akses.hasil_endoskopi_faring_laring=false;
+        akses.satu_sehat_mapping_radiologi=false;
+        akses.satu_sehat_kirim_servicerequest_radiologi=false;
+        akses.hasil_endoskopi_hidung=false;
+        akses.satu_sehat_kirim_specimen_radiologi=false;
+        akses.master_masalah_keperawatan_neonatus=false;
+        akses.master_rencana_keperawatan_neonatus=false;
+        akses.penilaian_awal_keperawatan_ranap_neonatus=false;
+        akses.satu_sehat_kirim_observation_radiologi=false;
+        akses.satu_sehat_kirim_diagnosticreport_radiologi=false;
+        akses.hasil_endoskopi_telinga=false;
     }
     
     public static int getjml1() {return akses.jml1;}    
@@ -5355,4 +5410,17 @@ public final class akses {
     public static boolean getsatu_sehat_kirim_medication(){return akses.satu_sehat_kirim_medication;}
     public static boolean getsatu_sehat_kirim_medicationrequest(){return akses.satu_sehat_kirim_medicationrequest;}
     public static boolean getpenatalaksanaan_terapi_okupasi(){return akses.penatalaksanaan_terapi_okupasi;}
+    public static boolean getsatu_sehat_kirim_medicationdispense(){return akses.satu_sehat_kirim_medicationdispense;}
+    public static boolean gethasil_usg_neonatus(){return akses.hasil_usg_neonatus;}
+    public static boolean gethasil_endoskopi_faring_laring(){return akses.hasil_endoskopi_faring_laring;}
+    public static boolean getsatu_sehat_mapping_radiologi(){return akses.satu_sehat_mapping_radiologi;}
+    public static boolean getsatu_sehat_kirim_servicerequest_radiologi(){return akses.satu_sehat_kirim_servicerequest_radiologi;}
+    public static boolean gethasil_endoskopi_hidung(){return akses.hasil_endoskopi_hidung;}
+    public static boolean getsatu_sehat_kirim_specimen_radiologi(){return akses.satu_sehat_kirim_specimen_radiologi;}
+    public static boolean getmaster_masalah_keperawatan_neonatus(){return akses.master_masalah_keperawatan_neonatus;}
+    public static boolean getmaster_rencana_keperawatan_neonatus(){return akses.master_rencana_keperawatan_neonatus;}
+    public static boolean getpenilaian_awal_keperawatan_ranap_neonatus(){return akses.penilaian_awal_keperawatan_ranap_neonatus;}
+    public static boolean getsatu_sehat_kirim_observation_radiologi(){return akses.satu_sehat_kirim_observation_radiologi;}
+    public static boolean getsatu_sehat_kirim_diagnosticreport_radiologi(){return akses.satu_sehat_kirim_diagnosticreport_radiologi;}
+    public static boolean gethasil_endoskopi_telinga(){return akses.hasil_endoskopi_telinga;}
 }   
