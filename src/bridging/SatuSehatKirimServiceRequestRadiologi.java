@@ -592,11 +592,22 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                     "\"identifier\": [" +
                                         "{" +
                                             "\"system\": \"http://sys-ids.kemkes.go.id/servicerequest/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                            "\"value\": \""+tbObat.getValueAt(i,9).toString()+"\"" +
+                                            "\"value\": \""+tbObat.getValueAt(i,9).toString()+"."+tbObat.getValueAt(i,17).toString()+"\"" +
                                         "}" +
                                     "]," +
                                     "\"status\": \"active\"," +
                                     "\"intent\": \"order\"," +
+                                    "\"category\": [" +
+                                        "{" +
+                                            "\"coding\": [" +
+                                                "{" +
+                                                    "\"system\": \"http://snomed.info/sct\"," +
+                                                    "\"code\": \"363679005\"," +
+                                                    "\"display\": \"Imaging\"" +
+                                                "}" +
+                                            "]" +
+                                        "}" +
+                                    "],"+
                                     "\"code\": {" +
                                         "\"coding\": [" +
                                             "{" +
@@ -682,11 +693,22 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                     "\"identifier\": [" +
                                         "{" +
                                             "\"system\": \"http://sys-ids.kemkes.go.id/servicerequest/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                            "\"value\": \""+tbObat.getValueAt(i,9).toString()+"\"" +
+                                            "\"value\": \""+tbObat.getValueAt(i,9).toString()+"."+tbObat.getValueAt(i,17).toString()+"\"" +
                                         "}" +
                                     "]," +
                                     "\"status\": \"active\"," +
                                     "\"intent\": \"order\"," +
+                                    "\"category\": [" +
+                                        "{" +
+                                            "\"coding\": [" +
+                                                "{" +
+                                                    "\"system\": \"http://snomed.info/sct\"," +
+                                                    "\"code\": \"363679005\"," +
+                                                    "\"display\": \"Imaging\"" +
+                                                "}" +
+                                            "]" +
+                                        "}" +
+                                    "],"+
                                     "\"code\": {" +
                                         "\"coding\": [" +
                                             "{" +

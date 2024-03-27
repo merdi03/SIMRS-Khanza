@@ -659,6 +659,7 @@ public final class SatuSehatKirimVaksin extends javax.swing.JDialog {
                                         "\"reference\": \"Encounter/"+tbObat.getValueAt(i,8).toString()+"\"" +
                                     "}," +
                                     "\"occurrenceDateTime\": \""+tbObat.getValueAt(i,20).toString()+"\"," +
+                                    "\"expirationDate\": \""+Sequel.cariIsi("SELECT data_batch.tgl_kadaluarsa FROM data_batch WHERE data_batch.no_batch='"+tbObat.getValueAt(i,19).toString()+"' and data_batch.kode_brng='"+tbObat.getValueAt(i,11).toString()+"' and data_batch.no_faktur=='"+tbObat.getValueAt(i,28).toString()+"'")+"\"," +
                                     "\"recorded\": \""+tbObat.getValueAt(i,20).toString()+"\"," +
                                     "\"primarySource\": true," +
                                     "\"location\": {" +
@@ -710,7 +711,7 @@ public final class SatuSehatKirimVaksin extends javax.swing.JDialog {
                                     "]," +
                                     "\"protocolApplied\" : ["+
                                         "{"+
-                                            "\"doseNumberPositiveInt\" : "+tbObat.getValueAt(i,22).toString().toLowerCase().replaceAll("dosis","").replaceAll(" ","")+
+                                            "\"doseNumberPositiveInt\" : "+tbObat.getValueAt(i,22).toString().replaceAll("[^0-9.]", "")+
                                         "}"+
                                     "]"+
                                 "}";
@@ -782,6 +783,7 @@ public final class SatuSehatKirimVaksin extends javax.swing.JDialog {
                                         "\"reference\": \"Encounter/"+tbObat.getValueAt(i,8).toString()+"\"" +
                                     "}," +
                                     "\"occurrenceDateTime\": \""+tbObat.getValueAt(i,20).toString()+"\"," +
+                                    "\"expirationDate\": \""+Sequel.cariIsi("SELECT data_batch.tgl_kadaluarsa FROM data_batch WHERE data_batch.no_batch='"+tbObat.getValueAt(i,19).toString()+"' and data_batch.kode_brng='"+tbObat.getValueAt(i,11).toString()+"' and data_batch.no_faktur='"+tbObat.getValueAt(i,28).toString()+"'")+"\"," +
                                     "\"recorded\": \""+tbObat.getValueAt(i,20).toString()+"\"," +
                                     "\"primarySource\": true," +
                                     "\"location\": {" +
@@ -833,7 +835,7 @@ public final class SatuSehatKirimVaksin extends javax.swing.JDialog {
                                     "]," +
                                     "\"protocolApplied\" : ["+
                                         "{"+
-                                            "\"doseNumberPositiveInt\" : "+tbObat.getValueAt(i,22).toString().toLowerCase().replaceAll("dosis","").replaceAll(" ","")+
+                                            "\"doseNumberPositiveInt\" : "+tbObat.getValueAt(i,22).toString().replaceAll("[^0-9.]", "")+
                                         "}"+
                                     "]"+
                                 "}";
