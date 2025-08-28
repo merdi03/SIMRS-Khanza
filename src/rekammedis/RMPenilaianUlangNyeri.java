@@ -263,7 +263,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         MnPenilaianUlangNyeri.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnPenilaianUlangNyeri.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianUlangNyeri.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnPenilaianUlangNyeri.setText("Formulir Penilaian Ulang Nyeri");
+        MnPenilaianUlangNyeri.setText("Formulir Pengkajian Ulang Nyeri");
         MnPenilaianUlangNyeri.setName("MnPenilaianUlangNyeri"); // NOI18N
         MnPenilaianUlangNyeri.setPreferredSize(new java.awt.Dimension(230, 26));
         MnPenilaianUlangNyeri.addActionListener(new java.awt.event.ActionListener() {
@@ -280,7 +280,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Penilaian Ulang Nyeri ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Ulang Nyeri ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -929,7 +929,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
                 Lokasi.getText(),Menyebar.getSelectedItem().toString(),SkalaNyeri.getSelectedItem().toString(),Durasi.getText(),NyeriHilang.getSelectedItem().toString(),
                 KetNyeri.getText(),NIP.getText()
             })==true){
-                tabMode.addRow(new String[]{
+                tabMode.addRow(new Object[]{
                     TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),JK.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
                     Nyeri.getSelectedItem().toString(),Provokes.getSelectedItem().toString(),KetProvokes.getText(),Quality.getSelectedItem().toString(),KetQuality.getText(),Lokasi.getText(),Menyebar.getSelectedItem().toString(),
                     SkalaNyeri.getSelectedItem().toString(),Durasi.getText(),NyeriHilang.getSelectedItem().toString(),KetNyeri.getText(),NIP.getText(),NamaPetugas.getText()
@@ -1040,7 +1040,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             param.put("emailrs",akses.getemailrs());   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             if(TCari.getText().trim().equals("")){
-                Valid.MyReportqry("rptPenilaianUlangNyeri.jasper","report","::[ Data Penilaian Ulang Nyeri ]::",
+                Valid.MyReportqry("rptPenilaianUlangNyeri.jasper","report","::[ Data Pengkajian Ulang Nyeri ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_ulang_nyeri.tanggal,"+
                     "penilaian_ulang_nyeri.nyeri,penilaian_ulang_nyeri.provokes,penilaian_ulang_nyeri.ket_provokes,penilaian_ulang_nyeri.quality,"+
                     "penilaian_ulang_nyeri.ket_quality,penilaian_ulang_nyeri.lokasi,penilaian_ulang_nyeri.menyebar,penilaian_ulang_nyeri.skala_nyeri,"+
@@ -1051,7 +1051,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
                     "penilaian_ulang_nyeri.tanggal between '"+Valid.SetTgl(DTPCari1.getSelectedItem()+"")+" 00:00:00' and '"+Valid.SetTgl(DTPCari2.getSelectedItem()+"")+" 23:59:59' "+
                     "order by penilaian_ulang_nyeri.tanggal",param);
             }else{
-                Valid.MyReportqry("rptPenilaianUlangNyeri.jasper","report","::[ Data Penilaian Ulang Nyeri ]::",
+                Valid.MyReportqry("rptPenilaianUlangNyeri.jasper","report","::[ Data Pengkajian Ulang Nyeri ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_ulang_nyeri.tanggal,"+
                     "penilaian_ulang_nyeri.nyeri,penilaian_ulang_nyeri.provokes,penilaian_ulang_nyeri.ket_provokes,penilaian_ulang_nyeri.quality,"+
                     "penilaian_ulang_nyeri.ket_quality,penilaian_ulang_nyeri.lokasi,penilaian_ulang_nyeri.menyebar,penilaian_ulang_nyeri.skala_nyeri,"+
@@ -1179,7 +1179,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             param.put("emailrs",akses.getemailrs());   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             param.put("nyeri",Sequel.cariGambar("select gambar.nyeri from gambar")); 
-            Valid.MyReportqry("rptFormulirPenilaianUlangNyeri.jasper","report","::[ Formulir Penilaian Ulang Nyeri ]::",
+            Valid.MyReportqry("rptFormulirPenilaianUlangNyeri.jasper","report","::[ Formulir Pengkajian Ulang Nyeri ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_ulang_nyeri.tanggal,"+
                     "penilaian_ulang_nyeri.nyeri,penilaian_ulang_nyeri.provokes,penilaian_ulang_nyeri.ket_provokes,penilaian_ulang_nyeri.quality,"+
                     "penilaian_ulang_nyeri.ket_quality,penilaian_ulang_nyeri.lokasi,penilaian_ulang_nyeri.menyebar,penilaian_ulang_nyeri.skala_nyeri,"+
@@ -1366,8 +1366,8 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
                     
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
+                    tabMode.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getDate("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
                         rs.getString("nyeri"),rs.getString("provokes"),rs.getString("ket_provokes"),rs.getString("quality"),rs.getString("ket_quality"),rs.getString("lokasi"),
                         rs.getString("menyebar"),rs.getString("skala_nyeri"),rs.getString("durasi"),rs.getString("nyeri_hilang"),rs.getString("ket_nyeri"),rs.getString("nip"),
                         rs.getString("nama")

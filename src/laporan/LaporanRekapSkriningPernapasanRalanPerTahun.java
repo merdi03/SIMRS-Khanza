@@ -384,7 +384,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
             Valid.tabelKosong(tabMode);
             ps=koneksi.prepareStatement(
-                "select pernapasan from skrining_rawat_jalan where pernapasan like ? group by pernapasan order by pernapasan ");
+                "select skrining_rawat_jalan.pernapasan from skrining_rawat_jalan where skrining_rawat_jalan.pernapasan like ? group by skrining_rawat_jalan.pernapasan order by skrining_rawat_jalan.pernapasan ");
             try {
                 ps.setString(1,"%"+TCari.getText()+"%");
                 rs=ps.executeQuery();
@@ -416,7 +416,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     ttlokt=ttlokt+okt;
                     ttlnov=ttlnov+nov;
                     ttldes=ttldes+des;
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         i+"",rs.getString("pernapasan"),jan+"",feb+"",mar+"",apr+"",mei+"",
                         jun+"",jul+"",agu+"",sep+"",okt+"",nov+"",des+"",(jan+feb+mar+apr+
                         mei+jun+jul+agu+sep+okt+nov+des)+""
@@ -425,7 +425,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     i++;
                 }
                 if(i>1){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "","Jumlah :",ttljan+"",ttlfeb+"",ttlmar+"",ttlapr+"",ttlmei+"",
                         ttljun+"",ttljul+"",ttlagu+"",ttlsep+"",ttlokt+"",ttlnov+"",ttldes+"",
                         (ttljan+ttlfeb+ttlmar+ttlapr+ttlmei+ttljun+ttljul+ttlagu+ttlsep+ttlokt+ttlnov+ttldes)+""

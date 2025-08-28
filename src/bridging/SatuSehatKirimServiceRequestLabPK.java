@@ -515,6 +515,7 @@ public final class SatuSehatKirimServiceRequestLabPK extends javax.swing.JDialog
                   "</table>"+
                 "</html>"
             );
+            htmlContent=null;
 
             File g = new File("file2.css");            
             BufferedWriter bg = new BufferedWriter(new FileWriter(g));
@@ -928,6 +929,7 @@ public final class SatuSehatKirimServiceRequestLabPK extends javax.swing.JDialog
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_servicerequest_lab());
+        BtnUpdate.setEnabled(akses.getsatu_sehat_kirim_servicerequest_lab());
         BtnPrint.setEnabled(akses.getsatu_sehat_kirim_servicerequest_lab());
     }
     

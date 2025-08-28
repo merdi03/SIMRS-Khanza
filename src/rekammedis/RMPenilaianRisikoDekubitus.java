@@ -260,7 +260,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
         MnPenilaianRisikoDekubitus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnPenilaianRisikoDekubitus.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianRisikoDekubitus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnPenilaianRisikoDekubitus.setText("Formulir Penilaian Risiko Dekubitus");
+        MnPenilaianRisikoDekubitus.setText("Formulir Pengkajian Risiko Dekubitus");
         MnPenilaianRisikoDekubitus.setName("MnPenilaianRisikoDekubitus"); // NOI18N
         MnPenilaianRisikoDekubitus.setPreferredSize(new java.awt.Dimension(290, 26));
         MnPenilaianRisikoDekubitus.addActionListener(new java.awt.event.ActionListener() {
@@ -277,7 +277,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Penilaian Risiko Dekubitus ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Risiko Dekubitus ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -920,7 +920,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
                 SkalaResiko3.getSelectedItem().toString(),NilaiResiko3.getText(),SkalaResiko4.getSelectedItem().toString(),NilaiResiko4.getText(), 
                 SkalaResiko5.getSelectedItem().toString(),NilaiResiko5.getText(),NilaiResikoTotal.getText(),Status.getText(),NIP.getText()
             })==true){
-                tabMode.addRow(new String[]{
+                tabMode.addRow(new Object[]{
                     TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),JK.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
                     SkalaResiko1.getSelectedItem().toString(),NilaiResiko1.getText(),SkalaResiko2.getSelectedItem().toString(),NilaiResiko2.getText(),
                     SkalaResiko3.getSelectedItem().toString(),NilaiResiko3.getText(),SkalaResiko4.getSelectedItem().toString(),NilaiResiko4.getText(), 
@@ -1032,7 +1032,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
             param.put("emailrs",akses.getemailrs());   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             if(TCari.getText().trim().equals("")){
-                Valid.MyReportqry("rptPenilaianRisikoDekubitas.jasper","report","::[ Data Penilaian Risiko Dekubitus ]::",
+                Valid.MyReportqry("rptPenilaianRisikoDekubitas.jasper","report","::[ Data Pengkajian Risiko Dekubitus ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_risiko_dekubitus.tanggal,"+
                     "penilaian_risiko_dekubitus.kondisi_fisik,penilaian_risiko_dekubitus.kondisi_fisik_nilai,penilaian_risiko_dekubitus.status_mental,"+
                     "penilaian_risiko_dekubitus.status_mental_nilai,penilaian_risiko_dekubitus.aktifitas,penilaian_risiko_dekubitus.aktifitas_nilai,"+
@@ -1045,7 +1045,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
                     "penilaian_risiko_dekubitus.tanggal between '"+Valid.SetTgl(DTPCari1.getSelectedItem()+"")+" 00:00:00' and '"+Valid.SetTgl(DTPCari2.getSelectedItem()+"")+" 23:59:59' "+
                     "order by penilaian_risiko_dekubitus.tanggal",param);
             }else{
-                Valid.MyReportqry("rptPenilaianRisikoDekubitas.jasper","report","::[ Data Penilaian Risiko Dekubitus ]::",
+                Valid.MyReportqry("rptPenilaianRisikoDekubitas.jasper","report","::[ Data Pengkajian Risiko Dekubitus ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_risiko_dekubitus.tanggal,"+
                     "penilaian_risiko_dekubitus.kondisi_fisik,penilaian_risiko_dekubitus.kondisi_fisik_nilai,penilaian_risiko_dekubitus.status_mental,"+
                     "penilaian_risiko_dekubitus.status_mental_nilai,penilaian_risiko_dekubitus.aktifitas,penilaian_risiko_dekubitus.aktifitas_nilai,"+
@@ -1176,7 +1176,7 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),18).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),19).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),18).toString():finger)+"\n"+Tanggal.getSelectedItem());
-            Valid.MyReportqry("rptFormulirPenilaianRisikoDekubitus.jasper","report","::[ Formulir Penilaian Risiko Dekubitus]::",
+            Valid.MyReportqry("rptFormulirPenilaianRisikoDekubitus.jasper","report","::[ Formulir Pengkajian Risiko Dekubitus]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_risiko_dekubitus.tanggal,"+
                     "penilaian_risiko_dekubitus.kondisi_fisik,penilaian_risiko_dekubitus.kondisi_fisik_nilai,penilaian_risiko_dekubitus.status_mental,"+
                     "penilaian_risiko_dekubitus.status_mental_nilai,penilaian_risiko_dekubitus.aktifitas,penilaian_risiko_dekubitus.aktifitas_nilai,"+
@@ -1410,8 +1410,8 @@ public final class RMPenilaianRisikoDekubitus extends javax.swing.JDialog {
                     
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
+                    tabMode.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getDate("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
                         rs.getString("kondisi_fisik"),rs.getString("kondisi_fisik_nilai"),rs.getString("status_mental"),rs.getString("status_mental_nilai"),rs.getString("aktifitas"),
                         rs.getString("aktifitas_nilai"),rs.getString("mobilitas"),rs.getString("mobilitas_nilai"),rs.getString("inkontinensia"),rs.getString("inkontinensia_nilai"),
                         rs.getString("totalnilai"),rs.getString("kategorinilai"),rs.getString("nip"),rs.getString("nama")

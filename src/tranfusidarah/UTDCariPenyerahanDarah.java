@@ -973,9 +973,15 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             if(sukses==true){
                                 subtotalpendapatan=Sequel.cariIsiAngka("select sum(total) from utd_penyerahan_darah_detail where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
                                 Sequel.queryu("delete from tampjurnal");                    
-                                Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Penyerahan_Darah from set_akun")+"','PENJUALAN DARAH UTD','"+subtotalpendapatan+"','0'","Rekening");    
-                                Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select kd_rek from utd_penyerahan_darah where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString())+"','CARA BAYAR','0','"+subtotalpendapatan+"'","Rekening"); 
-                                sukses=jur.simpanJurnal(nopenyerahan.getText(),"U","PEMBATALAN PENJUALAN DARAH DI UTD"+", OLEH "+akses.getkode()); 
+                                if(Sequel.menyimpantf2("tampjurnal","'"+Sequel.cariIsi("select Penyerahan_Darah from set_akun")+"','PENJUALAN DARAH UTD','"+subtotalpendapatan+"','0'","Rekening")==false){
+                                    sukses=false;
+                                }    
+                                if(Sequel.menyimpantf2("tampjurnal","'"+Sequel.cariIsi("select kd_rek from utd_penyerahan_darah where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString())+"','CARA BAYAR','0','"+subtotalpendapatan+"'","Rekening")==false){
+                                    sukses=false;
+                                } 
+                                if(sukses==true){
+                                    sukses=jur.simpanJurnal(nopenyerahan.getText(),"U","PEMBATALAN PENJUALAN DARAH DI UTD"+", OLEH "+akses.getkode());
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -1076,9 +1082,15 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                         if(sukses==true){
                             subtotalpendapatan=Sequel.cariIsiAngka("select sum(total) from utd_penyerahan_darah_detail where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
                             Sequel.queryu("delete from tampjurnal");                    
-                            Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Penyerahan_Darah from set_akun")+"','PENJUALAN DARAH UTD','0','"+subtotalpendapatan+"'","Rekening");    
-                            Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select kd_rek from utd_penyerahan_darah where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString())+"','CARA BAYAR','"+subtotalpendapatan+"','0'","Rekening"); 
-                            sukses=jur.simpanJurnal(nopenyerahan.getText(),"U","PENJUALAN DARAH DI UTD"+", OLEH "+akses.getkode());  
+                            if(Sequel.menyimpantf2("tampjurnal","'"+Sequel.cariIsi("select Penyerahan_Darah from set_akun")+"','PENJUALAN DARAH UTD','0','"+subtotalpendapatan+"'","Rekening")==false){
+                                sukses=false;
+                            }    
+                            if(Sequel.menyimpantf2("tampjurnal","'"+Sequel.cariIsi("select kd_rek from utd_penyerahan_darah where no_penyerahan=?",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString())+"','CARA BAYAR','"+subtotalpendapatan+"','0'","Rekening")==false){
+                                sukses=false;
+                            } 
+                            if(sukses==true){
+                                sukses=jur.simpanJurnal(nopenyerahan.getText(),"U","PENJUALAN DARAH DI UTD"+", OLEH "+akses.getkode()); 
+                            }
                         }
                           
                         if(sukses==true){
@@ -1456,13 +1468,13 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             rs2=pscekmedis.executeQuery();
                             if(rs2.next()){
                                 no=1;
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","","No","Kode Barang","Penggunaan BHP Medis","Jumlah","Satuan","Harga","Total"
                                 });
                             }
                             rs2.beforeFirst();
                             while(rs2.next()){
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","",no+". ",rs2.getString("kode_brng"),rs2.getString("nama_brng"),
                                     rs2.getString("jml"),rs2.getString("kode_sat"),Valid.SetAngka(rs2.getDouble("harga")),
                                     Valid.SetAngka(rs2.getDouble("total"))
@@ -1493,13 +1505,13 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             rs2=psceknonmedis.executeQuery();
                             if(rs2.next()){
                                 no=1;                                
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","","No","Kode Barang","Penggunaan BHP Non Medis","Jumlah","Satuan","Harga","Total"
                                 });
                             }
                             rs2.beforeFirst();
                             while(rs2.next()){
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","",no+". ",rs2.getString("kode_brng"),rs2.getString("nama_brng"),
                                     rs2.getString("jml"),rs2.getString("kode_sat"),Valid.SetAngka(rs2.getDouble("harga")),
                                     Valid.SetAngka(rs2.getDouble("total"))
@@ -1530,13 +1542,13 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             rs2=pscekmedis.executeQuery();
                             if(rs2.next()){
                                 no=1;                                
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","","No","Kode Barang","Penggunaan BHP Medis","Jumlah","Satuan","Harga","Total"
                                 });
                             }
                             rs2.beforeFirst();
                             while(rs2.next()){
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","",no+". ",rs2.getString("kode_brng"),rs2.getString("nama_brng"),
                                     rs2.getString("jml"),rs2.getString("kode_sat"),Valid.SetAngka(rs2.getDouble("harga")),
                                     Valid.SetAngka(rs2.getDouble("total"))
@@ -1567,13 +1579,13 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             rs2=psceknonmedis.executeQuery();
                             if(rs2.next()){
                                 no=1;                                
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","","No","Kode Barang","Penggunaan BHP Non Medis","Jumlah","Satuan","Harga","Total"
                                 });
                             }
                             rs2.beforeFirst();
                             while(rs2.next()){
-                                tabMode.addRow(new String[]{
+                                tabMode.addRow(new Object[]{
                                     "","",no+". ",rs2.getString("kode_brng"),rs2.getString("nama_brng"),
                                     rs2.getString("jml"),rs2.getString("kode_sat"),Valid.SetAngka(rs2.getDouble("harga")),
                                     Valid.SetAngka(rs2.getDouble("total"))

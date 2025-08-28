@@ -485,6 +485,7 @@ public final class SatuSehatKirimDiet extends javax.swing.JDialog {
                   "</table>"+
                 "</html>"
             );
+            htmlContent=null;
 
             File g = new File("file2.css");            
             BufferedWriter bg = new BufferedWriter(new FileWriter(g));
@@ -909,6 +910,7 @@ public final class SatuSehatKirimDiet extends javax.swing.JDialog {
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_diet());
+        BtnUpdate.setEnabled(akses.getsatu_sehat_kirim_diet());
         BtnPrint.setEnabled(akses.getsatu_sehat_kirim_diet());
     }
     

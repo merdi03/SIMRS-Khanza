@@ -36,7 +36,7 @@ import javax.swing.table.TableColumn;
  * @author perpustakaan
  */
 public final class DlgCariPPNObat extends javax.swing.JDialog {
-    private final DefaultTableModel tabMode,tabMode2,tabMode3,tabMode4;
+    private final DefaultTableModel tabMode,tabMode2,tabMode3,tabMode4,tabMode5,tabMode6;
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
@@ -202,6 +202,80 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
         }
         tbObatJualBebas.setDefaultRenderer(Object.class, new WarnaTable());
         
+        tabMode5=new DefaultTableModel(null,new String[]{
+                "Tgl.Nota","No.Nota","Nama Pasien","Total","PPN","Total+PPN"
+            }){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+             Class[] types = new Class[] {
+                java.lang.String.class,java.lang.String.class,java.lang.String.class,
+                java.lang.Double.class,java.lang.Double.class,java.lang.Double.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
+        };
+        tbRawatInap.setModel(tabMode5);
+        //tbBangsal.setDefaultRenderer(Object.class, new WarnaTable(jPanel2.getBackground(),tbBangsal.getBackground()));
+        tbRawatInap.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbRawatInap.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 6; i++) {
+            TableColumn column = tbRawatInap.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(70);
+            }else if(i==1){
+                column.setPreferredWidth(110);
+            }else if(i==2){
+                column.setPreferredWidth(270);
+            }else if(i==3){
+                column.setPreferredWidth(80);
+            }else if(i==4){
+                column.setPreferredWidth(70);
+            }else if(i==5){
+                column.setPreferredWidth(90);
+            }
+        }
+        tbRawatInap.setDefaultRenderer(Object.class, new WarnaTable());
+        
+        tabMode6=new DefaultTableModel(null,new String[]{
+                "Tgl.Jual","No.Nota","Pasien","Petugas","Total","PPN","Total+PPN"
+            }){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+             Class[] types = new Class[] {
+                java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
+                java.lang.Double.class,java.lang.Double.class,java.lang.Double.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
+        };
+        tbPiutangObat.setModel(tabMode6);
+        //tbBangsal.setDefaultRenderer(Object.class, new WarnaTable(jPanel2.getBackground(),tbBangsal.getBackground()));
+        tbPiutangObat.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbPiutangObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 7; i++) {
+            TableColumn column = tbPiutangObat.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(70);
+            }else if(i==1){
+                column.setPreferredWidth(100);
+            }else if(i==2){
+                column.setPreferredWidth(260);
+            }else if(i==3){
+                column.setPreferredWidth(260);
+            }else if(i==4){
+                column.setPreferredWidth(80);
+            }else if(i==5){
+                column.setPreferredWidth(70);
+            }else if(i==6){
+                column.setPreferredWidth(90);
+            }
+        }
+        tbPiutangObat.setDefaultRenderer(Object.class, new WarnaTable());
+        
         TKd.setDocument(new batasInput((byte)20).getKata(TKd));
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -223,6 +297,10 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
                         if(TCari.getText().length()>2){
                             tampil4();
                         }
+                    }else if(TabRawat.getSelectedIndex()==4){
+                        if(TCari.getText().length()>2){
+                            tampil5();
+                        }
                     }
                 }
                 @Override
@@ -243,6 +321,10 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
                         if(TCari.getText().length()>2){
                             tampil4();
                         }
+                    }else if(TabRawat.getSelectedIndex()==4){
+                        if(TCari.getText().length()>2){
+                            tampil5();
+                        }
                     }
                 }
                 @Override
@@ -262,6 +344,10 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
                     }else if(TabRawat.getSelectedIndex()==3){
                         if(TCari.getText().length()>2){
                             tampil4();
+                        }
+                    }else if(TabRawat.getSelectedIndex()==4){
+                        if(TCari.getText().length()>2){
+                            tampil5();
                         }
                     }
                 }
@@ -289,6 +375,10 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
         tbRawatJalan = new widget.Table();
         Scroll4 = new widget.ScrollPane();
         tbObatJualBebas = new widget.Table();
+        Scroll5 = new widget.ScrollPane();
+        tbRawatInap = new widget.Table();
+        Scroll6 = new widget.ScrollPane();
+        tbPiutangObat = new widget.Table();
         panelGlass5 = new widget.panelisi();
         label11 = new widget.Label();
         Tgl1 = new widget.Tanggal();
@@ -329,16 +419,6 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
 
         tbPengadaan.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPengadaan.setName("tbPengadaan"); // NOI18N
-        tbPengadaan.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbPengadaanMouseClicked(evt);
-            }
-        });
-        tbPengadaan.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbPengadaanKeyPressed(evt);
-            }
-        });
         Scroll.setViewportView(tbPengadaan);
 
         TabRawat.addTab("PPN Pengadaan Obat", Scroll);
@@ -349,16 +429,6 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
 
         tbPembelian.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPembelian.setName("tbPembelian"); // NOI18N
-        tbPembelian.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbPembelianMouseClicked(evt);
-            }
-        });
-        tbPembelian.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbPembelianKeyPressed(evt);
-            }
-        });
         Scroll2.setViewportView(tbPembelian);
 
         TabRawat.addTab("PPN Penerimaan Obat", Scroll2);
@@ -369,16 +439,6 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
 
         tbRawatJalan.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbRawatJalan.setName("tbRawatJalan"); // NOI18N
-        tbRawatJalan.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbRawatJalanMouseClicked(evt);
-            }
-        });
-        tbRawatJalan.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbRawatJalanKeyPressed(evt);
-            }
-        });
         Scroll3.setViewportView(tbRawatJalan);
 
         TabRawat.addTab("PPN Obat Rawat Jalan", Scroll3);
@@ -389,19 +449,29 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
 
         tbObatJualBebas.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbObatJualBebas.setName("tbObatJualBebas"); // NOI18N
-        tbObatJualBebas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbObatJualBebasMouseClicked(evt);
-            }
-        });
-        tbObatJualBebas.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbObatJualBebasKeyPressed(evt);
-            }
-        });
         Scroll4.setViewportView(tbObatJualBebas);
 
         TabRawat.addTab("PPN Obat Jual Bebas", Scroll4);
+
+        Scroll5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        Scroll5.setName("Scroll5"); // NOI18N
+        Scroll5.setOpaque(true);
+
+        tbRawatInap.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbRawatInap.setName("tbRawatInap"); // NOI18N
+        Scroll5.setViewportView(tbRawatInap);
+
+        TabRawat.addTab("PPN Obat Rawat Inap", Scroll5);
+
+        Scroll6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        Scroll6.setName("Scroll6"); // NOI18N
+        Scroll6.setOpaque(true);
+
+        tbPiutangObat.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbPiutangObat.setName("tbPiutangObat"); // NOI18N
+        Scroll6.setViewportView(tbPiutangObat);
+
+        TabRawat.addTab("PPN Piutang Obat", Scroll6);
 
         internalFrame1.add(TabRawat, java.awt.BorderLayout.CENTER);
 
@@ -580,7 +650,7 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
                 Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
             
                 for(int r=0;r<tabMode3.getRowCount();r++){ 
-                        Sequel.menyimpan("temporary","'"+i+"','"+
+                        Sequel.menyimpan("temporary","'"+r+"','"+
                                     tabMode3.getValueAt(r,0).toString()+"','"+
                                     tabMode3.getValueAt(r,1).toString()+"','"+
                                     tabMode3.getValueAt(r,2).toString()+"','"+
@@ -610,6 +680,41 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
                     " petugas.nama like '%"+TCari.getText()+"%') ")+" group by penjualan.nota_jual "+
                     " order by penjualan.tgl_jual,penjualan.nota_jual ",param);
             }                
+        }else if(TabRawat.getSelectedIndex()==4){
+            if(tabMode5.getRowCount()==0){
+                JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
+                //TCari.requestFocus();
+            }else if(tabMode5.getRowCount()!=0){
+                Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
+            
+                for(int r=0;r<tabMode5.getRowCount();r++){ 
+                        Sequel.menyimpan("temporary","'"+r+"','"+
+                                    tabMode5.getValueAt(r,0).toString()+"','"+
+                                    tabMode5.getValueAt(r,1).toString()+"','"+
+                                    tabMode5.getValueAt(r,2).toString()+"','"+
+                                    Valid.SetAngka(Double.parseDouble(tabMode5.getValueAt(r,3).toString()))+"','"+
+                                    Valid.SetAngka(Double.parseDouble(tabMode5.getValueAt(r,4).toString()))+"','"+
+                                    Valid.SetAngka(Double.parseDouble(tabMode5.getValueAt(r,5).toString()))+"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Rekap Nota Pembayaran");
+                }
+                
+                Valid.MyReportqry("rptPPNRanap.jasper","report","::[ Laporan PPN Obat Ranap ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+            }                
+        }else if(TabRawat.getSelectedIndex()==5){
+            if(tabMode6.getRowCount()==0){
+                JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
+                //TCari.requestFocus();
+            }else if(tabMode6.getRowCount()!=0){
+                Valid.MyReportqry("rptPPNPiutangObat.jasper","report","::[ PPN Piutang Obat & BHP ]::",
+                    "select piutang.tgl_piutang,piutang.nota_piutang,piutang.no_rkm_medis,pasien.nm_pasien, "+
+                    "piutang.nip,petugas.nama,round(piutang.ppn) as ppn,sum(detailpiutang.total) as total "+
+                    "from piutang inner join pasien on piutang.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join petugas on piutang.nip=petugas.nip inner join detailpiutang on piutang.nota_piutang=detailpiutang.nota_piutang "+
+                    "where piutang.tgl_piutang between '"+Valid.SetTgl(Tgl1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(Tgl2.getSelectedItem()+"")+"' "+
+                    (TCari.getText().trim().equals("")?"":" and (piutang.nota_piutang like '%"+TCari.getText()+"%' or "+
+                    "piutang.no_rkm_medis like '%"+TCari.getText()+"%' or piutang.nm_pasien like '%"+TCari.getText()+"%' or "+
+                    "piutang.nip like '%"+TCari.getText()+"%' or petugas.nama like '%"+TCari.getText()+"%') ")+
+                    "group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ",param);
+            }                
         }
         
         this.setCursor(Cursor.getDefaultCursor());
@@ -633,26 +738,6 @@ public final class DlgCariPPNObat extends javax.swing.JDialog {
         }else{Valid.pindah(evt,BtnKeluar,TKd);}
 }//GEN-LAST:event_BtnKeluarKeyPressed
 
-    private void tbPengadaanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPengadaanMouseClicked
-        if(tabMode.getRowCount()!=0){
-            try {
-                getData();
-            } catch (java.lang.NullPointerException e) {
-            }
-        }
-}//GEN-LAST:event_tbPengadaanMouseClicked
-
-    private void tbPengadaanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPengadaanKeyPressed
-        if(tabMode.getRowCount()!=0){
-            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
-                try {
-                    getData();
-                } catch (java.lang.NullPointerException e) {
-                }
-            }
-        }
-}//GEN-LAST:event_tbPengadaanKeyPressed
-
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         if(TabRawat.getSelectedIndex()==0){
             tampil();
@@ -662,13 +747,17 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             tampil3();
         }else if(TabRawat.getSelectedIndex()==3){
             tampil4();
+        }else if(TabRawat.getSelectedIndex()==4){
+            tampil5();
+        }else if(TabRawat.getSelectedIndex()==5){
+            tampil6();
         }
 }//GEN-LAST:event_BtnCariActionPerformed
 
 private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-            tampil();
+            BtnCariActionPerformed(null);
             this.setCursor(Cursor.getDefaultCursor());
         }else{
             Valid.pindah(evt, TKd, BtnPrint);
@@ -695,7 +784,11 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 tampil3();
            }else if(TabRawat.getSelectedIndex()==3){
                 tampil4();
-            }
+           }else if(TabRawat.getSelectedIndex()==4){
+                tampil5();
+           }else if(TabRawat.getSelectedIndex()==5){
+                tampil6();
+           }
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -715,32 +808,12 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             tampil3();
         }else if(TabRawat.getSelectedIndex()==3){
             tampil4();
+        }else if(TabRawat.getSelectedIndex()==4){
+            tampil5();
+        }else if(TabRawat.getSelectedIndex()==5){
+            tampil6();
         }
     }//GEN-LAST:event_TabRawatMouseClicked
-
-    private void tbPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPembelianMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbPembelianMouseClicked
-
-    private void tbPembelianKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPembelianKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbPembelianKeyPressed
-
-    private void tbRawatJalanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbRawatJalanMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbRawatJalanMouseClicked
-
-    private void tbRawatJalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbRawatJalanKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbRawatJalanKeyPressed
-
-    private void tbObatJualBebasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbObatJualBebasMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbObatJualBebasMouseClicked
-
-    private void tbObatJualBebasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatJualBebasKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbObatJualBebasKeyPressed
 
     /**
     * @param args the command line arguments
@@ -767,6 +840,8 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.ScrollPane Scroll2;
     private widget.ScrollPane Scroll3;
     private widget.ScrollPane Scroll4;
+    private widget.ScrollPane Scroll5;
+    private widget.ScrollPane Scroll6;
     private widget.TextBox TCari;
     private widget.TextBox TKd;
     private javax.swing.JTabbedPane TabRawat;
@@ -781,39 +856,32 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Table tbObatJualBebas;
     private widget.Table tbPembelian;
     private widget.Table tbPengadaan;
+    private widget.Table tbPiutangObat;
+    private widget.Table tbRawatInap;
     private widget.Table tbRawatJalan;
     // End of variables declaration//GEN-END:variables
 
     public void tampil(){        
         try {
             Valid.tabelKosong(tabMode);
-            ps=koneksi.prepareStatement("select pembelian.tgl_beli,pembelian.no_faktur, "+
-                    " pembelian.kode_suplier,datasuplier.nama_suplier, "+
-                    " pembelian.nip,petugas.nama,pembelian.total1,"+
-                    " pembelian.potongan,pembelian.total2,pembelian.ppn,pembelian.tagihan "+
-                    " from pembelian inner join datasuplier inner join petugas on "+
-                    " pembelian.kode_suplier=datasuplier.kode_suplier and pembelian.nip=petugas.nip "+
-                    " where pembelian.tgl_beli between ? and ? and pembelian.no_faktur like ? or "+
-                    " pembelian.tgl_beli between ? and ? and pembelian.kode_suplier like ? or "+
-                    " pembelian.tgl_beli between ? and ? and datasuplier.nama_suplier like ? or "+
-                    " pembelian.tgl_beli between ? and ? and pembelian.nip like ? or "+
-                    " pembelian.tgl_beli between ? and ? and petugas.nama like ? order by pembelian.tgl_beli,pembelian.no_faktur ");
+            ps=koneksi.prepareStatement(
+                    "select pembelian.tgl_beli,pembelian.no_faktur,pembelian.kode_suplier,datasuplier.nama_suplier, "+
+                    "pembelian.nip,petugas.nama,pembelian.total1,pembelian.potongan,pembelian.total2,pembelian.ppn,pembelian.tagihan "+
+                    "from pembelian inner join datasuplier on pembelian.kode_suplier=datasuplier.kode_suplier "+
+                    "inner join petugas on pembelian.nip=petugas.nip where pembelian.tgl_beli between ? and ? "+
+                    (!TCari.getText().trim().equals("")?"and (pembelian.no_faktur like ? or pembelian.kode_suplier like ? or "+
+                    "datasuplier.nama_suplier like ? or pembelian.nip like ? or petugas.nama like ?) ":"")+
+                    "order by pembelian.tgl_beli,pembelian.no_faktur ");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText()+"%");
-                ps.setString(13,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(14,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(15,"%"+TCari.getText()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                    ps.setString(6,"%"+TCari.getText()+"%");
+                    ps.setString(7,"%"+TCari.getText()+"%");
+                }
                 rs=ps.executeQuery();
                 total=0;
                 totalppn=0;
@@ -850,33 +918,24 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     public void tampil2(){        
         try {
             Valid.tabelKosong(tabMode2);
-            ps=koneksi.prepareStatement("select pemesanan.tgl_pesan,pemesanan.no_faktur, "+
-                    " pemesanan.kode_suplier,datasuplier.nama_suplier, "+
-                    " pemesanan.nip,petugas.nama,pemesanan.total1,"+
-                    " pemesanan.potongan,pemesanan.total2,pemesanan.ppn,pemesanan.tagihan "+
-                    " from pemesanan inner join datasuplier inner join petugas on "+
-                    " pemesanan.kode_suplier=datasuplier.kode_suplier and pemesanan.nip=petugas.nip "+
-                    " where pemesanan.tgl_pesan between ? and ? and pemesanan.no_faktur like ? or "+
-                    " pemesanan.tgl_pesan between ? and ? and pemesanan.kode_suplier like ? or "+
-                    " pemesanan.tgl_pesan between ? and ? and datasuplier.nama_suplier like ? or "+
-                    " pemesanan.tgl_pesan between ? and ? and pemesanan.nip like ? or "+
-                    " pemesanan.tgl_pesan between ? and ? and petugas.nama like ? order by pemesanan.tgl_pesan,pemesanan.no_faktur ");
+            ps=koneksi.prepareStatement(
+                    "select pemesanan.tgl_pesan,pemesanan.no_faktur, pemesanan.kode_suplier,datasuplier.nama_suplier, "+
+                    "pemesanan.nip,petugas.nama,pemesanan.total1,pemesanan.potongan,pemesanan.total2,pemesanan.ppn,pemesanan.tagihan "+
+                    "from pemesanan inner join datasuplier on pemesanan.kode_suplier=datasuplier.kode_suplier "+
+                    "inner join petugas on pemesanan.nip=petugas.nip where pemesanan.tgl_pesan between ? and ? "+
+                    (!TCari.getText().trim().equals("")?"and (pemesanan.no_faktur like ? or pemesanan.kode_suplier like ? or "+
+                    "datasuplier.nama_suplier like ? or pemesanan.nip like ? or petugas.nama like ?) ":"")+
+                    "order by pemesanan.tgl_pesan,pemesanan.no_faktur ");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText()+"%");
-                ps.setString(13,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(14,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(15,"%"+TCari.getText()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                    ps.setString(6,"%"+TCari.getText()+"%");
+                    ps.setString(7,"%"+TCari.getText()+"%");
+                }
                 rs=ps.executeQuery();
                 total=0;
                 totalppn=0;
@@ -914,30 +973,26 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         try {
             Valid.tabelKosong(tabMode3);
             ps=koneksi.prepareStatement(
-                    "select nota_jalan.tanggal,nota_jalan.no_nota, "+
-                    " pasien.no_rkm_medis,pasien.nm_pasien,nota_jalan.no_rawat from "+
-                    " nota_jalan inner join reg_periksa inner join pasien on nota_jalan.no_rawat=reg_periksa.no_rawat and "+
-                    " reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    " where nota_jalan.tanggal between ? and ? and nota_jalan.no_nota like ? or "+
-                    " nota_jalan.tanggal between ? and ? and pasien.no_rkm_medis like ? or "+
-                    " nota_jalan.tanggal between ? and ? and pasien.nm_pasien like ? order by nota_jalan.tanggal,nota_jalan.no_nota ");
+                    "select nota_jalan.tanggal,nota_jalan.no_nota,pasien.no_rkm_medis,pasien.nm_pasien,nota_jalan.no_rawat "+
+                    "from nota_jalan inner join reg_periksa on nota_jalan.no_rawat=reg_periksa.no_rawat "+
+                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis where nota_jalan.tanggal between ? and ? "+
+                    (!TCari.getText().trim().equals("")?"and (nota_jalan.no_nota like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ?) ":"")+
+                    "order by nota_jalan.tanggal,nota_jalan.no_nota ");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                }
                 rs=ps.executeQuery();
                 total=0;
                 totalppn=0;
                 totalsemua=0;
                 while(rs.next()){
-                    ppnobat=Sequel.cariIsiAngka("select sum(totalbiaya) from billing where no_rawat=? and status='Obat' and nm_perawatan='PPN Obat' ",rs.getString("no_rawat"));
-                    obatdibayar=Sequel.cariIsiAngka("select sum(totalbiaya) from billing where no_rawat=? and status='Obat' ",rs.getString("no_rawat"));
+                    ppnobat=Sequel.cariIsiAngka("select sum(billing.totalbiaya) from billing where billing.no_rawat=? and billing.status='Obat' and billing.nm_perawatan='PPN Obat' ",rs.getString("no_rawat"));
+                    obatdibayar=Sequel.cariIsiAngka("select sum(billing.totalbiaya) from billing where billing.no_rawat=? and billing.status='Obat' ",rs.getString("no_rawat"));
                     obat=obatdibayar-ppnobat;
                     total=total+obat;
                     totalppn=totalppn+ppnobat;
@@ -970,15 +1025,15 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     public void tampil4(){        
         try {
             Valid.tabelKosong(tabMode4);
-            ps=koneksi.prepareStatement("select penjualan.tgl_jual,penjualan.nota_jual, "+
-                    " penjualan.no_rkm_medis,pasien.nm_pasien, "+
-                    " penjualan.nip,petugas.nama,round(penjualan.ppn) as ppn,sum(detailjual.total) as total "+
-                    " from penjualan inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
-                    " inner join petugas on penjualan.nip=petugas.nip inner join detailjual on penjualan.nota_jual=detailjual.nota_jual "+
-                    " where penjualan.status='Sudah Dibayar' and penjualan.tgl_jual between ? and ? "+
+            ps=koneksi.prepareStatement(
+                    "select penjualan.tgl_jual,penjualan.nota_jual,penjualan.no_rkm_medis,pasien.nm_pasien, "+
+                    "penjualan.nip,petugas.nama,round(penjualan.ppn) as ppn,sum(detailjual.total) as total "+
+                    "from penjualan inner join pasien on penjualan.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join petugas on penjualan.nip=petugas.nip inner join detailjual on penjualan.nota_jual=detailjual.nota_jual "+
+                    "where penjualan.status='Sudah Dibayar' and penjualan.tgl_jual between ? and ? "+
                     (TCari.getText().trim().equals("")?"":" and (penjualan.nota_jual like ? or "+
-                    " penjualan.no_rkm_medis like ? or and penjualan.nm_pasien like ? or "+
-                    " penjualan.nip like ? or petugas.nama like ?) ")+" group by penjualan.nota_jual "+
+                    "penjualan.no_rkm_medis like ? or penjualan.nm_pasien like ? or "+
+                    "penjualan.nip like ? or petugas.nama like ?) ")+" group by penjualan.nota_jual "+
                     " order by penjualan.tgl_jual,penjualan.nota_jual ");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
@@ -1023,10 +1078,110 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
-    private void getData() {
-        int row=tbPengadaan.getSelectedRow();
-        if(row!= -1){
-            TKd.setText(tabMode.getValueAt(row,0).toString());
+    public void tampil5(){        
+        try {
+            Valid.tabelKosong(tabMode5);
+            ps=koneksi.prepareStatement(
+                    "select nota_inap.tanggal,nota_inap.no_nota,pasien.no_rkm_medis,pasien.nm_pasien,nota_inap.no_rawat "+
+                    "from nota_inap inner join reg_periksa on nota_inap.no_rawat=reg_periksa.no_rawat "+
+                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis where nota_inap.tanggal between ? and ? "+
+                    (!TCari.getText().trim().equals("")?"and (nota_inap.no_nota like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ?) ":"")+
+                    "order by nota_inap.tanggal,nota_inap.no_nota ");
+            try {
+                ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
+                ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                }
+                rs=ps.executeQuery();
+                total=0;
+                totalppn=0;
+                totalsemua=0;
+                while(rs.next()){
+                    ppnobat=Sequel.cariIsiAngka("select sum(billing.totalbiaya) from billing where billing.no_rawat=? and billing.status='Obat' and billing.nm_perawatan='PPN Obat' ",rs.getString("no_rawat"));
+                    obatdibayar=Sequel.cariIsiAngka("select sum(billing.totalbiaya) from billing where billing.no_rawat=? and billing.status='Obat' ",rs.getString("no_rawat"));
+                    obat=obatdibayar-ppnobat;
+                    total=total+obat;
+                    totalppn=totalppn+ppnobat;
+                    totalsemua=totalsemua+obatdibayar;
+                    tabMode5.addRow(new Object[]{
+                        rs.getString("tanggal"),rs.getString("no_nota"),rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien"),
+                        obat,ppnobat,obatdibayar
+                    });
+                }
+                if(total>0){
+                    tabMode5.addRow(new Object[]{
+                        "","","Total :",total,totalppn,totalsemua
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }  
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        }
+    }
+    
+    public void tampil6(){        
+        try {
+            Valid.tabelKosong(tabMode6);
+            ps=koneksi.prepareStatement(
+                    "select piutang.tgl_piutang,piutang.nota_piutang,piutang.no_rkm_medis,pasien.nm_pasien, "+
+                    "piutang.nip,petugas.nama,round(piutang.ppn) as ppn,sum(detailpiutang.total) as total "+
+                    "from piutang inner join pasien on piutang.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join petugas on piutang.nip=petugas.nip inner join detailpiutang on piutang.nota_piutang=detailpiutang.nota_piutang "+
+                    "where piutang.tgl_piutang between ? and ? "+(TCari.getText().trim().equals("")?"":" and (piutang.nota_piutang like ? or "+
+                    "piutang.no_rkm_medis like ? or piutang.nm_pasien like ? or piutang.nip like ? or petugas.nama like ?) ")+
+                    "group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
+            try {
+                ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
+                ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                    ps.setString(6,"%"+TCari.getText()+"%");
+                    ps.setString(7,"%"+TCari.getText()+"%");
+                }   
+                rs=ps.executeQuery();
+                total=0;
+                totalppn=0;
+                totalsemua=0;
+                while(rs.next()){
+                    total=total+rs.getDouble("total");
+                    totalppn=totalppn+rs.getDouble("ppn");
+                    totalsemua=totalsemua+rs.getDouble("total")+rs.getDouble("ppn");
+                    tabMode6.addRow(new Object[]{
+                        rs.getString("tgl_piutang"),rs.getString("nota_piutang"),rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien"),
+                        rs.getString("nip")+" "+rs.getString("nama"),rs.getDouble("total"),rs.getDouble("ppn"),(rs.getDouble("total")+rs.getDouble("ppn"))
+                    });
+                }
+                if(total>0){
+                    tabMode6.addRow(new Object[]{
+                        "","","Total :","",total,totalppn,totalsemua
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }  
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
         }
     }
 

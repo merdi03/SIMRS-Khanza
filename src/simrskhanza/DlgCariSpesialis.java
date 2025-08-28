@@ -44,7 +44,6 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
     private PreparedStatement ps;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -102,7 +101,6 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
             });
         }
     }
-    private DlgSpesialis png_jawab=new DlgSpesialis(null,false);
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -294,8 +292,7 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        
-        //png_jawab.setModal(true);
+        DlgSpesialis png_jawab=new DlgSpesialis(null,false);
         png_jawab.emptTeks();
         png_jawab.isCek();
         png_jawab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -369,13 +366,13 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
             file=new File("./cache/spesialis.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement("select * from spesialis order by spesialis.nm_sps ");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{rs.getString(1),rs.getString(2)});
-                    iyem=iyem+"{\"KodeSpesialis\":\""+rs.getString(1)+"\",\"NamaSpesialis\":\""+rs.getString(2)+"\"},";
+                    tabMode.addRow(new Object[]{rs.getString(1),rs.getString(2)});
+                    iyembuilder.append("{\"KodeSpesialis\":\"").append(rs.getString(1)).append("\",\"NamaSpesialis\":\"").append(rs.getString(2)).append("\"},");
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -387,10 +384,15 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
                     ps.close();
                 }
             }
-            fileWriter.write("{\"spesialis\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"spesialis\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -422,7 +424,11 @@ public final class DlgCariSpesialis extends javax.swing.JDialog {
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampil();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
         LCount.setText(""+tabMode.getRowCount());
     }

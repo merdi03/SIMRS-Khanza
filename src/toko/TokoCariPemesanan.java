@@ -31,7 +31,7 @@ public class TokoCariPemesanan extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
-    public  TokoSuplier suplier=new TokoSuplier(null,false);
+    public  TokoCariSuplier suplier=new TokoCariSuplier(null,false);
     public  DlgCariPetugas petugas=new DlgCariPetugas(null,false);
     public  TokoBarang barang=new TokoBarang(null,false);
     private riwayattoko Trackbarang=new riwayattoko();
@@ -943,23 +943,34 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         
                           if(sukses==true){
                               Sequel.queryu("delete from tampjurnal");
-                              Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
+                              if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{
                                   Sequel.cariIsi("select Penerimaan_Toko from set_akun"),"PERSEDIAAN BARANG TOKO","0",rs.getString("total")
-                              });    
+                              })==false){
+                                    sukses=false;
+                              }    
                               if(rs.getDouble("ppn")>0){
-                                    Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
+                                    if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{
                                         Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Toko","0",rs.getString("ppn")
-                                    }); 
+                                    })==false){
+                                        sukses=false;
+                                    } 
                               }
-                              Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
+                              if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{
                                   Sequel.cariIsi("select Kontra_Penerimaan_Toko from set_akun"),"HUTANG BARANG TOKO",rs.getString("tagihan"),"0"
-                              }); 
-                              sukses=jur.simpanJurnal(rs.getString("no_faktur"),"U","BATAL TRANSAKSI PENERIMAAN TOKO"+", OLEH "+akses.getkode());
+                              })==false){
+                                    sukses=false;
+                              } 
+                              if(sukses==true){
+                                    sukses=jur.simpanJurnal(rs.getString("no_faktur"),"U","BATAL TRANSAKSI PENERIMAAN TOKO"+", OLEH "+akses.getkode());
+                              }
                           }     
                                
                           if(sukses==true){
+                              sukses=Sequel.queryu2tf("delete from tokopemesanan where no_faktur=?",1,new String[]{tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()});
+                          }
+                          
+                          if(sukses==true){
                               Sequel.Commit();
-                              Sequel.queryu2("delete from tokopemesanan where no_faktur=?",1,new String[]{tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()});
                               tampil();
                           }else{
                               JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menghapus..!!");

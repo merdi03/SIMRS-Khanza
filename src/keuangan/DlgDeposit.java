@@ -826,9 +826,15 @@ public class DlgDeposit extends javax.swing.JDialog {
                            for(JsonNode list:response){
                                if(list.path("NamaAkun").asText().equals(AkunBayar.getSelectedItem().toString())){
                                     Sequel.queryu("delete from tampjurnal");                    
-                                    Sequel.menyimpan("tampjurnal","'"+list.path("KodeRek").asText()+"','"+AkunBayar.getSelectedItem()+"','"+BesarDeposit.getText()+"','0'","Rekening"); 
-                                    Sequel.menyimpan("tampjurnal","'"+Uang_Muka_Ranap+"','UANG MUKA RANAP','0','"+BesarDeposit.getText()+"'","Rekening");    
-                                    sukses=jur.simpanJurnal(Nomor.getText(),"U","DEPOSIT PASIEN "+TNoRw.getText()+" "+TNoRM.getText()+" "+TPasien.getText()+", OLEH "+akses.getkode()); 
+                                    if(Sequel.menyimpantf2("tampjurnal","'"+list.path("KodeRek").asText()+"','"+AkunBayar.getSelectedItem()+"','"+BesarDeposit.getText()+"','0'","Rekening")==false){
+                                        sukses=false;
+                                    }  
+                                    if(Sequel.menyimpantf2("tampjurnal","'"+Uang_Muka_Ranap+"','UANG MUKA RANAP','0','"+BesarDeposit.getText()+"'","Rekening")==false){
+                                        sukses=false;
+                                    }
+                                    if(sukses==true){
+                                        sukses=jur.simpanJurnal(Nomor.getText(),"U","DEPOSIT PASIEN "+TNoRw.getText()+" "+TNoRM.getText()+" "+TPasien.getText()+", OLEH "+akses.getkode()); 
+                                    }
                                     if(sukses==true){
                                         sukses=Sequel.menyimpantf2("tagihan_sadewa","'"+Nomor.getText()+"','"+TNoRM.getText()+"','"+TPasien.getText().replaceAll("'","")+"','-','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem()+"','Uang Muka','"+BesarDeposit.getText()+"','"+BesarDeposit.getText()+"','Belum','"+akses.getkode()+"'","No.Deposit");
                                     }
@@ -908,9 +914,15 @@ public class DlgDeposit extends javax.swing.JDialog {
                         tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
                     })==true){
                         Sequel.queryu2("delete from tampjurnal"); 
-                        Sequel.menyimpan("tampjurnal","'"+Uang_Muka_Ranap+"','UANG MUKA RANAP','"+BesarDeposit.getText()+"','0'","Rekening");    
-                        Sequel.menyimpan("tampjurnal","'"+tbObat.getValueAt(tbObat.getSelectedRow(),12).toString()+"','"+AkunBayar.getSelectedItem()+"','0','"+BesarDeposit.getText()+"'","Rekening"); 
-                        sukses=jur.simpanJurnal(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),"U","PEMBATALAN DEPOSIT PASIEN "+TNoRw.getText()+" "+TNoRM.getText()+" "+TPasien.getText()+", OLEH "+akses.getkode()); 
+                        if(Sequel.menyimpantf2("tampjurnal","'"+Uang_Muka_Ranap+"','UANG MUKA RANAP','"+BesarDeposit.getText()+"','0'","Rekening")==false){
+                            sukses=false;
+                        }    
+                        if(Sequel.menyimpantf2("tampjurnal","'"+tbObat.getValueAt(tbObat.getSelectedRow(),12).toString()+"','"+AkunBayar.getSelectedItem()+"','0','"+BesarDeposit.getText()+"'","Rekening")==false){
+                            sukses=false;
+                        }  
+                        if(sukses==true){
+                            sukses=jur.simpanJurnal(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),"U","PEMBATALAN DEPOSIT PASIEN "+TNoRw.getText()+" "+TNoRM.getText()+" "+TPasien.getText()+", OLEH "+akses.getkode());
+                        } 
                         if(sukses==true){
                             sukses=Sequel.queryu2tf("delete from tagihan_sadewa where no_nota=?",1,new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()}); 
                         }
@@ -1246,7 +1258,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     totaldeposit=totaldeposit+rs.getDouble(7);
                     totalppn=totalppn+rs.getDouble(9);
                     tottaldibayar=tottaldibayar+rs.getDouble(10);
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),Valid.SetAngka(rs.getDouble(7)),
                         rs.getDouble(8)+"",Valid.SetAngka(rs.getDouble(9)),Valid.SetAngka(rs.getDouble(10)),rs.getString(11),rs.getString(12),rs.getString(13),
                         rs.getString(14)
@@ -1267,7 +1279,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }        
         LCount.setText(""+tabMode.getRowCount());
         if(tabMode.getRowCount()>0){
-            tabMode.addRow(new String[]{
+            tabMode.addRow(new Object[]{
                 "","Total :","","","","",Valid.SetAngka(totaldeposit),"",Valid.SetAngka(totalppn),Valid.SetAngka(tottaldibayar),"","","",""
             });
         }
@@ -1408,14 +1420,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
              file=new File("./cache/akunbayar.iyem");
              file.createNewFile();
              fileWriter = new FileWriter(file);
-             iyem="";
-             ps=koneksi.prepareStatement("select * from akun_bayar order by nama_bayar");
+             StringBuilder iyembuilder = new StringBuilder();
+             ps=koneksi.prepareStatement("select * from akun_bayar order by akun_bayar.nama_bayar");
              try{
                  rs=ps.executeQuery();
                  AkunBayar.removeAllItems();
                  while(rs.next()){    
                      AkunBayar.addItem(rs.getString(1).replaceAll("\"",""));
-                     iyem=iyem+"{\"NamaAkun\":\""+rs.getString(1).replaceAll("\"","")+"\",\"KodeRek\":\""+rs.getString(2)+"\",\"PPN\":\""+rs.getDouble(3)+"\"},";
+                     iyembuilder.append("{\"NamaAkun\":\"").append(rs.getString(1).replaceAll("\"","")).append("\",\"KodeRek\":\"").append(rs.getString(2)).append("\",\"PPN\":\"").append(rs.getDouble(3)).append("\"},");
                  }
              }catch (Exception e) {
                  System.out.println("Notifikasi : "+e);
@@ -1427,11 +1439,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                      ps.close();
                  } 
              }
-
-             fileWriter.write("{\"akunbayar\":["+iyem.substring(0,iyem.length()-1)+"]}");
-             fileWriter.flush();
+             
+             if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"akunbayar\":["+iyembuilder+"]}");
+                fileWriter.flush();
+             }
+            
              fileWriter.close();
-             iyem=null;
+             iyembuilder=null;
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
@@ -1449,7 +1465,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampilAkunBayar();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
     } 
 

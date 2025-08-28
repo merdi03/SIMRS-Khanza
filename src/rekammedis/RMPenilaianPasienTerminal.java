@@ -132,15 +132,15 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
 
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         NIP.setDocument(new batasInput((byte)20).getKata(NIP));
-        Diagnosa.setDocument(new batasInput((int)100).getKata(Diagnosa));
-        RPS.setDocument(new batasInput((int)300).getKata(RPS));
-        RPD.setDocument(new batasInput((int)100).getKata(RPD));
+        Diagnosa.setDocument(new batasInput((int)500).getKata(Diagnosa));
+        RPS.setDocument(new batasInput((int)500).getKata(RPS));
+        RPD.setDocument(new batasInput((int)500).getKata(RPD));
         TD.setDocument(new batasInput((byte)8).getKata(TD));
         Nadi.setDocument(new batasInput((byte)5).getKata(Nadi));
         Suhu.setDocument(new batasInput((byte)5).getKata(Suhu));
         RR.setDocument(new batasInput((byte)5).getKata(RR));
         SPO.setDocument(new batasInput((byte)5).getKata(SPO));
-        KebutuhanSpiritual.setDocument(new batasInput((int)300).getKata(KebutuhanSpiritual));
+        KebutuhanSpiritual.setDocument(new batasInput((int)500).getKata(KebutuhanSpiritual));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
         if(koneksiDB.CARICEPAT().equals("aktif")){
@@ -316,7 +316,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
         MnPenilaianPasienTerminal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnPenilaianPasienTerminal.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianPasienTerminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnPenilaianPasienTerminal.setText("Formulir Penilaian Pasien Terminal");
+        MnPenilaianPasienTerminal.setText("Formulir Pengkajian Pasien Terminal");
         MnPenilaianPasienTerminal.setName("MnPenilaianPasienTerminal"); // NOI18N
         MnPenilaianPasienTerminal.setPreferredSize(new java.awt.Dimension(290, 26));
         MnPenilaianPasienTerminal.addActionListener(new java.awt.event.ActionListener() {
@@ -336,7 +336,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Penilaian Pasien Terminal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Pasien Terminal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -1105,7 +1105,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
                 Nadi.getText(),Suhu.getText(),RR.getText(),SPO.getText(),SkalaNyeri.getSelectedItem().toString(),MenjelangAjal.getSelectedItem().toString(), 
                 KlinisMenjelangKematian.getSelectedItem().toString(),KebutuhanSpiritual.getText(),NIP.getText()
             })==true){
-                tabMode.addRow(new String[]{
+                tabMode.addRow(new Object[]{
                     TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),JK.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),Diagnosa.getText(),RPS.getText(), 
                     RPD.getText(),KeadaanUmum.getSelectedItem().toString(),Kesadaran.getSelectedItem().toString(),TD.getText(),Nadi.getText(),Suhu.getText(),
                     RR.getText(),SPO.getText(),SkalaNyeri.getSelectedItem().toString(),MenjelangAjal.getSelectedItem().toString(),KlinisMenjelangKematian.getSelectedItem().toString(),
@@ -1314,7 +1314,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
                                         "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
                                         akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
                                         akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA PENILAIAN PASIEN TERMINAL<br><br></font>"+        
+                                        "<font size='2' face='Tahoma'>DATA PENGKAJIAN PASIEN TERMINAL<br><br></font>"+        
                                     "</td>"+
                                "</tr>"+
                             "</table>")
@@ -1452,7 +1452,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),20).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),21).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),20).toString():finger)+"\n"+Tanggal.getSelectedItem());
-            Valid.MyReportqry("rptFormulirPenilaianPasienTerminal.jasper","report","::[ Formulir Penilaian Pasien Terminal ]::",
+            Valid.MyReportqry("rptFormulirPenilaianPasienTerminal.jasper","report","::[ Formulir Pengkajian Pasien Terminal ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,penilaian_pasien_terminal.tanggal,"+
                     "penilaian_pasien_terminal.diagnosa,penilaian_pasien_terminal.rps,penilaian_pasien_terminal.rpd,penilaian_pasien_terminal.keadaan_umum,"+
                     "penilaian_pasien_terminal.kesadaran,penilaian_pasien_terminal.td,penilaian_pasien_terminal.nadi,penilaian_pasien_terminal.suhu,"+
@@ -1670,8 +1670,8 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
                 
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
+                    tabMode.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getDate("tgl_lahir"),rs.getString("jk"),rs.getString("tanggal"),
                         rs.getString("diagnosa"),rs.getString("rps"),rs.getString("rpd"),rs.getString("keadaan_umum"),rs.getString("kesadaran"),rs.getString("td"),
                         rs.getString("nadi"),rs.getString("suhu"),rs.getString("rr"),rs.getString("spo2"),rs.getString("skala_nyeri"),rs.getString("tahap_pasien_menjelang_ajal"),
                         rs.getString("tanda_klinis_menjelang_kematian"),rs.getString("kebutuhan_spiritual_pasien"),rs.getString("nip"),rs.getString("nama")
@@ -1789,7 +1789,7 @@ public final class RMPenilaianPasienTerminal extends javax.swing.JDialog {
                 ChkInput.setVisible(true);
             }else{
                 ChkInput.setVisible(false);
-                PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-172));
+                PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-175));
                 FormInput.setVisible(true);      
                 ChkInput.setVisible(true);
             }

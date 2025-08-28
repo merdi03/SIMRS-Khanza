@@ -523,6 +523,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                   "</table>"+
                 "</html>"
             );
+            htmlContent=null;
 
             File g = new File("file2.css");            
             BufferedWriter bg = new BufferedWriter(new FileWriter(g));
@@ -928,6 +929,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_clinicalimpression());
+        BtnUpdate.setEnabled(akses.getsatu_sehat_kirim_clinicalimpression());
         BtnPrint.setEnabled(akses.getsatu_sehat_kirim_clinicalimpression());
     }
     

@@ -563,6 +563,7 @@ public final class SatuSehatKirimMedicationRequest extends javax.swing.JDialog {
                       "</table>"+
                     "</html>"
                 );
+                htmlContent=null;
 
                 File g = new File("file2.css");            
                 BufferedWriter bg = new BufferedWriter(new FileWriter(g));
@@ -1396,6 +1397,7 @@ public final class SatuSehatKirimMedicationRequest extends javax.swing.JDialog {
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_medicationrequest());
+        BtnUpdate.setEnabled(akses.getsatu_sehat_kirim_medicationrequest());
         BtnPrint.setEnabled(akses.getsatu_sehat_kirim_medicationrequest());
     }
     

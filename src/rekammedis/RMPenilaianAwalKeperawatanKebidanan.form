@@ -69,7 +69,7 @@
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
-                        <StringItem index="0" value="06-12-2023"/>
+                        <StringItem index="0" value="27-04-2024"/>
                       </StringArray>
                     </Property>
                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -360,6 +360,14 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="widget.TextBox" name="TanggalRegistrasi">
+      <Properties>
+        <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="null"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="TanggalRegistrasi" noResource="true"/>
+      </Properties>
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
@@ -392,7 +400,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="::[ Penilaian Awal Keperawatan Rawat Jalan Kebidanan &amp; Kandungan ]::">
+            <TitledBorder title="::[ Pengkajian Awal Keperawatan Rawat Jalan Kebidanan &amp; Kandungan ]::">
               <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                 <LineBorder>
                   <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
@@ -578,9 +586,6 @@
             </Property>
             <Property name="name" type="java.lang.String" value="TabRawat" noResource="true"/>
           </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="TabRawatMouseClicked"/>
-          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="Center"/>
@@ -598,8 +603,8 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Input Penilaian">
-                    <Property name="tabTitle" type="java.lang.String" value="Input Penilaian"/>
+                  <JTabbedPaneConstraints tabName="Input Pengkajian">
+                    <Property name="tabTitle" type="java.lang.String" value="Input Pengkajian"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -1136,7 +1141,7 @@
                             </Property>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="06-12-2023 06:19:08"/>
+                                <StringItem index="0" value="27-04-2024 07:02:36"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -2648,7 +2653,7 @@
                             </Property>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="06-12-2023"/>
+                                <StringItem index="0" value="27-04-2024"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -2719,7 +2724,7 @@
                             </Property>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="06-12-2023"/>
+                                <StringItem index="0" value="27-04-2024"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -3903,7 +3908,7 @@
                         <Component class="widget.Label" name="jLabel141">
                           <Properties>
                             <Property name="horizontalAlignment" type="int" value="2"/>
-                            <Property name="text" type="java.lang.String" value="VI. PENILAIAN RESIKO JATUH"/>
+                            <Property name="text" type="java.lang.String" value="VI. PENGKAJIAN RESIKO JATUH"/>
                             <Property name="name" type="java.lang.String" value="jLabel141" noResource="true"/>
                           </Properties>
                           <Constraints>
@@ -4297,7 +4302,7 @@
                         <Component class="widget.Label" name="jLabel155">
                           <Properties>
                             <Property name="horizontalAlignment" type="int" value="2"/>
-                            <Property name="text" type="java.lang.String" value="VIII. PENILAIAN TINGKAT NYERI"/>
+                            <Property name="text" type="java.lang.String" value="VIII. PENGKAJIAN TINGKAT NYERI"/>
                             <Property name="name" type="java.lang.String" value="jLabel155" noResource="true"/>
                           </Properties>
                           <Constraints>
@@ -4877,8 +4882,8 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Data Penilaian">
-                    <Property name="tabTitle" type="java.lang.String" value="Data Penilaian"/>
+                  <JTabbedPaneConstraints tabName="Data Pengkajian">
+                    <Property name="tabTitle" type="java.lang.String" value="Data Pengkajian"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -4950,7 +4955,7 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="06-12-2023"/>
+                            <StringItem index="0" value="27-04-2024"/>
                           </StringArray>
                         </Property>
                         <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -4978,7 +4983,7 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="06-12-2023"/>
+                            <StringItem index="0" value="27-04-2024"/>
                           </StringArray>
                         </Property>
                         <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -5226,9 +5231,9 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="widget.Table" name="tbRiwayatKehamilan1">
+                            <Component class="widget.Table" name="tbRiwayatKehamilan2">
                               <Properties>
-                                <Property name="name" type="java.lang.String" value="tbRiwayatKehamilan1" noResource="true"/>
+                                <Property name="name" type="java.lang.String" value="tbRiwayatKehamilan2" noResource="true"/>
                               </Properties>
                             </Component>
                           </SubComponents>

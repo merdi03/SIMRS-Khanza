@@ -759,9 +759,15 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         if(sukses==true){
                             if(ttl>0){
                                 Sequel.queryu("delete from tampjurnal");
-                                Sequel.menyimpan2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Stok_Keluar_Medis from set_akun"),"PERSEDIAAN BARANG","0",""+(ttl)});
-                                Sequel.menyimpan2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Kontra_Stok_Keluar_Medis from set_akun"),"KONTRA PERSEDIAAN BARANG",""+(ttl),"0"}); 
-                                sukses=jur.simpanJurnal(NoKeluar.getText(),"U","STOK KELUAR BARANG MEDIS/OBAT/ALKES/BHP"+", OLEH "+akses.getkode());
+                                if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Stok_Keluar_Medis from set_akun"),"PERSEDIAAN BARANG","0",""+(ttl)})==false){
+                                    sukses=false;
+                                }
+                                if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Kontra_Stok_Keluar_Medis from set_akun"),"KONTRA PERSEDIAAN BARANG",""+(ttl),"0"})==false){
+                                    sukses=false;
+                                }
+                                if(sukses==true){
+                                    sukses=jur.simpanJurnal(NoKeluar.getText(),"U","STOK KELUAR BARANG MEDIS/OBAT/ALKES/BHP"+", OLEH "+akses.getkode());
+                                }
                             }
                         }
                     } catch (Exception ex) {
@@ -1098,19 +1104,17 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             if(aktifkanbatch.equals("yes")){
                 ps=koneksi.prepareStatement(
                     "select data_batch.kode_brng, databarang.nama_brng,jenis.nama,databarang.kode_sat,data_batch."+hppfarmasi+" as dasar,gudangbarang.stok,data_batch.no_batch,data_batch.no_faktur "+
-                    " from data_batch inner join databarang on data_batch.kode_brng=databarang.kode_brng "+
-                    " inner join jenis on databarang.kdjns=jenis.kdjns "+
-                    " inner join gudangbarang on data_batch.kode_brng=gudangbarang.kode_brng and data_batch.no_batch=gudangbarang.no_batch and data_batch.no_faktur=gudangbarang.no_faktur "+
-                    " where gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.kode_brng like ? or "+
-                    " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and databarang.nama_brng like ? or "+
-                    " gudangbarang.stok>0 and gudangbarang.kd_bangsal=? and jenis.nama like ? order by databarang.nama_brng");
+                    "from data_batch inner join databarang on data_batch.kode_brng=databarang.kode_brng inner join jenis on databarang.kdjns=jenis.kdjns inner join gudangbarang "+
+                    "on data_batch.kode_brng=gudangbarang.kode_brng and data_batch.no_batch=gudangbarang.no_batch and data_batch.no_faktur=gudangbarang.no_faktur "+
+                    "where gudangbarang.stok>0 and gudangbarang.kd_bangsal=? "+(TCari.getText().trim().equals("")?"":"and (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?) ")+
+                    "order by databarang.nama_brng");
                 try {
                     ps.setString(1,kdgudang.getText());
-                    ps.setString(2,"%"+TCari.getText().trim()+"%");
-                    ps.setString(3,kdgudang.getText());
-                    ps.setString(4,"%"+TCari.getText().trim()+"%");
-                    ps.setString(5,kdgudang.getText());
-                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    if(!TCari.getText().trim().equals("")){
+                        ps.setString(2,"%"+TCari.getText().trim()+"%");
+                        ps.setString(3,"%"+TCari.getText().trim()+"%");
+                        ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    }
                     rs=ps.executeQuery();
                     while(rs.next()){
                         tabMode.addRow(new Object[]{
@@ -1132,18 +1136,17 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             }else{
                 ps=koneksi.prepareStatement(
                     "select databarang.kode_brng, databarang.nama_brng,jenis.nama,databarang.kode_sat, databarang."+hppfarmasi+" as dasar,gudangbarang.stok  "+
-                    " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
-                    " inner join gudangbarang on databarang.kode_brng=gudangbarang.kode_brng "+
-                    " where gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and databarang.status='1' and gudangbarang.kd_bangsal=? and databarang.kode_brng like ? or "+
-                    " gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and databarang.status='1' and gudangbarang.kd_bangsal=? and databarang.nama_brng like ? or "+
-                    " gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and databarang.status='1' and gudangbarang.kd_bangsal=? and jenis.nama like ? order by databarang.nama_brng");
+                    "from databarang inner join jenis on databarang.kdjns=jenis.kdjns inner join gudangbarang on databarang.kode_brng=gudangbarang.kode_brng "+
+                    "where gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.stok>0 and databarang.status='1' and gudangbarang.kd_bangsal=? "+
+                    (TCari.getText().trim().equals("")?"":"and (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?) ")+
+                    "order by databarang.nama_brng");
                 try {
                     ps.setString(1,kdgudang.getText());
-                    ps.setString(2,"%"+TCari.getText().trim()+"%");
-                    ps.setString(3,kdgudang.getText());
-                    ps.setString(4,"%"+TCari.getText().trim()+"%");
-                    ps.setString(5,kdgudang.getText());
-                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    if(!TCari.getText().trim().equals("")){
+                        ps.setString(2,"%"+TCari.getText().trim()+"%");
+                        ps.setString(3,"%"+TCari.getText().trim()+"%");
+                        ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    }
                     rs=ps.executeQuery();
                     while(rs.next()){
                         tabMode.addRow(new Object[]{
@@ -1265,7 +1268,6 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
         LTotal.setText(Valid.SetAngka(ttl));
     }
-    
   
     
     public void isCek(){

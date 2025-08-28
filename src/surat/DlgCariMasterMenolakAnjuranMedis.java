@@ -40,13 +40,11 @@ import javax.swing.table.TableColumn;
 public final class DlgCariMasterMenolakAnjuranMedis extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
-    private sekuel Sequel=new sekuel();
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -379,13 +377,13 @@ public final class DlgCariMasterMenolakAnjuranMedis extends javax.swing.JDialog 
             file=new File("./cache/masterMAM.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement("select * from master_menolak_anjuran_medis order by master_menolak_anjuran_medis.kode_penolakan");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{rs.getString(1),rs.getString(2) });
-                    iyem=iyem+"{\"KodePenolakan\":\""+rs.getString(1)+"\",\"NamaPenolakan\":\""+rs.getString(2).replaceAll("\"","")+"\"},";
+                    iyembuilder.append("{\"KodePenolakan\":\"").append(rs.getString(1)).append("\",\"NamaPenolakan\":\"").append(rs.getString(2).replaceAll("\"","")).append("\"},");
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -397,10 +395,14 @@ public final class DlgCariMasterMenolakAnjuranMedis extends javax.swing.JDialog 
                     ps.close();
                 }
             }    
-            fileWriter.write("{\"masterMAM\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"masterMAM\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -426,17 +428,29 @@ public final class DlgCariMasterMenolakAnjuranMedis extends javax.swing.JDialog 
             Valid.tabelKosong(tabMode);
             response = root.path("masterMAM");
             if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NamaPenolakan").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
+                if(TCari.getText().trim().equals("")){
+                    for(JsonNode list:response){
                         tabMode.addRow(new Object[]{
                             list.path("KodePenolakan").asText(),list.path("NamaPenolakan").asText()
                         });
+                    }
+                }else{
+                    for(JsonNode list:response){
+                        if(list.path("NamaPenolakan").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
+                            tabMode.addRow(new Object[]{
+                                list.path("KodePenolakan").asText(),list.path("NamaPenolakan").asText()
+                            });
+                        }
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampil();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
         LCount.setText(""+tabMode.getRowCount());
     }

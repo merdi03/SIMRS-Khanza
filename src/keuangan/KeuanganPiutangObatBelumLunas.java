@@ -47,7 +47,6 @@ public final class KeuanganPiutangObatBelumLunas extends javax.swing.JDialog {
     private boolean sukses=true;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -683,17 +682,27 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                             Diskon_Piutang,tabMode.getValueAt(i,13).toString(),Piutang_Tidak_Terbayar
                         })==true){
                             Sequel.queryu("delete from tampjurnal");                    
-                            Sequel.menyimpan("tampjurnal","'"+akunpiutang+"','BAYAR PIUTANG','0','"+(Double.parseDouble(tabMode.getValueAt(i,11).toString())+Double.parseDouble(tabMode.getValueAt(i,12).toString())+Double.parseDouble(tabMode.getValueAt(i,13).toString()))+"'","Rekening");    
+                            if(Sequel.menyimpantf2("tampjurnal","'"+akunpiutang+"','BAYAR PIUTANG','0','"+(Double.parseDouble(tabMode.getValueAt(i,11).toString())+Double.parseDouble(tabMode.getValueAt(i,12).toString())+Double.parseDouble(tabMode.getValueAt(i,13).toString()))+"'","Rekening")==false){
+                                sukses=false;
+                            }    
                             if(Double.parseDouble(tabMode.getValueAt(i,11).toString())>0){
-                                Sequel.menyimpan("tampjurnal","'"+koderekening+"','"+AkunBayar.getSelectedItem()+"','"+tabMode.getValueAt(i,11).toString()+"','0'","Rekening"); 
+                                if(Sequel.menyimpantf2("tampjurnal","'"+koderekening+"','"+AkunBayar.getSelectedItem()+"','"+tabMode.getValueAt(i,11).toString()+"','0'","Rekening")==false){
+                                    sukses=false;
+                                } 
                             }
                             if(Double.parseDouble(tabMode.getValueAt(i,12).toString())>0){
-                                Sequel.menyimpan("tampjurnal","'"+Diskon_Piutang+"','DISKON BAYAR','"+tabMode.getValueAt(i,12).toString()+"','0'","Rekening");
+                               if(Sequel.menyimpantf2("tampjurnal","'"+Diskon_Piutang+"','DISKON BAYAR','"+tabMode.getValueAt(i,12).toString()+"','0'","Rekening")==false){
+                                    sukses=false;
+                               }
                             }
                             if(Double.parseDouble(tabMode.getValueAt(i,13).toString())>0){
-                                Sequel.menyimpan("tampjurnal","'"+Piutang_Tidak_Terbayar+"','PIUTANG TIDAK TERBAYAR','"+tabMode.getValueAt(i,13).toString()+"','0'","Rekening"); 
+                                if(Sequel.menyimpantf2("tampjurnal","'"+Piutang_Tidak_Terbayar+"','PIUTANG TIDAK TERBAYAR','"+tabMode.getValueAt(i,13).toString()+"','0'","Rekening")==false){
+                                    sukses=false;
+                                } 
                             }
-                            sukses=jur.simpanJurnal(tabMode.getValueAt(i,1).toString(),"U","BAYAR PIUTANG"+", OLEH "+akses.getkode());                   
+                            if(sukses==true){
+                                sukses=jur.simpanJurnal(tabMode.getValueAt(i,1).toString(),"U","BAYAR PIUTANG"+", OLEH "+akses.getkode());
+                            }                   
                         }else{
                             sukses=false;
                         }
@@ -904,7 +913,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
             ps=koneksi.prepareStatement(
                     "select piutang.nota_piutang,piutang.tgl_piutang,piutang.no_rkm_medis,piutang.nm_pasien,piutang.catatan,piutang.ongkir,piutang.uangmuka,piutang.sisapiutang,"+
                     "piutang.tgltempo,(select ifnull(SUM(bayar_piutang.besar_cicilan)+SUM(bayar_piutang.diskon_piutang)+SUM(bayar_piutang.tidak_terbayar),0) from bayar_piutang where bayar_piutang.no_rawat=piutang.nota_piutang) as cicilan  "+
-                    "from piutang "+(TCari.getText().trim().equals("")?"":"where piutang.nota_piutang like ? or petugas.nama like ? or "+
+                    "from piutang "+(TCari.getText().trim().equals("")?"":"where piutang.nota_piutang like ? or piutang.tgl_piutang like ? or "+
                     "piutang.no_rkm_medis like ? or piutang.nm_pasien like ?")+" having piutang.sisapiutang-cicilan>0 order by piutang.tgl_piutang");
             try {
                 if(!TCari.getText().trim().equals("")){
@@ -1039,14 +1048,14 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
              file=new File("./cache/akunbayar.iyem");
              file.createNewFile();
              fileWriter = new FileWriter(file);
-             iyem="";
+             StringBuilder iyembuilder = new StringBuilder();
              ps=koneksi.prepareStatement("select * from akun_bayar order by akun_bayar.nama_bayar");
              try{
                  rs=ps.executeQuery();
                  AkunBayar.removeAllItems();
                  while(rs.next()){    
                      AkunBayar.addItem(rs.getString(1).replaceAll("\"",""));
-                     iyem=iyem+"{\"NamaAkun\":\""+rs.getString(1).replaceAll("\"","")+"\",\"KodeRek\":\""+rs.getString(2)+"\",\"PPN\":\""+rs.getDouble(3)+"\"},";
+                     iyembuilder.append("{\"NamaAkun\":\"").append(rs.getString(1).replaceAll("\"","")).append("\",\"KodeRek\":\"").append(rs.getString(2)).append("\",\"PPN\":\"").append(rs.getDouble(3)).append("\"},");
                  }
              }catch (Exception e) {
                  System.out.println("Notifikasi : "+e);
@@ -1058,11 +1067,15 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                      ps.close();
                  } 
              }
-
-             fileWriter.write("{\"akunbayar\":["+iyem.substring(0,iyem.length()-1)+"]}");
-             fileWriter.flush();
+             
+             if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"akunbayar\":["+iyembuilder+"]}");
+                fileWriter.flush();
+             }
+            
              fileWriter.close();
-             iyem=null;
+             iyembuilder=null;
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
@@ -1080,7 +1093,11 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampilAkunBayar();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
     } 
 }

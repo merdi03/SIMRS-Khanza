@@ -904,7 +904,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         jLabel28.setBounds(362, 10, 90, 23);
 
         PrimerTanggalTriase.setForeground(new java.awt.Color(50, 70, 50));
-        PrimerTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-06-2022 22:54:21" }));
+        PrimerTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:45" }));
         PrimerTanggalTriase.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         PrimerTanggalTriase.setName("PrimerTanggalTriase"); // NOI18N
         PrimerTanggalTriase.setOpaque(false);
@@ -1331,7 +1331,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         jLabel37.setBounds(362, 10, 90, 23);
 
         SekunderTanggalTriase.setForeground(new java.awt.Color(50, 70, 50));
-        SekunderTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-06-2022 22:54:22" }));
+        SekunderTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:46" }));
         SekunderTanggalTriase.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         SekunderTanggalTriase.setName("SekunderTanggalTriase"); // NOI18N
         SekunderTanggalTriase.setOpaque(false);
@@ -1625,7 +1625,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         jLabel18.setBounds(0, 40, 89, 23);
 
         TanggalKunjungan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-06-2022 22:54:22" }));
+        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:47" }));
         TanggalKunjungan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalKunjungan.setName("TanggalKunjungan"); // NOI18N
         TanggalKunjungan.setOpaque(false);
@@ -1674,7 +1674,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         FormInput.add(jLabel23);
         jLabel23.setBounds(431, 40, 130, 23);
 
-        AlasanKedatangan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Datang Sendiri", "Polisi", "Rujukan", "-" }));
+        AlasanKedatangan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Datang Sendiri", "Polisi", "Rujukan", "Bidan", "Puskesmas", "Rumah Sakit", "Poliklinik", "Faskes Lain", "-" }));
         AlasanKedatangan.setName("AlasanKedatangan"); // NOI18N
         AlasanKedatangan.setPreferredSize(new java.awt.Dimension(55, 28));
         AlasanKedatangan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1784,7 +1784,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-06-2022" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -1798,7 +1798,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-06-2022" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1854,7 +1854,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         PanelAccor.setPreferredSize(new java.awt.Dimension(470, 43));
         PanelAccor.setLayout(new java.awt.BorderLayout(1, 1));
 
-        ChkAccor.setBackground(new java.awt.Color(255,250,250));
+        ChkAccor.setBackground(new java.awt.Color(255, 250, 250));
         ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png"))); // NOI18N
         ChkAccor.setSelected(true);
         ChkAccor.setFocusable(false);
@@ -3085,7 +3085,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                         Valid.tabelKosong(tabModeSkala1);
                                         rs2.beforeFirst();
                                         while(rs2.next()){
-                                            tabModePemeriksaan.addRow(new String[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
+                                            tabModePemeriksaan.addRow(new Object[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
                                             ps3=koneksi.prepareStatement(
                                                     "select master_triase_skala1.kode_skala1,master_triase_skala1.pengkajian_skala1 from master_triase_skala1 inner join data_triase_igddetail_skala1 "+
                                                     "on master_triase_skala1.kode_skala1=data_triase_igddetail_skala1.kode_skala1 where "+
@@ -3136,7 +3136,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                         Valid.tabelKosong(tabModeSkala2);
                                         rs2.beforeFirst();
                                         while(rs2.next()){
-                                            tabModePemeriksaan.addRow(new String[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
+                                            tabModePemeriksaan.addRow(new Object[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
                                             ps3=koneksi.prepareStatement(
                                                     "select master_triase_skala2.kode_skala2,master_triase_skala2.pengkajian_skala2 from master_triase_skala2 inner join data_triase_igddetail_skala2 "+
                                                     "on master_triase_skala2.kode_skala2=data_triase_igddetail_skala2.kode_skala2 where "+
@@ -3178,7 +3178,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                     PrimerKritis.setSelected(true);
                                 }
                                 
-                                PrimerTanggalTriase.setDate(rs.getDate("tanggaltriase"));
+                                Valid.SetTgl2(PrimerTanggalTriase,rs.getString("tanggaltriase"));
                                 PrimerCatatan.setText(rs.getString("catatan"));
                             }
                         } catch (Exception e) {
@@ -3227,7 +3227,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                         Valid.tabelKosong(tabModeSkala3);
                                         rs2.beforeFirst();
                                         while(rs2.next()){
-                                            tabModePemeriksaan2.addRow(new String[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
+                                            tabModePemeriksaan2.addRow(new Object[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
                                             ps3=koneksi.prepareStatement(
                                                     "select master_triase_skala3.kode_skala3,master_triase_skala3.pengkajian_skala3 from master_triase_skala3 inner join data_triase_igddetail_skala3 "+
                                                     "on master_triase_skala3.kode_skala3=data_triase_igddetail_skala3.kode_skala3 where "+
@@ -3278,7 +3278,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                         Valid.tabelKosong(tabModeSkala4);
                                         rs2.beforeFirst();
                                         while(rs2.next()){
-                                            tabModePemeriksaan2.addRow(new String[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
+                                            tabModePemeriksaan2.addRow(new Object[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
                                             ps3=koneksi.prepareStatement(
                                                     "select master_triase_skala4.kode_skala4,master_triase_skala4.pengkajian_skala4 from master_triase_skala4 inner join data_triase_igddetail_skala4 "+
                                                     "on master_triase_skala4.kode_skala4=data_triase_igddetail_skala4.kode_skala4 where "+
@@ -3329,7 +3329,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                         Valid.tabelKosong(tabModeSkala5);
                                         rs2.beforeFirst();
                                         while(rs2.next()){
-                                            tabModePemeriksaan2.addRow(new String[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
+                                            tabModePemeriksaan2.addRow(new Object[]{rs2.getString("kode_pemeriksaan"),rs2.getString("nama_pemeriksaan")});
                                             ps3=koneksi.prepareStatement(
                                                     "select master_triase_skala5.kode_skala5,master_triase_skala5.pengkajian_skala5 from master_triase_skala5 inner join data_triase_igddetail_skala5 "+
                                                     "on master_triase_skala5.kode_skala5=data_triase_igddetail_skala5.kode_skala5 where "+
@@ -3371,7 +3371,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                     SekunderZonaHijau.setSelected(true);
                                 }
                                 
-                                SekunderTanggalTriase.setDate(rs.getDate("tanggaltriase"));
+                                Valid.SetTgl2(SekunderTanggalTriase,rs.getString("tanggaltriase"));
                                 SekunderCatatan.setText(rs.getString("catatan"));
                             }
                         } catch (Exception e) {
@@ -4716,7 +4716,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 ps.setString(24,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_kunjungan"),
                         rs.getString("cara_masuk"),rs.getString("alat_transportasi"),rs.getString("alasan_kedatangan"),
                         rs.getString("keterangan_kedatangan"),rs.getString("kode_kasus"),rs.getString("macam_kasus")
@@ -4792,7 +4792,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 ps.setString(2,"%"+TCariPemeriksaan.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabModePemeriksaan.addRow(new String[]{rs.getString(1),rs.getString(2)});
+                    tabModePemeriksaan.addRow(new Object[]{rs.getString(1),rs.getString(2)});
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -4818,7 +4818,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 ps.setString(2,"%"+TCariPemeriksaan2.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabModePemeriksaan2.addRow(new String[]{rs.getString(1),rs.getString(2)});
+                    tabModePemeriksaan2.addRow(new Object[]{rs.getString(1),rs.getString(2)});
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);

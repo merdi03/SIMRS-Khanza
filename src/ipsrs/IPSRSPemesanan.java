@@ -48,7 +48,7 @@ public class IPSRSPemesanan extends javax.swing.JDialog {
     private boolean sukses=true;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
+    private String Penerimaan_NonMedis="",PPN_Masukan="",Kontra_Penerimaan_NonMedis="";
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -846,12 +846,20 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                    
                 if(sukses==true){
                     Sequel.queryu("delete from tampjurnal");
-                    Sequel.menyimpan("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Penerimaan_NonMedis from set_akun"),"PERSEDIAAN BARANG NON MEDIS",""+(ttl+meterai),"0"});
-                    if(ppn>0){
-                        Sequel.menyimpan2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Barang Non Medis",""+ppn,"0"});
+                    if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Penerimaan_NonMedis,"PERSEDIAAN BARANG NON MEDIS",""+(ttl+meterai),"0"})==false){
+                        sukses=false;
                     }
-                    Sequel.menyimpan("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select Kontra_Penerimaan_NonMedis from set_akun"),"HUTANG BARANG NON MEDIS","0",""+(ttl+ppn+meterai)}); 
-                    sukses=jur.simpanJurnal(NoFaktur.getText(),"U","PENERIMAAN BARANG NON MEDIS/PENUNJANG"+", OLEH "+akses.getkode());
+                    if(ppn>0){
+                        if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{PPN_Masukan,"PPN Masukan Barang Non Medis",""+ppn,"0"})==false){
+                            sukses=false;
+                        }
+                    }
+                    if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Kontra_Penerimaan_NonMedis,"HUTANG BARANG NON MEDIS","0",""+(ttl+ppn+meterai)})==false){
+                        sukses=false;
+                    }
+                    if(sukses==true){
+                        sukses=jur.simpanJurnal(NoFaktur.getText(),"U","PENERIMAAN BARANG NON MEDIS/PENUNJANG"+", OLEH "+akses.getkode());
+                    }
                 }
                 
                 if(sukses==true){
@@ -1045,6 +1053,15 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             } catch (Exception e) {
             }
         }
+        
+        try {
+            if(Valid.daysOld("./cache/akunpemesananipsrs.iyem")<8){
+                tampilAkun2();
+            }else{
+                tampilAkun();
+            }
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
@@ -1104,6 +1121,7 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
         tampil();
+        tampilAkun();
         LSubtotal.setText("0");
         LPotongan.setText("0");
         LTotal2.setText("0");
@@ -1192,7 +1210,7 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             file=new File("./cache/penerimaanipsrs.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement(
                     "select ipsrsbarang.kode_brng, concat(ipsrsbarang.nama_brng,' (',ipsrsbarang.jenis,')'),ipsrsbarang.kode_sat,ipsrsbarang.harga "+
                     " from ipsrsbarang where ipsrsbarang.status='1' order by ipsrsbarang.nama_brng");
@@ -1200,7 +1218,7 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{"",rs.getString(1),rs.getString(2),rs.getString(3),false,rs.getDouble(4),0,0,0,0});
-                    iyem=iyem+"{\"KodeBarang\":\""+rs.getString(1)+"\",\"NamaBarang\":\""+rs.getString(2).replaceAll("\"","")+"\",\"Satuan\":\""+rs.getString(3)+"\",\"HrgBeli\":\""+rs.getString(4)+"\"},";
+                    iyembuilder.append("{\"KodeBarang\":\""+rs.getString(1)+"\",\"NamaBarang\":\""+rs.getString(2).replaceAll("\"","")+"\",\"Satuan\":\""+rs.getString(3)+"\",\"HrgBeli\":\""+rs.getString(4)+"\"},");
                 }   
             }catch(Exception e){
                 System.out.println(e);
@@ -1211,11 +1229,16 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 if(ps!=null){
                     ps.close();
                 }
-            }             
-            fileWriter.write("{\"penerimaanipsrs\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            }           
+            
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"penerimaanipsrs\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;  
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -1268,6 +1291,17 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             for(i=0;i<jml;i++){
                 tabMode.addRow(new Object[]{jumlah[i],kodebarang[i],namabarang[i],satuan[i],ganti[i],harga[i],subtotal[i],diskon[i],besardiskon[i],jmltotal[i]});
             }
+            
+            kodebarang=null;
+            namabarang=null;
+            satuan=null;
+            harga=null;
+            jumlah=null;
+            subtotal=null;
+            diskon=null;
+            besardiskon=null;
+            jmltotal=null;
+            ganti=null;
             
             myObj = new FileReader("./cache/penerimaanipsrs.iyem");
             root = mapper.readTree(myObj);
@@ -1412,5 +1446,52 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             System.out.println("Notifikasi : "+e);
         }
     }
- 
+    
+    private void tampilAkun() {         
+         try{      
+             ps=koneksi.prepareStatement("select set_akun.Penerimaan_NonMedis,set_akun.PPN_Masukan,set_akun.Kontra_Penerimaan_NonMedis from set_akun");
+             try{
+                 rs=ps.executeQuery();
+                 if(rs.next()){    
+                     Penerimaan_NonMedis=rs.getString("Penerimaan_NonMedis");
+                     PPN_Masukan=rs.getString("PPN_Masukan");
+                     Kontra_Penerimaan_NonMedis=rs.getString("Kontra_Penerimaan_NonMedis");
+                     file=new File("./cache/akunpemesananipsrs.iyem");
+                     file.createNewFile();
+                     fileWriter = new FileWriter(file);
+                     fileWriter.write("{\"Penerimaan_NonMedis\":\""+Penerimaan_NonMedis+"\",\"PPN_Masukan\":\""+PPN_Masukan+"\",\"Kontra_Penerimaan_NonMedis\":\""+Kontra_Penerimaan_NonMedis+"\"}");
+                     fileWriter.flush();
+                     fileWriter.close();
+                 }
+             }catch (Exception e) {
+                 System.out.println("Notifikasi : "+e);
+             } finally{
+                 if(rs != null){
+                     rs.close();
+                 } 
+                 if(ps != null){
+                     ps.close();
+                 } 
+             }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+    
+    private void tampilAkun2() {
+        try {
+            myObj = new FileReader("./cache/akunpemesananipsrs.iyem");
+            root = mapper.readTree(myObj);
+            Penerimaan_NonMedis=root.path("Penerimaan_NonMedis").asText();
+            PPN_Masukan=root.path("PPN_Masukan").asText();
+            Kontra_Penerimaan_NonMedis=root.path("Kontra_Penerimaan_NonMedis").asText();
+            myObj.close();
+        } catch (Exception ex) {
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampilAkun();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
+        }
+    } 
 }

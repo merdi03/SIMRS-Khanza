@@ -676,6 +676,45 @@ public final class validasi {
     }
     
     @SuppressWarnings("empty-statement")
+    public void MyReportPDF2(String reportName,String reportDirName,String judul,Map parameters){
+        Properties systemProp = System.getProperties();
+
+        // Ambil current dir
+        String currentDir = systemProp.getProperty("user.dir");
+
+        File dir = new File(currentDir);
+
+        File fileRpt;
+        String fullPath = "";
+        if (dir.isDirectory()) {
+            String[] isiDir = dir.list();
+            for (String iDir : isiDir) {
+                fileRpt = new File(currentDir + File.separatorChar + iDir + File.separatorChar + reportDirName + File.separatorChar + reportName);
+                if (fileRpt.isFile()) { // Cek apakah file RptMaster.jasper ada
+                    fullPath = fileRpt.toString();
+                    System.out.println("Found Report File at : " + fullPath);
+                } // end if
+            } // end for i
+        } // end if
+
+        try {
+            try (Statement stm = connect.createStatement()) {
+                try {
+                    File f = new File("./"+reportDirName+"/"+reportName.replaceAll("jasper","pdf")); 
+                    String namafile="./"+reportDirName+"/"+reportName;
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(namafile, parameters, connect);
+                    JasperExportManager.exportReportToPdfFile(jasperPrint,"./"+reportDirName+"/"+reportName.replaceAll("jasper","pdf"));
+                } catch (Exception rptexcpt) {
+                    System.out.println("Report Can't view because : " + rptexcpt);
+                    JOptionPane.showMessageDialog(null,"Report Can't view because : "+ rptexcpt);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    @SuppressWarnings("empty-statement")
     public void MyReport2(String reportName,String reportDirName,String judul,Map parameters){
         Properties systemProp = System.getProperties();
 
@@ -869,6 +908,14 @@ public final class validasi {
         }
     }
     
+    public void pindah2(KeyEvent evt, Button kiri, Button kanan) {
+        if(evt.getKeyCode()==KeyEvent.VK_TAB){
+            kanan.requestFocus();
+        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+            kiri.requestFocus();
+        }
+    }
+    
     public void pindah2(java.awt.event.KeyEvent evt,JTextField kiri,JTextArea kanan){
         if(evt.getKeyCode()==KeyEvent.VK_TAB){
             kanan.requestFocus();
@@ -1048,6 +1095,14 @@ public final class validasi {
     }
 
     public void pindah(java.awt.event.KeyEvent evt,JButton kiri,JButton kanan){
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            kanan.requestFocus();
+        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+            kiri.requestFocus();
+        }
+    }
+    
+    public void pindah(java.awt.event.KeyEvent evt,JButton kiri,JCheckBox kanan){
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             kanan.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){

@@ -467,7 +467,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
         MnPenilaianMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnPenilaianMedis.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnPenilaianMedis.setText("Laporan Penilaian Pre Induksi");
+        MnPenilaianMedis.setText("Laporan Pengkajian Pre Induksi");
         MnPenilaianMedis.setName("MnPenilaianMedis"); // NOI18N
         MnPenilaianMedis.setPreferredSize(new java.awt.Dimension(220, 26));
         MnPenilaianMedis.addActionListener(new java.awt.event.ActionListener() {
@@ -481,7 +481,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Penilaian Pre Induksi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Pre Induksi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(467, 500));
@@ -1622,7 +1622,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
 
         internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
 
-        TabRawat.addTab("Input Penilaian", internalFrame2);
+        TabRawat.addTab("Input Pengkajian", internalFrame2);
 
         internalFrame3.setBorder(null);
         internalFrame3.setName("internalFrame3"); // NOI18N
@@ -1724,7 +1724,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
 
         internalFrame3.add(panelGlass9, java.awt.BorderLayout.PAGE_END);
 
-        TabRawat.addTab("Data Penilaian", internalFrame3);
+        TabRawat.addTab("Data Pengkajian", internalFrame3);
 
         internalFrame1.add(TabRawat, java.awt.BorderLayout.CENTER);
 
@@ -1766,7 +1766,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
                     TeknikRegionalLokasi.getText(),TeknikRegionalJenisJarum.getText(),TeknikRegionalKateter.getSelectedItem().toString(),TeknikRegionalKateterFiksasi.getText(),
                     TeknikRegionalObatobatan.getText(),TeknikRegionalKomplikasi.getText(),TeknikRegionalHasil.getText()
                 })==true){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),KdDokter.getText(),NmDokter.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),
                         TD.getText(),Nadi.getText(),RR.getText(),Suhu.getText(),EKG.getText(),Lainlain.getText(),Asesmen.getSelectedItem().toString(),Perencanaan.getText(),InfusPerifier.getText(),CVC.getText(),PosisiInfus.getSelectedItem().toString(),
                         Premedikasi.getSelectedItem().toString(),KeteranganPremedikasi.getText(),InfusInduksi.getSelectedItem().toString(),KeteranganInfusInduksi.getText(),FaceMaskNo.getText(),NasopharingNo.getText(),ETTNo.getText(),ETTJenis.getText(),
@@ -2023,7 +2023,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
                                         "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
                                         akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
                                         akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA PENILAIAN PRE INDUKSI<br><br></font>"+        
+                                        "<font size='2' face='Tahoma'>DATA PENGKAJIAN PRE INDUKSI<br><br></font>"+        
                                     "</td>"+
                                "</tr>"+
                             "</table>")
@@ -2140,7 +2140,7 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),5).toString():finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString())); 
             
-            Valid.MyReportqry("rptCetakPenilaianPreInduksi.jasper","report","::[ Laporan Penilaian Pre Induksi ]::",
+            Valid.MyReportqry("rptCetakPenilaianPreInduksi.jasper","report","::[ Laporan Pengkajian Pre Induksi ]::",
                 "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.tgl_lahir,penilaian_pre_induksi.tanggal,"+
                 "penilaian_pre_induksi.kd_dokter,penilaian_pre_induksi.tensi,penilaian_pre_induksi.nadi,penilaian_pre_induksi.rr,penilaian_pre_induksi.suhu,penilaian_pre_induksi.ekg,"+
                 "penilaian_pre_induksi.lain_lain,penilaian_pre_induksi.asesmen,penilaian_pre_induksi.perencanaan,penilaian_pre_induksi.infus_perifier,penilaian_pre_induksi.cvc,"+
@@ -2560,8 +2560,8 @@ public final class RMPenilaianPreInduksi extends javax.swing.JDialog {
                 }   
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_lahir"),rs.getString("jk"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("tanggal"),
+                    tabMode.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getDate("tgl_lahir"),rs.getString("jk"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("tanggal"),
                         rs.getString("tensi"),rs.getString("nadi"),rs.getString("rr"),rs.getString("suhu"),rs.getString("ekg"),rs.getString("lain_lain"),rs.getString("asesmen"),rs.getString("perencanaan"),rs.getString("infus_perifier"),
                         rs.getString("cvc"),rs.getString("posisi"),rs.getString("premedikasi"),rs.getString("premedikasi_keterangan"),rs.getString("induksi"),rs.getString("induksi_keterangan"),rs.getString("face_mask_no"),
                         rs.getString("nasopharing_no"),rs.getString("ett_no"),rs.getString("ett_jenis"),rs.getString("ett_viksasi"),rs.getString("lma_no"),rs.getString("lma_jenis"),rs.getString("tracheostomi"),rs.getString("bronchoscopi_fiberoptik"),

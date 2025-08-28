@@ -26,9 +26,6 @@ import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import keuangan.Jurnal;
-import simrskhanza.DlgCariBangsal;
-import kepegawaian.DlgCariPegawai;
 
 public class DlgPermintaan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
@@ -40,14 +37,11 @@ public class DlgPermintaan extends javax.swing.JDialog {
     private int jml=0,i=0,row=0,index=0;
     private String[] jumlah,kodebarang,namabarang,satuan,jenis,kategori,golongan,keterangan;
     private WarnaTable2 warna=new WarnaTable2();
-    private DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
-    private DlgCariBangsal caribangsal=new DlgCariBangsal(null,false);
     private DlgCariPermintaan form=new DlgCariPermintaan(null,false);
-    private DlgBarang barang=new DlgBarang(null,false);
     private boolean sukses=true;
     private File file;
     private FileWriter fileWriter;
-    private String iyem,DEPOAKTIFOBAT="";
+    private String DEPOAKTIFOBAT="";
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -124,21 +118,21 @@ public class DlgPermintaan extends javax.swing.JDialog {
             });
         }
         
-        caribangsal.addWindowListener(new WindowListener() {
+        form.bangsal.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(caribangsal.getTable().getSelectedRow()!= -1){   
+                if(form.bangsal.getTable().getSelectedRow()!= -1){   
                     if(i==1){
-                        kdgudangTujuan.setText(caribangsal.getTable().getValueAt(caribangsal.getTable().getSelectedRow(),0).toString());
-                        nmgudangTujuan.setText(caribangsal.getTable().getValueAt(caribangsal.getTable().getSelectedRow(),1).toString());
+                        kdgudangTujuan.setText(form.bangsal.getTable().getValueAt(form.bangsal.getTable().getSelectedRow(),0).toString());
+                        nmgudangTujuan.setText(form.bangsal.getTable().getValueAt(form.bangsal.getTable().getSelectedRow(),1).toString());
                         kdgudangTujuan.requestFocus();
                     }else if(i==2){
-                        kdgudangasal.setText(caribangsal.getTable().getValueAt(caribangsal.getTable().getSelectedRow(),0).toString());
-                        nmgudangasal.setText(caribangsal.getTable().getValueAt(caribangsal.getTable().getSelectedRow(),1).toString());
+                        kdgudangasal.setText(form.bangsal.getTable().getValueAt(form.bangsal.getTable().getSelectedRow(),0).toString());
+                        nmgudangasal.setText(form.bangsal.getTable().getValueAt(form.bangsal.getTable().getSelectedRow(),1).toString());
                         kdgudangasal.requestFocus();
                     }
                 } 
@@ -153,18 +147,20 @@ public class DlgPermintaan extends javax.swing.JDialog {
             public void windowDeactivated(WindowEvent e) {}
         });
         
-        pegawai.addWindowListener(new WindowListener() {
+        form.pegawai.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
             @Override
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(pegawai.getTable().getSelectedRow()!= -1){                   
-                    kdptg.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
-                    nmptg.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
-                }   
-                kdptg.requestFocus();
+                if(form.pegawai.getTable().getSelectedRow()!= -1){     
+                    if(i==1){
+                        kdptg.setText(form.pegawai.tbKamar.getValueAt(form.pegawai.tbKamar.getSelectedRow(),0).toString());
+                        nmptg.setText(form.pegawai.tbKamar.getValueAt(form.pegawai.tbKamar.getSelectedRow(),1).toString());
+                        kdptg.requestFocus();
+                    }
+                }
             }
             @Override
             public void windowIconified(WindowEvent e) {}
@@ -176,13 +172,15 @@ public class DlgPermintaan extends javax.swing.JDialog {
             public void windowDeactivated(WindowEvent e) {}
         });
         
-        pegawai.getTable().addKeyListener(new KeyListener() {
+        form.pegawai.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    pegawai.dispose();
+                    if(i==1){
+                        form.pegawai.dispose();
+                    }
                 }                
             }
             @Override
@@ -604,8 +602,8 @@ public class DlgPermintaan extends javax.swing.JDialog {
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         form.dispose();
-        pegawai.dispose();
-        caribangsal.dispose();
+        form.pegawai.dispose();
+        form.bangsal.dispose();
         dispose();  
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -771,12 +769,12 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        barang.emptTeks();
-        barang.isCek();
-        barang.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        barang.setLocationRelativeTo(internalFrame1);
-        barang.setAlwaysOnTop(false);
-        barang.setVisible(true);
+        form.barang.emptTeks();
+        form.barang.isCek();
+        form.barang.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.barang.setLocationRelativeTo(internalFrame1);
+        form.barang.setAlwaysOnTop(false);
+        form.barang.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnTambahActionPerformed
 
@@ -791,25 +789,26 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_ppStok1ActionPerformed
 
     private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-        pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        pegawai.setLocationRelativeTo(internalFrame1);
-        pegawai.setAlwaysOnTop(false);
-        pegawai.setVisible(true);
+        i=1;
+        form.pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.pegawai.setLocationRelativeTo(internalFrame1);
+        form.pegawai.setAlwaysOnTop(false);
+        form.pegawai.setVisible(true);
     }//GEN-LAST:event_btnPetugasActionPerformed
 
     private void btnSuplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuplierActionPerformed
         i=1;
-        caribangsal.isCek();
-        caribangsal.emptTeks();
-        caribangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        caribangsal.setLocationRelativeTo(internalFrame1);
-        caribangsal.setAlwaysOnTop(false);
-        caribangsal.setVisible(true);
+        form.bangsal.isCek();
+        form.bangsal.emptTeks();
+        form.bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.bangsal.setLocationRelativeTo(internalFrame1);
+        form.bangsal.setAlwaysOnTop(false);
+        form.bangsal.setVisible(true);
     }//GEN-LAST:event_btnSuplierActionPerformed
 
     private void kdptgKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdptgKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            nmptg.setText(pegawai.tampil3(kdptg.getText()));
+            nmptg.setText(form.pegawai.tampil3(kdptg.getText()));
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             kdgudangTujuan.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
@@ -850,12 +849,12 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void btnSuplier1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuplier1ActionPerformed
         i=2;
-        caribangsal.isCek();
-        caribangsal.emptTeks();
-        caribangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        caribangsal.setLocationRelativeTo(internalFrame1);
-        caribangsal.setAlwaysOnTop(false);
-        caribangsal.setVisible(true);
+        form.bangsal.isCek();
+        form.bangsal.emptTeks();
+        form.bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.bangsal.setLocationRelativeTo(internalFrame1);
+        form.bangsal.setAlwaysOnTop(false);
+        form.bangsal.setVisible(true);
     }//GEN-LAST:event_btnSuplier1ActionPerformed
 
     private void kdgudangasalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdgudangasalKeyPressed
@@ -932,7 +931,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             file=new File("./cache/permintaanobat.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement(
                 "select databarang.kode_brng,databarang.nama_brng,databarang.kode_sat,jenis.nama,"+
                 "kategori_barang.nama as kategori,golongan_barang.nama as golongan "+
@@ -943,7 +942,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    iyem=iyem+"{\"KodeBarang\":\""+rs.getString(1)+"\",\"NamaBarang\":\""+rs.getString(2).replaceAll("\"","")+"\",\"Satuan\":\""+rs.getString(3)+"\",\"JenisObat\":\""+rs.getString(4)+"\",\"Kategori\":\""+rs.getString(5)+"\",\"Golongan\":\""+rs.getString(6)+"\"},";
+                    iyembuilder.append("{\"KodeBarang\":\"").append(rs.getString(1)).append("\",\"NamaBarang\":\"").append(rs.getString(2).replaceAll("\"","")).append("\",\"Satuan\":\"").append(rs.getString(3)).append("\",\"JenisObat\":\"").append(rs.getString(4)).append("\",\"Kategori\":\"").append(rs.getString(5)).append("\",\"Golongan\":\"").append(rs.getString(6)).append("\"},");
                 } 
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -955,10 +954,15 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                     ps.close();
                 }
             }       
-            fileWriter.write("{\"permintaanobat\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"permintaanobat\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null; 
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -975,22 +979,15 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                 }
             }
 
-            kodebarang=null;
             kodebarang=new String[jml];
-            namabarang=null;
             namabarang=new String[jml];
-            satuan=null;
             satuan=new String[jml];
-            jumlah=null;
             jumlah=new String[jml];
-            jenis=null;
             jenis=new String[jml];
-            kategori=null;
             kategori=new String[jml];
-            golongan=null;
             golongan=new String[jml];
-            keterangan=null;
             keterangan=new String[jml];
+            
             index=0;        
             for(i=0;i<row;i++){
                 if(!tbDokter.getValueAt(i,0).toString().equals("")){
@@ -1009,6 +1006,15 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             for(i=0;i<jml;i++){
                 tabMode.addRow(new Object[]{jumlah[i],kodebarang[i],namabarang[i],satuan[i],jenis[i],kategori[i],golongan[i],keterangan[i]});
             }
+            
+            kodebarang=null;
+            namabarang=null;
+            satuan=null;
+            jumlah=null;
+            jenis=null;
+            kategori=null;
+            golongan=null;
+            keterangan=null;
             
             myObj = new FileReader("./cache/permintaanobat.iyem");
             root = mapper.readTree(myObj);
@@ -1047,10 +1053,10 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             kdptg.setText(akses.getkode());
             BtnSimpan.setEnabled(akses.getpermintaan_medis());
             BtnTambah.setEnabled(akses.getobat());
-            nmptg.setText(pegawai.tampil3(kdptg.getText()));
+            nmptg.setText(form.pegawai.tampil3(kdptg.getText()));
             if(!DEPOAKTIFOBAT.equals("")){
                 kdgudangasal.setText(DEPOAKTIFOBAT);
-                nmgudangasal.setText(caribangsal.tampil3(DEPOAKTIFOBAT));
+                nmgudangasal.setText(form.bangsal.tampil3(DEPOAKTIFOBAT));
                 btnSuplier1.setEnabled(false);
             }
         }        

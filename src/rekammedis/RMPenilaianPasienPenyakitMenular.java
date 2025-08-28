@@ -310,7 +310,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         MnPenilaianMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnPenilaianMedis.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnPenilaianMedis.setText("Laporan Penilaian Pasien Penyakit Menular");
+        MnPenilaianMedis.setText("Laporan Pengkajian Pasien Penyakit Menular");
         MnPenilaianMedis.setName("MnPenilaianMedis"); // NOI18N
         MnPenilaianMedis.setPreferredSize(new java.awt.Dimension(260, 26));
         MnPenilaianMedis.addActionListener(new java.awt.event.ActionListener() {
@@ -324,7 +324,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Penilaian Pasien Penyakit Menular ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Pasien Penyakit Menular ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(467, 500));
@@ -467,11 +467,6 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setPreferredSize(new java.awt.Dimension(457, 480));
-        TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TabRawatMouseClicked(evt);
-            }
-        });
 
         internalFrame2.setBorder(null);
         internalFrame2.setName("internalFrame2"); // NOI18N
@@ -661,7 +656,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         label11.setBounds(380, 40, 52, 23);
 
         TglAsuhan.setForeground(new java.awt.Color(50, 70, 50));
-        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-03-2023 07:03:40" }));
+        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-04-2024 10:16:59" }));
         TglAsuhan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TglAsuhan.setName("TglAsuhan"); // NOI18N
         TglAsuhan.setOpaque(false);
@@ -910,7 +905,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
 
         internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
 
-        TabRawat.addTab("Input Penilaian", internalFrame2);
+        TabRawat.addTab("Input Pengkajian", internalFrame2);
 
         internalFrame3.setBorder(null);
         internalFrame3.setName("internalFrame3"); // NOI18N
@@ -947,7 +942,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-03-2023" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-04-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -961,7 +956,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-03-2023" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-04-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1012,7 +1007,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
 
         internalFrame3.add(panelGlass9, java.awt.BorderLayout.PAGE_END);
 
-        TabRawat.addTab("Data Penilaian", internalFrame3);
+        TabRawat.addTab("Data Pengkajian", internalFrame3);
 
         internalFrame1.add(TabRawat, java.awt.BorderLayout.CENTER);
 
@@ -1049,7 +1044,14 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
                     KeteranganTransmisiPenularan.getText(),KebutuhanRuangRawat.getSelectedItem().toString(),KeluhanYangDirasakan.getText(),RiwayatPenyakitKeluarga.getText(),RiwayatAlergi.getText(),RiwayatVaksin.getText(),
                     RiwayatPengobatan.getText(),DiagnosaUtama.getText(),DiagnosaTambahan.getText()
                 })==true){
-                    emptTeks();
+                tabMode.addRow(new Object[]{
+                    TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),KdDokter.getText(),NmDokter.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),
+                    Anamnesis.getSelectedItem().toString(),Hubungan.getText(),MengetahuiKondisi.getSelectedItem().toString(),PenyakitSama.getSelectedItem().toString(),RiwayatKontak.getSelectedItem().toString(),KeteranganRiwayatKontak.getText(),
+                    TransmisiPenularan.getSelectedItem().toString(),KeteranganTransmisiPenularan.getText(),KebutuhanRuangRawat.getSelectedItem().toString(),KeluhanYangDirasakan.getText(),RiwayatPenyakitKeluarga.getText(),RiwayatAlergi.getText(),
+                    RiwayatVaksin.getText(),RiwayatPengobatan.getText(),DiagnosaUtama.getText(),DiagnosaTambahan.getText()
+                });
+                LCount.setText(""+tabMode.getRowCount());
+                emptTeks();
             }
         }
     
@@ -1244,7 +1246,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
                                         "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
                                         akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
                                         akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA PENILAIAN PASIEN PENYAKIT MENULAR<br><br></font>"+        
+                                        "<font size='2' face='Tahoma'>DATA PENGKAJIAN PASIEN PENYAKIT MENULAR<br><br></font>"+        
                                     "</td>"+
                                "</tr>"+
                             "</table>")
@@ -1352,12 +1354,6 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
         Valid.pindah2(evt,KebutuhanRuangRawat,RiwayatPenyakitKeluarga);
     }//GEN-LAST:event_KeluhanYangDirasakanKeyPressed
 
-    private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
-        if(TabRawat.getSelectedIndex()==1){
-            tampil();
-        }
-    }//GEN-LAST:event_TabRawatMouseClicked
-
     private void MengetahuiKondisiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MengetahuiKondisiKeyPressed
         Valid.pindah(evt,Hubungan,PenyakitSama);
     }//GEN-LAST:event_MengetahuiKondisiKeyPressed
@@ -1383,7 +1379,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),5).toString():finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString())); 
             
-            Valid.MyReportqry("rptCetakPenilaianPasienPenyakitMenular.jasper","report","::[ Laporan Penilaian Pasien Penyakit Menular ]::",
+            Valid.MyReportqry("rptCetakPenilaianPasienPenyakitMenular.jasper","report","::[ Laporan Pengkajian Pasien Penyakit Menular ]::",
                 "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.tgl_lahir,penilaian_pasien_penyakit_menular.tanggal,"+
                 "penilaian_pasien_penyakit_menular.kd_dokter,penilaian_pasien_penyakit_menular.anamnesis,penilaian_pasien_penyakit_menular.hubungan,penilaian_pasien_penyakit_menular.pasien_mengetahui_kondisi_penyakitnya,"+
                 "penilaian_pasien_penyakit_menular.penyakit_sama_serumah,penilaian_pasien_penyakit_menular.riwayat_kontak,penilaian_pasien_penyakit_menular.keterangan_riwayat_kontak,"+
@@ -1593,8 +1589,8 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
                 }   
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_lahir"),rs.getString("jk"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("tanggal"),
+                    tabMode.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getDate("tgl_lahir"),rs.getString("jk"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("tanggal"),
                         rs.getString("anamnesis"),rs.getString("hubungan"),rs.getString("pasien_mengetahui_kondisi_penyakitnya"),rs.getString("penyakit_sama_serumah"),rs.getString("riwayat_kontak"),rs.getString("keterangan_riwayat_kontak"),
                         rs.getString("transmisi_penularan_penyakit"),rs.getString("keterangan_transmisi_penularan_penyakit"),rs.getString("kebutuhan_ruang_rawat"),rs.getString("keluhan_yang_dirasakan_saat_ini"),
                         rs.getString("riwayat_penyakit_keluarga"),rs.getString("riwayat_alergi"),rs.getString("riwayat_vaksinasi"),rs.getString("riwayat_pengobatan"),rs.getString("diagnosa_utama"),rs.getString("diagnosa_tambahan")
@@ -1646,9 +1642,22 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
             TPasien.setText(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
             TglLahir.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             Jk.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString()); 
-            Anamnesis.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
-            Hubungan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),9).toString());
-            KeluhanYangDirasakan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString());
+            Anamnesis.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString()); 
+            Hubungan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),9).toString()); 
+            MengetahuiKondisi.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString()); 
+            PenyakitSama.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),11).toString()); 
+            RiwayatKontak.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),12).toString()); 
+            KeteranganRiwayatKontak.setText(tbObat.getValueAt(tbObat.getSelectedRow(),13).toString()); 
+            TransmisiPenularan.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),14).toString()); 
+            KeteranganTransmisiPenularan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),15).toString()); 
+            KebutuhanRuangRawat.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),16).toString()); 
+            KeluhanYangDirasakan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),17).toString()); 
+            RiwayatPenyakitKeluarga.setText(tbObat.getValueAt(tbObat.getSelectedRow(),18).toString()); 
+            RiwayatAlergi.setText(tbObat.getValueAt(tbObat.getSelectedRow(),19).toString()); 
+            RiwayatVaksin.setText(tbObat.getValueAt(tbObat.getSelectedRow(),20).toString()); 
+            RiwayatPengobatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),21).toString()); 
+            DiagnosaUtama.setText(tbObat.getValueAt(tbObat.getSelectedRow(),22).toString()); 
+            DiagnosaTambahan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),23).toString()); 
             Valid.SetTgl2(TglAsuhan,tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
         }
     }

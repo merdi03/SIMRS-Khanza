@@ -50,7 +50,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0,nilai_detik,bookingbaru=0;
-    private String alarm="",nol_detik,detik,sql="",finger="";
+    private String alarm="",nol_detik,detik,finger="";
     private boolean aktif=false;
     private BackgroundMusic music;
     private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
@@ -1964,7 +1964,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
                     rs=ps.executeQuery();
                     while(rs.next()){
-                        tabMode.addRow(new String[]{
+                        tabMode.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),
                             rs.getString("no_tlp"),rs.getString("png_jawab"),rs.getString("tanggal"),rs.getString("metode"),rs.getString("penanya"),rs.getString("status_penanya"),rs.getString("no_telp_penanya"),
                             rs.getString("jenis_pertanyaan"),rs.getString("keterangan_jenis_pertanyaan"),rs.getString("uraian_pertanyaan"),"","","","","","",""
@@ -2008,7 +2008,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
                     rs=ps.executeQuery();
                     while(rs.next()){
-                        tabMode.addRow(new String[]{
+                        tabMode.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),
                             rs.getString("no_tlp"),rs.getString("png_jawab"),rs.getString("tanggal"),rs.getString("metode"),rs.getString("penanya"),rs.getString("status_penanya"),rs.getString("no_telp_penanya"),
                             rs.getString("jenis_pertanyaan"),rs.getString("keterangan_jenis_pertanyaan"),rs.getString("uraian_pertanyaan"),rs.getString("jawaban"),rs.getString("referensi"),rs.getString("penyampaian_jawaban"),

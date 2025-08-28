@@ -1,3 +1,14 @@
+/*
+  Dilarang keras memperjualbelikan/mengambil keuntungan dari Software 
+  ini dalam bentuk apapun tanpa seijin pembuat software
+  (Khanza.Soft Media). Bagi yang sengaja membajak softaware ini ta
+  npa ijin, kami sumpahi sial 1000 turunan, miskin sampai 500 turu
+  nan. Selalu mendapat kecelakaan sampai 400 turunan. Anak pertama
+  nya cacat tidak punya kaki sampai 300 turunan. Susah cari jodoh
+  sampai umur 50 tahun sampai 200 turunan. Ya Alloh maafkan kami 
+  karena telah berdoa buruk, semua ini kami lakukan karena kami ti
+  dak pernah rela karya kami dibajak tanpa ijin.
+ */
 package inventory;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
@@ -46,10 +57,9 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
     private ResultSet rs,rs2;
     private double tagihan=0;
     private Jurnal jur=new Jurnal();
-    private String aktifkanbatch="no",tanggal= "",datanofaktur="",datasuplier="",datapetugas="",datajenis="",databarang="",dataindustri="",datacari="",statusbayar="";
+    private String aktifkanbatch="no";
     private boolean sukses=true;
     private int i=0;
-    private StringBuilder htmlContent;
 
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -1332,22 +1342,27 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
                          if(sukses==true){
                             Sequel.queryu("delete from tampjurnal");
-                            Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
-                                Sequel.cariIsi("select set_akun.Pemesanan_Obat from set_akun"),"PERSEDIAAN BARANG","0",rs.getString("total")
-                            });   
+                            if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{Sequel.cariIsi("select set_akun.Pemesanan_Obat from set_akun"),"PERSEDIAAN BARANG","0",rs.getString("total")})==false){
+                               sukses=false;
+                            }   
                             if(rs.getDouble("ppn")>0){
-                                Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
-                                    Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Obat","0",rs.getString("ppn")
-                                }); 
+                                if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Obat","0",rs.getString("ppn")})==false){
+                                    sukses=false;
+                                } 
                             }
-                            Sequel.menyimpan("tampjurnal","?,?,?,?","Rekening",4,new String[]{
-                                Sequel.cariIsi("select set_akun.Kontra_Pemesanan_Obat from set_akun"),"HUTANG USAHA",rs.getString("tagihan"),"0"
-                            }); 
-                            sukses=jur.simpanJurnal(rs.getString("no_faktur"),"U","BATAL TRANSAKSI PENERIMAAN BARANG DI "+Sequel.cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal=?",rs.getString("kd_bangsal")).toUpperCase()+", OLEH "+akses.getkode()); 
+                            if(Sequel.menyimpantf2("tampjurnal","?,?,?,?","Rekening",4,new String[]{Sequel.cariIsi("select set_akun.Kontra_Pemesanan_Obat from set_akun"),"HUTANG USAHA",rs.getString("tagihan"),"0"})==false){
+                                sukses=false;
+                            } 
+                            if(sukses==true){
+                                sukses=jur.simpanJurnal(rs.getString("no_faktur"),"U","BATAL TRANSAKSI PENERIMAAN BARANG DI "+Sequel.cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal=?",rs.getString("kd_bangsal")).toUpperCase()+", OLEH "+akses.getkode()); 
+                            }
                          }
 
                          if(sukses==true){
-                            Sequel.queryu2("delete from pemesanan where no_faktur=?",1,new String[]{tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()});
+                            sukses=Sequel.queryu2tf("delete from pemesanan where no_faktur=?",1,new String[]{tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()});
+                         }
+                                 
+                         if(sukses==true){
                             Sequel.Commit();
                          }else{
                             sukses=false;
@@ -1597,50 +1612,43 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     // End of variables declaration//GEN-END:variables
 
     private void tampil() {
-       Valid.tabelKosong(tabMode);
+        Valid.tabelKosong(tabMode);
         try{   
+            String tanggal= "",datanofaktur="",datasuplier="",datapetugas="",datajenis="",databarang="",dataindustri="",datacari="",statusbayar="";
             if(RDatang.isSelected()==true){
                 tanggal=" pemesanan.tgl_pesan between '"+Valid.SetTgl(TglBeli1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(TglBeli2.getSelectedItem()+"")+"' ";
             }else if(RFaktur.isSelected()==true){
                 tanggal=" pemesanan.tgl_faktur between '"+Valid.SetTgl(TglFaktur1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(TglFaktur2.getSelectedItem()+"")+"' ";
             }
             
-            datanofaktur="";
             if(!NoFaktur.getText().equals("")){
-                datanofaktur=" and pemesanan.no_faktur like '%"+NoFaktur.getText()+"%' ";
+                datanofaktur=" and pemesanan.no_faktur='"+NoFaktur.getText()+"' ";
             }
             
-            datasuplier="";
             if(!nmsup.getText().equals("")){
-                datasuplier=" and datasuplier.nama_suplier like '%"+nmsup.getText()+"%' ";
+                datasuplier=" and datasuplier.nama_suplier='"+nmsup.getText()+"' ";
             }
             
-            datapetugas="";
             if(!nmptg.getText().equals("")){
-                datapetugas=" and petugas.nama like '%"+nmptg.getText()+"%' ";
+                datapetugas=" and petugas.nama='"+nmptg.getText()+"' ";
             }
             
-            datajenis="";
             if(!nmjenis.getText().equals("")){
-                datajenis=" and jenis.nama like '%"+nmjenis.getText()+"%' ";
+                datajenis=" and jenis.nama='"+nmjenis.getText()+"' ";
             }
             
-            databarang="";
             if(!nmbar.getText().equals("")){
-                databarang=" and databarang.nama_brng like '%"+nmbar.getText()+"%' ";
+                databarang=" and databarang.nama_brng='"+nmbar.getText()+"' ";
             }
             
-            dataindustri="";
             if(!NmIF.getText().equals("")){
-                dataindustri=" and industrifarmasi.nama_industri like '%"+NmIF.getText()+"%' ";
+                dataindustri=" and industrifarmasi.nama_industri='"+NmIF.getText()+"' ";
             }
             
-            statusbayar="";
             if(!Status.getSelectedItem().toString().equals("Semua")){
                 statusbayar=" and pemesanan.status='"+Status.getSelectedItem().toString()+"' ";
             }
             
-            datacari="";
             if(!TCari.getText().trim().equals("")){
                 datacari=" and (pemesanan.no_faktur like '%"+TCari.getText()+"%' or pemesanan.kode_suplier like '%"+TCari.getText()+"%' or datasuplier.nama_suplier like '%"+TCari.getText()+"%' or pemesanan.nip like '%"+TCari.getText()+"%' or "+
                          " petugas.nama like '%"+TCari.getText()+"%' or bangsal.nm_bangsal like '%"+TCari.getText()+"%' or detailpesan.kode_brng like '%"+TCari.getText()+"%' or databarang.nama_brng like '%"+TCari.getText()+"%' or detailpesan.kode_sat like '%"+TCari.getText()+"%' or "+
@@ -1739,6 +1747,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     
     private void tampil2() {
         try {
+            String tanggal= "",datanofaktur="",datasuplier="",datapetugas="",datajenis="",databarang="",dataindustri="",datacari="",statusbayar="";
             if(RDatang.isSelected()==true){
                 tanggal=" pemesanan.tgl_pesan between '"+Valid.SetTgl(TglBeli1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(TglBeli2.getSelectedItem()+"")+"' ";
             }else if(RFaktur.isSelected()==true){
@@ -1787,28 +1796,28 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                          " detailpesan.no_batch like '%"+TCari.getText()+"%' or industrifarmasi.nama_industri like '%"+TCari.getText()+"%' or pemesanan.no_order like '%"+TCari.getText()+"%' or jenis.nama like '%"+TCari.getText()+"%') ";
             }
             
-            htmlContent = new StringBuilder();
+            StringBuilder htmlContent = new StringBuilder();
             htmlContent.append(
-                "<tr class='head'>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='90px'>No.Faktur</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Tgl.Faktur</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Tgl.Datang</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Jth.Tempo</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Status Bayar</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='180px'>Suplier</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='180px'>Petugas</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='300px'>Barang</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Satuan</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='40px'>Jml</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='75px'>Harga(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Subtotal(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='40px'>Disk(%)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='75px'>Besar Disk(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Total(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Penerimaan(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='65px'>Meterai(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='65px'>PPN(Rp)</td>"+
-                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='85px'>Tagihan(Rp)</td>"+
+                "<tr class='head'>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='90px'>No.Faktur</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Tgl.Faktur</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Tgl.Datang</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Jth.Tempo</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Status Bayar</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='180px'>Suplier</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='180px'>Petugas</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='300px'>Barang</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='70px'>Satuan</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='40px'>Jml</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='75px'>Harga(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Subtotal(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='40px'>Disk(%)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='75px'>Besar Disk(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Total(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='80px'>Penerimaan(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='65px'>Meterai(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='65px'>PPN(Rp)</td>").append(
+                    "<td valign='top' bgcolor='#FFFAFA' align='center' width='85px'>Tagihan(Rp)</td>").append(
                 "</tr>"); 
             ps=koneksi.prepareStatement("select pemesanan.tgl_pesan,pemesanan.no_faktur, "+
                     "pemesanan.kode_suplier,datasuplier.nama_suplier, "+
@@ -1832,19 +1841,19 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 tagihan=0;
                 while(rs.next()){
                     htmlContent.append(
-                        "<tr class='isi'>"+
-                            "<td valign='top' align='center'>"+rs.getString("no_faktur")+"</td>"+
-                            "<td valign='top' align='center'>"+rs.getString("tgl_faktur")+"</td>"+
-                            "<td valign='top' align='center'>"+rs.getString("tgl_pesan")+"</td>"+
-                            "<td valign='top' align='center'>"+rs.getString("tgl_tempo")+"</td>"+
-                            "<td valign='top' align='center'>"+rs.getString("status")+"</td>"+
-                            "<td valign='top' align='left'>"+rs.getString("kode_suplier")+", "+rs.getString("nama_suplier")+"</td>"+
-                            "<td valign='top' align='left'>"+rs.getString("nip")+", "+rs.getString("nama")+"</td>"+
-                            "<td valign='top' align='left' colspan='8'>"+"Pengadaan di "+rs.getString("nm_bangsal") +" :"+"</td>"+
-                            "<td valign='top' align='right'>"+rs.getString("total2")+"</td>"+
-                            "<td valign='top' align='right'>"+rs.getString("meterai")+"</td>"+
-                            "<td valign='top' align='right'>"+rs.getString("ppn")+"</td>"+
-                            "<td valign='top' align='right'>"+rs.getString("tagihan")+"</td>"+
+                        "<tr class='isi'>").append(
+                            "<td valign='top' align='center'>").append(rs.getString("no_faktur")).append("</td>").append(
+                            "<td valign='top' align='center'>").append(rs.getString("tgl_faktur")).append("</td>").append(
+                            "<td valign='top' align='center'>").append(rs.getString("tgl_pesan")).append("</td>").append(
+                            "<td valign='top' align='center'>").append(rs.getString("tgl_tempo")).append("</td>").append(
+                            "<td valign='top' align='center'>").append(rs.getString("status")).append("</td>").append(
+                            "<td valign='top' align='left'>").append(rs.getString("kode_suplier")).append(", ").append(rs.getString("nama_suplier")).append("</td>").append(
+                            "<td valign='top' align='left'>").append(rs.getString("nip")).append(", ").append(rs.getString("nama")).append("</td>").append(
+                            "<td valign='top' align='left' colspan='8'>").append("Pengadaan di ").append(rs.getString("nm_bangsal") ).append(" :").append("</td>").append(
+                            "<td valign='top' align='right'>").append(rs.getString("total2")).append("</td>").append(
+                            "<td valign='top' align='right'>").append(rs.getString("meterai")).append("</td>").append(
+                            "<td valign='top' align='right'>").append(rs.getString("ppn")).append("</td>").append(
+                            "<td valign='top' align='right'>").append(rs.getString("tagihan")).append("</td>").append(
                         "</tr>");  
                     
                     ps2=koneksi.prepareStatement("select detailpesan.kode_brng,databarang.nama_brng, "+
@@ -1873,23 +1882,23 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                         int no=1;
                         while(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top' align='center'>&nbsp;</td>"+
-                                    "<td valign='top' align='left' colspan='2'>"+no+". No.Batch : "+rs2.getString("no_batch")+"</td>"+
-                                    "<td valign='top' align='left' colspan='2'>Exp : "+rs2.getString("kadaluarsa")+"</td>"+
-                                    "<td valign='top' align='left' colspan='2'>I.F. : "+rs2.getString("nama_industri")+"</td>"+
-                                    "<td valign='top' align='left'>"+rs2.getString("kode_brng")+", "+rs2.getString("nama_brng")+"</td>"+
-                                    "<td valign='top' align='center'>"+rs2.getString("satuan")+"</td>"+
-                                    "<td valign='top' align='center'>"+rs2.getString("jumlah")+"</td>"+
-                                    "<td valign='top' align='right'>"+rs2.getString("h_pesan")+"</td>"+
-                                    "<td valign='top' align='right'>"+rs2.getString("subtotal")+"</td>"+
-                                    "<td valign='top' align='right'>"+rs2.getString("dis")+"</td>"+
-                                    "<td valign='top' align='right'>"+rs2.getString("besardis")+"</td>"+
-                                    "<td valign='top' align='right'>"+rs2.getString("total")+"</td>"+
-                                    "<td valign='top' align='center'>&nbsp;</td>"+
-                                    "<td valign='top' align='center'>&nbsp;</td>"+
-                                    "<td valign='top' align='center'>&nbsp;</td>"+
-                                    "<td valign='top' align='center'>&nbsp;</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top' align='center'>&nbsp;</td>").append(
+                                    "<td valign='top' align='left' colspan='2'>").append(no).append(". No.Batch : ").append(rs2.getString("no_batch")).append("</td>").append(
+                                    "<td valign='top' align='left' colspan='2'>Exp : ").append(rs2.getString("kadaluarsa")).append("</td>").append(
+                                    "<td valign='top' align='left' colspan='2'>I.F. : ").append(rs2.getString("nama_industri")).append("</td>").append(
+                                    "<td valign='top' align='left'>").append(rs2.getString("kode_brng")).append(", ").append(rs2.getString("nama_brng")).append("</td>").append(
+                                    "<td valign='top' align='center'>").append(rs2.getString("satuan")).append("</td>").append(
+                                    "<td valign='top' align='center'>").append(rs2.getString("jumlah")).append("</td>").append(
+                                    "<td valign='top' align='right'>").append(rs2.getString("h_pesan")).append("</td>").append(
+                                    "<td valign='top' align='right'>").append(rs2.getString("subtotal")).append("</td>").append(
+                                    "<td valign='top' align='right'>").append(rs2.getString("dis")).append("</td>").append(
+                                    "<td valign='top' align='right'>").append(rs2.getString("besardis")).append("</td>").append(
+                                    "<td valign='top' align='right'>").append(rs2.getString("total")).append("</td>").append(
+                                    "<td valign='top' align='center'>&nbsp;</td>").append(
+                                    "<td valign='top' align='center'>&nbsp;</td>").append(
+                                    "<td valign='top' align='center'>&nbsp;</td>").append(
+                                    "<td valign='top' align='center'>&nbsp;</td>").append(
                                 "</tr>"); 
                             no++;
                         }                        
@@ -1922,6 +1931,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                        htmlContent.toString()+
                       "</table>"+
                     "</html>");
+            htmlContent=null;
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         }
@@ -1938,8 +1948,10 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         BtnPrint.setEnabled(akses.getpemesanan_obat());
         if(akses.getkode().equals("Admin Utama")){
             ppHapus.setEnabled(true);
+            ppUbah.setEnabled(true);
         }else{
             ppHapus.setEnabled(false);
+            ppUbah.setEnabled(false);
         }        
         ppBayar.setEnabled(akses.getbayar_pemesanan_obat());
     }

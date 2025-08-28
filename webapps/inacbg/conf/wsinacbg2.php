@@ -5,17 +5,17 @@
     require_once('../../conf/conf.php');
 
     function getKey() {
-       $keyRS = "c8527ecb36aa437c912d926bd25f61abc08037e482e8e45fbce9d50f8f997439";   
+       $keyRS = "36067686fe526c8de000c8311a7f2e9855957fe40911ca921f6ba919e6373942";   
        return $keyRS;
     }
 
     function getUrlWS() {
-        $UrlWS = "http://192.168.202.222/E-Klaim/ws.php";
+        $UrlWS = "http://36.89.103.114:7474/E-Klaim/ws.php";
         return $UrlWS;
     }
     
     function getKelasRS() {
-        $kelasRS = "BP";
+        $kelasRS = "CP";
         return $kelasRS;
     }
 
@@ -158,7 +158,7 @@
     function UpdateDataKlaim($nomor_sep,$nomor_kartu,$tgl_masuk,$tgl_pulang,$jenis_rawat,$kelas_rawat,$adl_sub_acute,
                             $adl_chronic,$icu_indikator,$icu_los,$ventilator_hour,$upgrade_class_ind,$upgrade_class_class,
                             $upgrade_class_los,$add_payment_pct,$birth_weight,$discharge_status,$diagnosa,$procedure,
-                            $tarif_poli_eks,$nama_dokter,$kode_tarif,$payor_id,$payor_cd,$cob_cd,$coder_nik,$no_rawat){	
+                            $tarif_poli_eks,$nama_dokter,$kode_tarif,$payor_id,$payor_cd,$cob_cd,$coder_nik,$no_rawat,$asalrujukan){	
         
         $prosedur_non_bedah="1";
         $prosedur_bedah="1";
@@ -205,6 +205,7 @@
                                 "nomor_kartu": "'.$nomor_kartu.'",
                                 "tgl_masuk": "'.$tgl_masuk.' 00:00:01",
                                 "tgl_pulang": "'.$tgl_pulang.' 23:59:59",
+                                "cara_masuk": "'.$asalrujukan.'",
                                 "jenis_rawat": "'.$jenis_rawat.'",
                                 "kelas_rawat": "'.$kelas_rawat.'",
                                 "adl_sub_acute": "'.$adl_sub_acute.'",
@@ -333,7 +334,7 @@
                             $tarif_poli_eks,$nama_dokter,$kode_tarif,$payor_id,$payor_cd,$cob_cd,$coder_nik,
                             $prosedur_non_bedah,$prosedur_bedah,$konsultasi,$tenaga_ahli,$keperawatan,$penunjang,
                             $radiologi,$laboratorium,$pelayanan_darah,$rehabilitasi,$kamar,$rawat_intensif,$obat,
-                            $obat_kronis,$obat_kemoterapi,$alkes,$bmhp,$sewa_alat){	
+                            $obat_kronis,$obat_kemoterapi,$alkes,$bmhp,$sewa_alat,$cara_masuk){	
         $request ='{
                         "metadata": {
                             "method": "set_claim_data",
@@ -344,6 +345,7 @@
                             "nomor_kartu": "'.$nomor_kartu.'",
                             "tgl_masuk": "'.$tgl_masuk.' 00:00:01",
                             "tgl_pulang": "'.$tgl_pulang.' 23:59:59",
+                            "cara_masuk": "'.$cara_masuk.'",
                             "jenis_rawat": "'.$jenis_rawat.'",
                             "kelas_rawat": "'.$kelas_rawat.'",
                             "adl_sub_acute": "'.$adl_sub_acute.'",
@@ -407,7 +409,7 @@
                             $radiologi,$laboratorium,$pelayanan_darah,$rehabilitasi,$kamar,$rawat_intensif,$obat,
                             $obat_kronis,$obat_kemoterapi,$alkes,$bmhp,$sewa_alat,$pemulasaraan_jenazah,$kantong_jenazah, 
                             $peti_jenazah,$plastik_erat,$desinfektan_jenazah,$mobil_jenazah,$desinfektan_mobil_jenazah,
-                            $covid19_status_cd,$nomor_kartu_t,$episodes,$covid19_cc_ind){	
+                            $covid19_status_cd,$nomor_kartu_t,$episodes,$covid19_cc_ind,$cara_masuk){	
         $request ='{
                         "metadata": {
                             "method": "set_claim_data",
@@ -418,6 +420,7 @@
                             "nomor_kartu": "'.$nomor_kartu.'",
                             "tgl_masuk": "'.$tgl_masuk.' 00:00:01",
                             "tgl_pulang": "'.$tgl_pulang.' 23:59:59",
+                            "cara_masuk": "'.$cara_masuk.'",
                             "jenis_rawat": "'.$jenis_rawat.'",
                             "kelas_rawat": "'.$kelas_rawat.'",
                             "adl_sub_acute": "'.$adl_sub_acute.'",

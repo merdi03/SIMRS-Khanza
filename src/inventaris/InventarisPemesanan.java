@@ -46,7 +46,7 @@ public class InventarisPemesanan extends javax.swing.JDialog {
     private boolean sukses=true;
     private File file;
     private FileWriter fileWriter;
-    private String iyem,akunaset="",Kontra_Penerimaan_AsetInventaris=Sequel.cariIsi("select Kontra_Penerimaan_AsetInventaris from set_akun");
+    private String akunaset="",Kontra_Penerimaan_AsetInventaris=Sequel.cariIsi("select Kontra_Penerimaan_AsetInventaris from set_akun");
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -874,12 +874,20 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                    
                 if(sukses==true){
                     Sequel.queryu("delete from tampjurnal");
-                    Sequel.menyimpan("tampjurnal","?,?,?,?",4,new String[]{akunaset,"PENERIMAAN ASET INVENTARIS",""+(ttl+meterai),"0"});
-                    if(ppn>0){
-                        Sequel.menyimpan2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Barang Inventaris",""+ppn,"0"});
+                    if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{akunaset,"PENERIMAAN ASET INVENTARIS",""+(ttl+meterai),"0"})==false){
+                        sukses=false;
                     }
-                    Sequel.menyimpan("tampjurnal","?,?,?,?",4,new String[]{Kontra_Penerimaan_AsetInventaris,"HUTANG BARANG ASET/INVENTARIS","0",""+(ttl+ppn+meterai)}); 
-                    sukses=jur.simpanJurnal(NoFaktur.getText(),"U","PENERIMAAN BARANG ASET/INVENTARIS"+", OLEH "+akses.getkode());
+                    if(ppn>0){
+                        if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Sequel.cariIsi("select set_akun.PPN_Masukan from set_akun"),"PPN Masukan Barang Inventaris",""+ppn,"0"})==false){
+                            sukses=false;
+                        }
+                    }
+                    if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{Kontra_Penerimaan_AsetInventaris,"HUTANG BARANG ASET/INVENTARIS","0",""+(ttl+ppn+meterai)})==false){
+                        sukses=false;
+                    } 
+                    if(sukses==true){
+                        sukses=jur.simpanJurnal(NoFaktur.getText(),"U","PENERIMAAN BARANG ASET/INVENTARIS"+", OLEH "+akses.getkode());
+                    }
                 }
                 
                 if(sukses==true){
@@ -1272,6 +1280,19 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             tabMode.addRow(new Object[]{jumlah[i],kodebarang[i],namabarang[i],produsen[i],merk[i],kategori[i],jenis[i],harga[i],subtotal[i],diskon[i],besardiskon[i],jmltotal[i]});
         }
         
+        kodebarang=null;
+        namabarang=null;
+        produsen=null;
+        merk=null;
+        kategori=null;
+        jenis=null;
+        harga=null;
+        jumlah=null;
+        subtotal=null;
+        diskon=null;
+        besardiskon=null;
+        jmltotal=null;
+        
         try{
             try {
                 myObj = new FileReader("./cache/akunaset.iyem");
@@ -1450,14 +1471,14 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
              file=new File("./cache/akunaset.iyem");
              file.createNewFile();
              fileWriter = new FileWriter(file);
-             iyem="";
+             StringBuilder iyembuilder = new StringBuilder();
              ps=koneksi.prepareStatement("select rekening.nm_rek,akun_aset_inventaris.kd_rek from akun_aset_inventaris inner join rekening on akun_aset_inventaris.kd_rek=rekening.kd_rek group by rekening.nm_rek order by rekening.nm_rek");
              try{
                  rs=ps.executeQuery();
                  AkunAset.removeAllItems();
                  while(rs.next()){    
                      AkunAset.addItem(rs.getString(1).replaceAll("\"",""));
-                     iyem=iyem+"{\"NamaAkun\":\""+rs.getString(1).replaceAll("\"","")+"\",\"KodeRek\":\""+rs.getString(2)+"\"},";
+                     iyembuilder.append("{\"NamaAkun\":\""+rs.getString(1).replaceAll("\"","")+"\",\"KodeRek\":\""+rs.getString(2)+"\"},");
                  }
              }catch (Exception e) {
                  System.out.println("Notifikasi : "+e);
@@ -1470,10 +1491,14 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                  } 
              }
 
-             fileWriter.write("{\"akunaset\":["+iyem.substring(0,iyem.length()-1)+"]}");
-             fileWriter.flush();
-             fileWriter.close();
-             iyem=null;
+             if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"akunaset\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
+            fileWriter.close();
+            iyembuilder=null;
         } catch (Exception e) {
             if(e.toString().contains("begin")){
                 System.out.println("Notifikasi Akun Aset : Data tidak ditemukan..!!");

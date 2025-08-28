@@ -512,6 +512,7 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                   "</table>"+
                 "</html>"
             );
+            htmlContent=null;
 
             File g = new File("file2.css");            
             BufferedWriter bg = new BufferedWriter(new FileWriter(g));
@@ -923,6 +924,7 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_servicerequest_radiologi());
+        BtnUpdate.setEnabled(akses.getsatu_sehat_kirim_servicerequest_radiologi());
         BtnPrint.setEnabled(akses.getsatu_sehat_kirim_servicerequest_radiologi());
     }
     
