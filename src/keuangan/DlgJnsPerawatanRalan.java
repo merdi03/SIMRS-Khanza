@@ -65,7 +65,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
         Object[] row={"P","Kode Tindakan",
                       "Nama Tnd/Prw/Tagihan",
                       "Kategori",
-                      "J.S.Rmh Sakit",
+                      "Jasa Sarana",
                       "BHP/Paket Obat",
                       "J.Medis Dr",
                       "J.Medis Pr",
@@ -635,7 +635,7 @@ public final class DlgJnsPerawatanRalan extends javax.swing.JDialog {
         FormInput.add(BagianRs);
         BagianRs.setBounds(525, 72, 200, 23);
 
-        jLabel9.setText("J.S. Rumah Sakit : Rp.");
+        jLabel9.setText("Jasa Sarana : Rp.");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
         jLabel9.setBounds(412, 72, 110, 23);

@@ -534,7 +534,7 @@ public final class DlgJnsPerawatanUTD extends javax.swing.JDialog {
         FormInput.add(BagianRs);
         BagianRs.setBounds(127, 42, 170, 23);
 
-        jLabel9.setText("J.S. Rumah Sakit : Rp.");
+        jLabel9.setText("Jasa Sarana : Rp.");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
         jLabel9.setBounds(-10, 42, 135, 23);
