@@ -1217,7 +1217,7 @@ public final class RMMCU extends javax.swing.JDialog {
         jLabel53.setBounds(10, 70, 180, 23);
 
         TglAsuhan.setForeground(new java.awt.Color(50, 70, 50));
-        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-05-2025 17:42:34" }));
+        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025 10:43:59" }));
         TglAsuhan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TglAsuhan.setName("TglAsuhan"); // NOI18N
         TglAsuhan.setOpaque(false);
@@ -2886,7 +2886,7 @@ public final class RMMCU extends javax.swing.JDialog {
         jLabel140.setBounds(0, 950, 149, 23);
 
         jLabel141.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel141.setText("3. Mamae");
+        jLabel141.setText("3. Mammae");
         jLabel141.setName("jLabel141"); // NOI18N
         FormInput.add(jLabel141);
         jLabel141.setBounds(64, 980, 100, 23);
@@ -2894,7 +2894,7 @@ public final class RMMCU extends javax.swing.JDialog {
         jLabel142.setText(":");
         jLabel142.setName("jLabel142"); // NOI18N
         FormInput.add(jLabel142);
-        jLabel142.setBounds(0, 980, 118, 23);
+        jLabel142.setBounds(0, 980, 127, 23);
 
         Mamae.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Normal", "Tidak Normal", "-" }));
         Mamae.setName("Mamae"); // NOI18N
@@ -2904,7 +2904,7 @@ public final class RMMCU extends javax.swing.JDialog {
             }
         });
         FormInput.add(Mamae);
-        Mamae.setBounds(122, 980, 114, 23);
+        Mamae.setBounds(131, 980, 114, 23);
 
         KeteranganMamae.setFocusTraversalPolicyProvider(true);
         KeteranganMamae.setName("KeteranganMamae"); // NOI18N
@@ -2914,7 +2914,7 @@ public final class RMMCU extends javax.swing.JDialog {
             }
         });
         FormInput.add(KeteranganMamae);
-        KeteranganMamae.setBounds(239, 980, 615, 23);
+        KeteranganMamae.setBounds(248, 980, 606, 23);
 
         jLabel143.setText(":");
         jLabel143.setName("jLabel143"); // NOI18N
@@ -3263,7 +3263,7 @@ public final class RMMCU extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-05-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -3277,7 +3277,7 @@ public final class RMMCU extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-05-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -3392,7 +3392,7 @@ public final class RMMCU extends javax.swing.JDialog {
             if(akses.getkode().equals("Admin Utama")){
                 hapus();
             }else{
-                if(KdDokter.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),78).toString())){
+                if(KdDokter.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),104).toString())){
                     if(Sequel.cekTanggal48jam(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString(),Sequel.ambiltanggalsekarang())==true){
                         hapus();
                     }
@@ -3428,7 +3428,7 @@ public final class RMMCU extends javax.swing.JDialog {
                 if(akses.getkode().equals("Admin Utama")){
                     ganti();
                 }else{
-                    if(KdDokter.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),78).toString())){
+                    if(KdDokter.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),104).toString())){
                         if(Sequel.cekTanggal48jam(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString(),Sequel.ambiltanggalsekarang())==true){
                             if(TanggalRegistrasi.getText().equals("")){
                                 TanggalRegistrasi.setText(Sequel.cariIsi("select concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
@@ -4613,8 +4613,8 @@ public final class RMMCU extends javax.swing.JDialog {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     if(form.getTable().getSelectedRow()!= -1){
-                        Kesimpulan.append(form.getTable().getValueAt(form.getTable().getSelectedRow(),0).toString()+", ");
-                        Anjuran.append(form.getTable().getValueAt(form.getTable().getSelectedRow(),1).toString()+", ");
+                        Kesimpulan.append(form.getTable().getValueAt(form.getTable().getSelectedRow(),0).toString()+"\n");
+                        Anjuran.append(form.getTable().getValueAt(form.getTable().getSelectedRow(),1).toString()+"\n");
                         Kesimpulan.requestFocus();
                     }
                 }
