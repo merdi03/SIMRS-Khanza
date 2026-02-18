@@ -1,5 +1,6 @@
 package permintaan;
 import bridging.ApiCareStream;
+import bridging.ApiELVAPACS;
 import fungsi.BackgroundMusic;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
@@ -48,6 +49,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
     private ResultSet rs,rs2;
     private Date now;
     private ApiCareStream carestream=new ApiCareStream();
+    private ApiELVAPACS elvapacs=new ApiELVAPACS();
     private boolean aktif=false,semua;
     private String alarm="",formalarm="",nol_detik,detik,tglsampel="",tglhasil="",norm="",kamar="",namakamar="",
             NoPermintaan="",NoRawat="",Pasien="",Permintaan="",JamPermintaan="",Sampel="",JamSampel="",Hasil="",JamHasil="",KodeDokter="",DokterPerujuk="",Ruang="",
@@ -380,6 +382,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnAmbilDataFUJI = new widget.Button();
         BtnKirimDataCareStream = new widget.Button();
         BtnAmbilDataFUJI1 = new widget.Button();
+        BtnKirimDataELVA = new widget.Button();
 
         WindowAmbilSampel.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowAmbilSampel.setName("WindowAmbilSampel"); // NOI18N
@@ -421,7 +424,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         internalFrame5.add(jLabel26);
         jLabel26.setBounds(6, 32, 100, 23);
 
-        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-11-2024 12:42:19" }));
+        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-06-2025 09:33:19" }));
         TanggalPulang.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPulang.setName("TanggalPulang"); // NOI18N
         TanggalPulang.setOpaque(false);
@@ -1078,6 +1081,23 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         });
         FormMenu.add(BtnAmbilDataFUJI1);
 
+        BtnKirimDataELVA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnKirimDataELVA.setText("Kirim Permintaan ke ELVA PACS");
+        BtnKirimDataELVA.setFocusPainted(false);
+        BtnKirimDataELVA.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimDataELVA.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnKirimDataELVA.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnKirimDataELVA.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnKirimDataELVA.setName("BtnKirimDataELVA"); // NOI18N
+        BtnKirimDataELVA.setPreferredSize(new java.awt.Dimension(215, 23));
+        BtnKirimDataELVA.setRoundRect(false);
+        BtnKirimDataELVA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnKirimDataELVAActionPerformed(evt);
+            }
+        });
+        FormMenu.add(BtnKirimDataELVA);
+
         ScrollMenu.setViewportView(FormMenu);
 
         PanelAccor.add(ScrollMenu, java.awt.BorderLayout.CENTER);
@@ -1372,6 +1392,8 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         if(Sequel.cariInteger("select count(noorder) from permintaan_pemeriksaan_radiologi where stts_bayar='Sudah' and noorder=?",tbRadiologiRalan.getValueAt(tbRadiologiRalan.getSelectedRow(),0).toString())>0){
                             JOptionPane.showMessageDialog(null,"Maaf, Tidak boleh dihapus karena sudah ada tindakan yang sudah dibayar.\nSilahkan hubungi kasir...!!!!");
                         }else{
+                            System.out.println(tbRadiologiRalan.getValueAt(tbRadiologiRalan.getSelectedRow(),0).toString());
+                            elvapacs.CancelOrder(tbRadiologiRalan.getValueAt(tbRadiologiRalan.getSelectedRow(),0).toString());
                             Sequel.meghapus("permintaan_radiologi","noorder",tbRadiologiRalan.getValueAt(tbRadiologiRalan.getSelectedRow(),0).toString());
                             tampil();
                         }
@@ -1398,6 +1420,8 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         if(Sequel.cariInteger("select count(noorder) from permintaan_pemeriksaan_radiologi where stts_bayar='Sudah' and noorder=?",tbRadiologiRanap.getValueAt(tbRadiologiRanap.getSelectedRow(),0).toString())>0){
                             JOptionPane.showMessageDialog(null,"Maaf, Tidak boleh dihapus karena sudah ada tindakan yang sudah dibayar.\nSilahkan hubungi kasir...!!!!");
                         }else{
+                            System.out.println(tbRadiologiRanap.getValueAt(tbRadiologiRanap.getSelectedRow(),0).toString());
+                            elvapacs.CancelOrder(tbRadiologiRanap.getValueAt(tbRadiologiRanap.getSelectedRow(),0).toString());
                             Sequel.meghapus("permintaan_radiologi","noorder",tbRadiologiRanap.getValueAt(tbRadiologiRanap.getSelectedRow(),0).toString());
                             tampil3();
                         } 
@@ -2308,6 +2332,38 @@ private void tbRadiologiRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRS
         }
     }//GEN-LAST:event_BtnAmbilDataFUJI1ActionPerformed
 
+    private void BtnKirimDataELVAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimDataELVAActionPerformed
+        if(TabPilihRawat.getSelectedIndex()==0){
+            if(!Sampel.equals("")){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                if(NoPermintaan.trim().equals("")){
+                    Valid.textKosong(TCari,"No.Permintaan");
+                }else{
+                    elvapacs.kirimRalan(NoPermintaan);
+                }
+                TeksKosong();
+                this.setCursor(Cursor.getDefaultCursor());
+            }else{
+                JOptionPane.showMessageDialog(null,"Maaf, silahkan klik sampel terlebih dahulu...!!!!");
+                TCari.requestFocus();
+            }
+        }else if(TabPilihRawat.getSelectedIndex()==1){
+            if(!Sampel.equals("")){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                if(NoPermintaan.trim().equals("")){
+                    Valid.textKosong(TCari,"No.Permintaan");
+                }else{
+                    elvapacs.kirimRanap(NoPermintaan);
+                }
+                TeksKosong();
+                this.setCursor(Cursor.getDefaultCursor());
+            }else{
+                JOptionPane.showMessageDialog(null,"Maaf, silahkan klik sampel terlebih dahulu...!!!!");
+                TCari.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_BtnKirimDataELVAActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2337,6 +2393,7 @@ private void tbRadiologiRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRS
     private widget.Button BtnHasil;
     private widget.Button BtnKeluar;
     private widget.Button BtnKirimDataCareStream;
+    private widget.Button BtnKirimDataELVA;
     private widget.Button BtnKirimDataFuji;
     private widget.Button BtnPrint;
     private widget.Button BtnSampel;

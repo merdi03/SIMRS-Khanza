@@ -1055,6 +1055,53 @@ public class koneksiDB {
         }
         return var;
     }
+public static String URLVIEWELVAPACS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("URLVIEWELVAPACS");
+        }catch(Exception e){
+            var=""; 
+        }
+        return var;
+    }    
+public static String PORTVIEWELVAPACS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("PORTVIEWELVAPACS");
+        }catch(Exception e){
+            var=""; 
+        }
+        return var;
+    }    
+public static String URLELVAPACS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("URLELVAPACS");
+        }catch(Exception e){
+            var=""; 
+        }
+        return var;
+    }    
+    public static String XKEYAPIELVA(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=EnkripsiAES.decrypt(prop.getProperty("XKEYAPIELVA"));
+        }catch(Exception e){
+            var=""; 
+        }
+        return var;
+    }
+    
+    public static String XIDAPIELVA(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=EnkripsiAES.decrypt(prop.getProperty("XIDAPIELVA"));
+        }catch(Exception e){
+            var=""; 
+        }
+        return var;
+    }
+
     
     public static String URLAPISOFTMEDIX(){
         try (FileInputStream fis = new FileInputStream("setting/database.xml")) {

@@ -1,6 +1,8 @@
 package simrskhanza;
 import bridging.ApiOrthanc;
 import bridging.OrthancDICOM;
+import bridging.ApiELVAPACS;
+import bridging.ElvaDICOM;
 import com.fasterxml.jackson.databind.JsonNode;
 import kepegawaian.DlgCariPetugas;
 import keuangan.Jurnal;
@@ -53,7 +55,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
     private String kamar,namakamar,pemeriksaan="",pilihan="",status="",finger="",statushasil="";
     private double ttl=0,item=0;
     private double ttljmdokter=0,ttljmpetugas=0,ttlkso=0,ttlpendapatan=0,ttlbhp=0,ttljasasarana=0,ttljmperujuk=0,ttlmenejemen=0;;
-    private String kdpetugas="",kdpenjab="",Suspen_Piutang_Radiologi_Ranap="",Radiologi_Ranap="",Beban_Jasa_Medik_Dokter_Radiologi_Ranap="",Utang_Jasa_Medik_Dokter_Radiologi_Ranap="",
+    private String urllink="",kdpetugas="",kdpenjab="",Suspen_Piutang_Radiologi_Ranap="",Radiologi_Ranap="",Beban_Jasa_Medik_Dokter_Radiologi_Ranap="",Utang_Jasa_Medik_Dokter_Radiologi_Ranap="",
             Beban_Jasa_Medik_Petugas_Radiologi_Ranap="",Utang_Jasa_Medik_Petugas_Radiologi_Ranap="",Beban_Kso_Radiologi_Ranap="",Utang_Kso_Radiologi_Ranap="",
             HPP_Persediaan_Radiologi_Rawat_Inap="",Persediaan_BHP_Radiologi_Rawat_Inap="",Beban_Jasa_Sarana_Radiologi_Ranap="",Utang_Jasa_Sarana_Radiologi_Ranap="",
             Beban_Jasa_Perujuk_Radiologi_Ranap="",Utang_Jasa_Perujuk_Radiologi_Ranap="",Beban_Jasa_Menejemen_Radiologi_Ranap="",Utang_Jasa_Menejemen_Radiologi_Ranap="",
@@ -398,6 +400,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         FormPass2 = new widget.PanelBiasa();
         btnAmbilPhoto = new widget.Button();
         BtnRefreshPhoto = new widget.Button();
+        btnDicomElva1 = new widget.Button();
         Scroll4 = new widget.ScrollPane();
         LoadHTML = new widget.editorpane();
         FormHasilRadiologi = new widget.PanelBiasa();
@@ -405,6 +408,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         HasilPeriksa = new widget.TextArea();
         panelGlass6 = new widget.panelisi();
         btnAmbilPhoto1 = new widget.Button();
+        btnDicomElva2 = new widget.Button();
         BtnSimpan = new widget.Button();
         BtnPrint1 = new widget.Button();
         panelisi8 = new widget.panelisi();
@@ -1037,6 +1041,19 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         });
         FormPass2.add(BtnRefreshPhoto);
 
+        btnDicomElva1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        btnDicomElva1.setMnemonic('T');
+        btnDicomElva1.setText("Tampil ELVA PACS");
+        btnDicomElva1.setToolTipText("Alt+T");
+        btnDicomElva1.setName("btnDicomElva1"); // NOI18N
+        btnDicomElva1.setPreferredSize(new java.awt.Dimension(150, 30));
+        btnDicomElva1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDicomElva1ActionPerformed(evt);
+            }
+        });
+        FormPass2.add(btnDicomElva1);
+
         FormPhoto.add(FormPass2, java.awt.BorderLayout.PAGE_END);
 
         Scroll4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
@@ -1086,6 +1103,19 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
             }
         });
         panelGlass6.add(btnAmbilPhoto1);
+
+        btnDicomElva2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        btnDicomElva2.setMnemonic('T');
+        btnDicomElva2.setText("Baca Elva");
+        btnDicomElva2.setToolTipText("Alt+T");
+        btnDicomElva2.setName("btnDicomElva2"); // NOI18N
+        btnDicomElva2.setPreferredSize(new java.awt.Dimension(150, 30));
+        btnDicomElva2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDicomElva2ActionPerformed(evt);
+            }
+        });
+        panelGlass6.add(btnDicomElva2);
 
         BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         BtnSimpan.setMnemonic('U');
@@ -2251,6 +2281,26 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         tampil();
     }//GEN-LAST:event_ppBelumKeluarBacaanBtnPrintActionPerformed
 
+    private void btnDicomElva1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDicomElva1ActionPerformed
+        ApiELVAPACS elva=new ApiELVAPACS();
+        urllink=elva.AmbilUrl(Sequel.cariIsi("select noorder from permintaan_radiologi where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        System.out.println(koneksiDB.URLVIEWELVAPACS()+"/"+urllink);
+        Valid.panggilUrl2(koneksiDB.URLVIEWELVAPACS()+"/"+urllink);
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnDicomElva1ActionPerformed
+
+    private void btnDicomElva2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDicomElva2ActionPerformed
+        ApiELVAPACS elva=new ApiELVAPACS();
+        urllink=elva.AmbilHasil(Sequel.cariIsi("select noorder from permintaan_radiologi where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(urllink!=""){
+            HasilPeriksa.setText(urllink);
+            HasilPeriksa.requestFocus();
+        }
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnDicomElva2ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2321,6 +2371,8 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button btnAmbilPhoto;
     private widget.Button btnAmbilPhoto1;
     private widget.Button btnDicom;
+    private widget.Button btnDicomElva1;
+    private widget.Button btnDicomElva2;
     private widget.Button btnDokter;
     private widget.Button btnDokterPj;
     private widget.Button btnPasien;
@@ -2711,6 +2763,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                          } catch (Exception e) {
                              System.out.println("Notif : "+e);
                          }
+                    }else if(TabData.getSelectedIndex()==3){
                      }
                 }
             }

@@ -2222,6 +2222,14 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         isPsien();
         tampilFuji(order);
     }
+    public void getOrderElva(String order,String norawat,String posisi){
+        noorder=order;
+        TNoRw.setText(norawat);
+        this.status=posisi;
+        isRawat();
+        isPsien();
+        tampilFuji(order);
+    }
 
     private void simpan() {
         int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
