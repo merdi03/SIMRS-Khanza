@@ -2283,7 +2283,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void btnDicomElva1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDicomElva1ActionPerformed
         ApiELVAPACS elva=new ApiELVAPACS();
-        urllink=elva.AmbilUrl(Sequel.cariIsi("select noorder from permintaan_radiologi where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
+        urllink=elva.AmbilUrl(Sequel.cariIsi("select concat(replace(pr.noorder,'PR20',''),replace(ppr.kd_jenis_prw,'RD','')) from permintaan_radiologi AS pr LEFT JOIN permintaan_pemeriksaan_radiologi AS ppr ON pr.noorder= ppr.noorder where pr.no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and pr.tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and pr.jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         System.out.println(koneksiDB.URLVIEWELVAPACS()+"/"+urllink);
         Valid.panggilUrl2(koneksiDB.URLVIEWELVAPACS()+"/"+urllink);
@@ -2292,7 +2292,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void btnDicomElva2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDicomElva2ActionPerformed
         ApiELVAPACS elva=new ApiELVAPACS();
-        urllink=elva.AmbilHasil(Sequel.cariIsi("select noorder from permintaan_radiologi where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
+        urllink=elva.AmbilHasil(Sequel.cariIsi("select concat(replace(pr.noorder,'PR20',''),replace(ppr.kd_jenis_prw,'RD','')) from permintaan_radiologi AS pr LEFT JOIN permintaan_pemeriksaan_radiologi AS ppr ON pr.noorder= ppr.noorder where pr.no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' and pr.tgl_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' and pr.jam_hasil='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'"));
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if(urllink!=""){
             HasilPeriksa.setText(urllink);

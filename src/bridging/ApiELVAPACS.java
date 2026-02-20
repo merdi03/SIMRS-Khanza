@@ -118,19 +118,29 @@ private RestTemplate buildUnsafeRestTemplate() {
     /* ===============================
        HELPER: RESPONSE SUCCESS
        =============================== */
-    private boolean isSuccess(String response) {
-        try {
-            JsonNode node = mapper.readTree(response);
-            return "SUCCESS".equalsIgnoreCase(node.path("status").asText());
-        } catch (Exception e) {
-            return false;
-        }
+private boolean isElvaSuccess(int httpCode, String body) {
+
+    if (httpCode != 200 && httpCode != 201) {
+        return false;
     }
+
+    if (body == null || body.trim().isEmpty()) {
+        return true;
+    }
+
+    String resp = body.toLowerCase();
+
+    if (resp.contains("berhasil")) return true;
+
+    if (!resp.contains("gagal") && !resp.contains("error")) return true;
+
+    return false;
+}
 
     /* ===============================
        HELPER: RO / CA
        =============================== */
-    private String kirimROCA(String control, String accNo) throws Exception {
+    private ResponseEntity<String>  kirimROCA(String control, String accNo) throws Exception {
         JsonNode body = mapper.createObjectNode()
             .put("PatientID", "-")
             .put("PatientName", "-")
@@ -142,16 +152,15 @@ private RestTemplate buildUnsafeRestTemplate() {
             new HttpEntity<>(mapper.writeValueAsString(body), buildHeaders());
 
         return getRest()
-            .exchange(URL + "/order/", HttpMethod.POST, entity, String.class)
-            .getBody();
-    }
+            .exchange(URL + "/order/", HttpMethod.POST, entity, String.class);
+           }
 
     /* ===============================
        CANCEL ORDER (RO -> CA)
        =============================== */
     public void CancelOrder(String nopermintaan) {
         String sql =
-            "SELECT CONCAT(REPLACE(pr.noorder,'PR',''),permintaan_pemeriksaan_radiologi.kd_jenis_prw) AS noorder " +
+            "SELECT concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD','')) AS noorder " +
             "FROM permintaan_radiologi pr " +
             "INNER JOIN permintaan_pemeriksaan_radiologi ppr ON ppr.noorder=pr.noorder " +
             "WHERE pr.noorder=?";
@@ -166,14 +175,22 @@ private RestTemplate buildUnsafeRestTemplate() {
                 while (rs.next()) {
                     String acc = rs.getString("noorder");
 
-                    String ro = kirimROCA("RO", acc);
-                    if (!isSuccess(ro)) {
+                    ResponseEntity<String> roResp = kirimROCA("RO", acc);
+
+                    int roCode = roResp.getStatusCode().value();
+                    String roBody = roResp.getBody();
+
+                    if (!isElvaSuccess(roCode, roBody)) {
                         gagal.add(acc + " (RO gagal)");
                         continue;
                     }
 
-                    String ca = kirimROCA("CA", acc);
-                    if (isSuccess(ca)) {
+                    ResponseEntity<String> caResp = kirimROCA("CA", acc);
+
+                    int caCode = caResp.getStatusCode().value();
+                    String caBody = caResp.getBody();
+
+                    if (isElvaSuccess(caCode, caBody)) {
                         sukses.add(acc);
                     } else {
                         gagal.add(acc + " (CA gagal)");
@@ -207,7 +224,7 @@ private RestTemplate buildUnsafeRestTemplate() {
                         .put("PatientBirthday", rs.getString("tgl_lahir"))
                         .put("PatientWeight", "0")
                         .put("PatientClass", "I")
-                        .put("Ward", ranap ? rs.getString("nm_bangsal") : rs.getString("nm_poli"))
+                        .put("Ward", rs.getString("nm_poli"))
                         .put("AttendingDoctor", "-")
                         .put("ReferringDoctor", rs.getString("nm_dokter"))
                         .put("OrderControl", "NW")
@@ -226,20 +243,31 @@ private RestTemplate buildUnsafeRestTemplate() {
                         .put("Modality", rs.getString("modality"))
                         .put("OperatorName", "-")
                         .put("ExamUrgent", "0");
+String jsonRequest = mapper
+        .writerWithDefaultPrettyPrinter()
+        .writeValueAsString(body);
 
+System.out.println("===== ELVA REQUEST JSON =====");
+System.out.println(jsonRequest);
+System.out.println("URL : "+URL+"/order/");
+System.out.println("===== END ELVA REQUEST =====");
                     HttpEntity<String> entity =
                         new HttpEntity<>(mapper.writeValueAsString(body), buildHeaders());
 
-                    String resp = getRest()
-                        .exchange(URL + "/order/", HttpMethod.POST, entity, String.class)
-                        .getBody();
+                    ResponseEntity<String> response =
+                        getRest().exchange(URL + "/order/", HttpMethod.POST, entity, String.class);
 
-                    if (isSuccess(resp)) {
+                    int httpCode = response.getStatusCode().value();
+                    String resp = response.getBody() == null ? "" : response.getBody().trim();
+
+                    System.out.println("HTTP CODE : " + httpCode);
+                    System.out.println("ELVA RESPONSE : " + resp);
+
+                    if (isElvaSuccess(httpCode, resp)) {
                         sukses.add(rs.getString("noorder"));
                     } else {
                         gagal.add(rs.getString("noorder"));
-                    }
-                }
+                    }                }
 
                 tampilkanHasil("Kirim Order ELVA", sukses, gagal);
             }
@@ -307,7 +335,7 @@ private RestTemplate buildUnsafeRestTemplate() {
        SQL CONST
        =============================== */
     private static final String SQL_RALAN = "SELECT reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','M','F') AS jk,pasien.tgl_lahir,'' AS weight,'I',poliklinik.nm_poli,'' AS dpjp,dokter.nm_dokter,'NW',"+
-"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR',''),permintaan_pemeriksaan_radiologi.kd_jenis_prw) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
+"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
 "CONCAT(permintaan_radiologi.tgl_permintaan,' ',if(permintaan_radiologi.jam_permintaan='00:00:00','',permintaan_radiologi.jam_permintaan)) AS tgl_permintaan,"+ "CONCAT(permintaan_radiologi.tgl_sampel,' ',if(permintaan_radiologi.jam_sampel='00:00:00','',permintaan_radiologi.jam_sampel)) AS tgl_sampel,"+
 "permintaan_radiologi.diagnosa_klinis,'','','','','',REPLACE(RIGHT(jns_perawatan_radiologi.nm_perawatan,3),']','') as modality,'',0 "+
 "FROM permintaan_radiologi "+
@@ -320,8 +348,8 @@ private RestTemplate buildUnsafeRestTemplate() {
 "INNER JOIN jns_perawatan_radiologi ON permintaan_pemeriksaan_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
 "WHERE permintaan_radiologi.noorder=? and RIGHT(jns_perawatan_radiologi.nm_perawatan,1)=']'";
 
-    private static final String SQL_RANAP = "SELECT reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','M','F') AS jk,pasien.tgl_lahir,'' AS weight,'I',bangsal.nm_bangsal,'' AS dpjp,dokter.nm_dokter,'NW',"+
-"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR',''),permintaan_pemeriksaan_radiologi.kd_jenis_prw) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
+    private static final String SQL_RANAP = "SELECT reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','M','F') AS jk,pasien.tgl_lahir,'' AS weight,'I',bangsal.nm_bangsal as nm_poli,'' AS dpjp,dokter.nm_dokter,'NW',"+
+"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
 "CONCAT(permintaan_radiologi.tgl_permintaan,' ',if(permintaan_radiologi.jam_permintaan='00:00:00','',permintaan_radiologi.jam_permintaan)) AS tgl_permintaan,"+ "CONCAT(permintaan_radiologi.tgl_sampel,' ',if(permintaan_radiologi.jam_sampel='00:00:00','',permintaan_radiologi.jam_sampel)) AS tgl_sampel,"+
 "permintaan_radiologi.diagnosa_klinis,'','','','','',REPLACE(RIGHT(jns_perawatan_radiologi.nm_perawatan,3),']','') as modality,'',0 "+
 "FROM permintaan_radiologi "+
