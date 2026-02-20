@@ -86,11 +86,14 @@
 
             $nosep="";
             if($corona=="BukanCorona"){
-                $nosep=getOne("select inacbg_klaim_baru2.no_sep from inacbg_klaim_baru2 where inacbg_klaim_baru2.no_rawat='$norawat'");
+                $nosep=getOne("select bridging_sep.no_sep from bridging_sep where no_rawat='$norawat' and bridging_sep.jnspelayanan='1'");
                 if(empty($nosep)){
-                    $nosep=getOne("select bridging_sep.no_sep from bridging_sep where no_rawat='$norawat' order by MAX(CONVERT(RIGHT(bridging_sep.no_sep,6),signed)) desc limit 1");
+                    $nosep=getOne("select bridging_sep.no_sep from bridging_sep where no_rawat='$norawat' and bridging_sep.jnspelayanan='2'");
                     if(empty($nosep)){
                         $nosep=getOne("select bridging_sep_internal.no_sep from bridging_sep_internal where no_rawat='$norawat' order by MAX(CONVERT(RIGHT(bridging_sep_internal.no_sep,6),signed)) desc limit 1");
+                        if(empty($nosep)){
+                            $nosep=getOne("select inacbg_klaim_baru2.no_sep from inacbg_klaim_baru2 where inacbg_klaim_baru2.no_rawat='$norawat'");
+                        }
                     }
                 }
             }else if($corona=="PasienCorona"){
@@ -101,12 +104,12 @@
                 }
             }
             
-            $naikkelas=getOne("select bridging_sep.klsnaik from bridging_sep where bridging_sep.no_rawat='$norawat'");
+            $naikkelas=getOne("select bridging_sep.klsnaik from bridging_sep where bridging_sep.no_sep='$nosep'");
             if(empty($naikkelas)){
                 $naikkelas=getOne("select bridging_sep_internal.klsnaik from bridging_sep_internal where bridging_sep_internal.no_rawat='$norawat'");
             }
             
-            $asalrujukan=getOne("select bridging_sep.asal_rujukan from bridging_sep where bridging_sep.no_rawat='$norawat'");
+            $asalrujukan=getOne("select bridging_sep.asal_rujukan from bridging_sep where bridging_sep.no_sep='$nosep'");
             if(empty($asalrujukan)){
                 $asalrujukan=getOne("select bridging_sep_internal.asal_rujukan from bridging_sep_internal where bridging_sep_internal.no_rawat='$norawat'");
             }
@@ -230,9 +233,9 @@
                                      }else{
                                          $keluarpasien = getOne("select concat(kamar_inap.tgl_keluar,' ',kamar_inap.jam_keluar) from kamar_inap where kamar_inap.no_rawat='".$norawat."' order by kamar_inap.tgl_keluar desc limit 1");
                                          if(empty($keluarpasien)){
-                                             $keluarpasien = $tgl_registrasi." ".$jam_reg;
+                                             $keluarpasien = $tgl_registrasi." 23:59:59";
                                          }else if($keluarpasien=="0000-00-00 00:00:00"){
-                                             $keluarpasien = $tgl_registrasi." ".$jam_reg;
+                                             $keluarpasien = $tgl_registrasi." 23:59:59";
                                          }
                                          echo $keluarpasien;
                                      }
@@ -247,7 +250,7 @@
                                   echo "<option value='3'>Kelas Reguler</option>
                                         <option value='1'>Kelas Eksekutif</option>";                            
                               }else{
-                                  $kelas=getOne("select bridging_sep.klsrawat from bridging_sep where bridging_sep.no_rawat='$norawat'");
+                                  $kelas=getOne("select bridging_sep.klsrawat from bridging_sep where bridging_sep.no_sep='$nosep'");
                                   echo "<option value='$kelas'>Kelas $kelas</option>
                                         <option value='1'>Kelas 1</option>
                                         <option value='2'>Kelas 2</option>
@@ -843,10 +846,10 @@
                 $add_payment_pct   = validTeks(trim($_POST['add_payment_pct']));
                 $birth_weight      = validTeks(trim($_POST['birth_weight']));
                 $discharge_status  = validTeks(trim($_POST['discharge_status']));
-                $diagnosa          = validTeks2(trim($_POST['diagnosa']));
-                $procedure         = validTeks2(trim($_POST['procedure']));
-                $diagnosainacbg    = validTeks2(trim($_POST['diagnosainacbg']));
-                $procedureinacbg   = validTeks2(trim($_POST['procedureinacbg']));
+                $diagnosa          = validTeks9(trim($_POST['diagnosa']),50);
+                $procedure         = validTeks9(trim($_POST['procedure']),50);
+                $diagnosainacbg    = validTeks9(trim($_POST['diagnosainacbg']),50);
+                $procedureinacbg   = validTeks9(trim($_POST['procedureinacbg']),50);
                 $prosedur_non_bedah = validTeks(trim($_POST['prosedur_non_bedah']));
                 $prosedur_bedah    = validTeks(trim($_POST['prosedur_bedah']));
                 $konsultasi        = validTeks(trim($_POST['konsultasi']));

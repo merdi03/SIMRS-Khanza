@@ -29,9 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -48,6 +51,8 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgBangsal
      * @param parent
@@ -93,28 +98,6 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
 
         NilaiNormal.setDocument(new batasInput((int)30).getKata(NilaiNormal));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        } 
     }
     
     /** This method is called from within the constructor to
@@ -509,7 +492,7 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
         }else if(NilaiNormal.getText().trim().equals("")){
             Valid.textKosong(NilaiNormal,"Nilai Normal");
         }else{
-            if(Sequel.menyimpantf("laborat_kesling_nilai_normal_baku_mutu","?,?,?","Kode",3,new String[]{
+            if(Sequel.menyimpantf("labkesling_nilai_normal_baku_mutu","?,?,?","Kode",3,new String[]{
                     KodeSampel.getText(),KodeParameter.getText(),NilaiNormal.getText()
                 })==true){
                 tabMode.addRow(new Object[]{
@@ -541,7 +524,7 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
-        if(Sequel.queryu2tf("delete from laborat_kesling_nilai_normal_baku_mutu where kode_sampel=? and kode_parameter=?",2,
+        if(Sequel.queryu2tf("delete from labkesling_nilai_normal_baku_mutu where kode_sampel=? and kode_parameter=?",2,
             new String[]{KodeSampel.getText(),KodeParameter.getText()})==true){
             if(tbBangsal.getSelectedRow()!= -1){
                 tabMode.removeRow(tbBangsal.getSelectedRow());
@@ -568,7 +551,7 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
             Valid.textKosong(NilaiNormal,"Nilai Normal");
         }else{
             if(tbBangsal.getSelectedRow()>-1){
-                if(Sequel.mengedittf("laborat_kesling_nilai_normal_baku_mutu","kode_sampel=? and kode_parameter=?","kode_sampel=?,kode_parameter=?,nilai_normal=?",5,new String[]{
+                if(Sequel.mengedittf("labkesling_nilai_normal_baku_mutu","kode_sampel=? and kode_parameter=?","kode_sampel=?,kode_parameter=?,nilai_normal=?",5,new String[]{
                     KodeSampel.getText(),KodeParameter.getText(),NilaiNormal.getText(),tbBangsal.getValueAt(tbBangsal.getSelectedRow(), 5).toString(),tbBangsal.getValueAt(tbBangsal.getSelectedRow(), 0).toString()
                 })==true){
                     tbBangsal.setValueAt(KodeParameter.getText(),tbBangsal.getSelectedRow(),0);
@@ -643,7 +626,7 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -660,13 +643,13 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             //Valid.pindah(evt, BtnCari, Kode);
         }
@@ -699,6 +682,29 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         emptTeks();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void BtnSampelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSampelActionPerformed
@@ -873,13 +879,13 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select laborat_kesling_parameter_pengujian.kode_parameter,laborat_kesling_parameter_pengujian.nama_parameter,laborat_kesling_parameter_pengujian.metode_pengujian,laborat_kesling_parameter_pengujian.satuan,"+
-                    "laborat_kesling_nilai_normal_baku_mutu.nilai_normal,laborat_kesling_master_sampel.kode_sampel,laborat_kesling_master_sampel.nama_sampel,laborat_kesling_master_sampel.baku_mutu from laborat_kesling_nilai_normal_baku_mutu "+
-                    "inner join laborat_kesling_parameter_pengujian on laborat_kesling_parameter_pengujian.kode_parameter=laborat_kesling_nilai_normal_baku_mutu.kode_parameter "+
-                    "inner join laborat_kesling_master_sampel on laborat_kesling_master_sampel.kode_sampel=laborat_kesling_nilai_normal_baku_mutu.kode_sampel "+
-                    (TCari.getText().trim().equals("")?"":"where laborat_kesling_parameter_pengujian.kode_parameter like ? or laborat_kesling_parameter_pengujian.nama_parameter like ? or "+
-                    "laborat_kesling_parameter_pengujian.metode_pengujian like ? or laborat_kesling_master_sampel.kode_sampel like ? or laborat_kesling_master_sampel.nama_sampel like ? or "+
-                    "laborat_kesling_master_sampel.baku_mutu like ?")+"order by laborat_kesling_parameter_pengujian.kode_parameter,laborat_kesling_master_sampel.kode_sampel");
+                    "select labkesling_parameter_pengujian.kode_parameter,labkesling_parameter_pengujian.nama_parameter,labkesling_parameter_pengujian.metode_pengujian,labkesling_parameter_pengujian.satuan,"+
+                    "labkesling_nilai_normal_baku_mutu.nilai_normal,labkesling_master_sampel.kode_sampel,labkesling_master_sampel.nama_sampel,labkesling_master_sampel.baku_mutu from labkesling_nilai_normal_baku_mutu "+
+                    "inner join labkesling_parameter_pengujian on labkesling_parameter_pengujian.kode_parameter=labkesling_nilai_normal_baku_mutu.kode_parameter "+
+                    "inner join labkesling_master_sampel on labkesling_master_sampel.kode_sampel=labkesling_nilai_normal_baku_mutu.kode_sampel "+
+                    (TCari.getText().trim().equals("")?"":"where labkesling_parameter_pengujian.kode_parameter like ? or labkesling_parameter_pengujian.nama_parameter like ? or "+
+                    "labkesling_parameter_pengujian.metode_pengujian like ? or labkesling_master_sampel.kode_sampel like ? or labkesling_master_sampel.nama_sampel like ? or "+
+                    "labkesling_master_sampel.baku_mutu like ?")+"order by labkesling_parameter_pengujian.kode_parameter,labkesling_master_sampel.kode_sampel");
             try {
                 if(!TCari.getText().trim().equals("")){
                     ps.setString(1,"%"+TCari.getText().trim()+"%");
@@ -942,4 +948,35 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
         BtnPrint.setEnabled(akses.getnilai_normal_baku_mutu_lab_kesehatan_lingkungan());
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

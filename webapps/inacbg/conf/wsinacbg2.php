@@ -5,17 +5,17 @@
     require_once('../../conf/conf.php');
 
     function getKey() {
-       $keyRS = "a96e99e0082698e25e2477e220c89bbef484ebd4a6eecff293c64c200981f94f";   
+       $keyRS = "0d9bed920f699d89fcb5dad3e5b80eb98867494b31ea20f1f0639a0a24b4b16e";   
        return $keyRS;
     }
 
     function getUrlWS() {
-        $UrlWS = "http://103.182.228.86/E-Klaim/ws.php";
+        $UrlWS = "http://202.162.211.34:46/E-Klaim/ws.php";
         return $UrlWS;
     }
     
     function getKelasRS() {
-        $kelasRS = "CP";
+        $kelasRS = "BP";
         return $kelasRS;
     }
 
@@ -185,7 +185,7 @@
                 covid19_status_cd,if(covid19_status_cd='ODP',1,if(covid19_status_cd='PDP',2,3)) as ytcovid19_status_cd, 
                 nomor_kartu_t, episodes1, episodes2,episodes3, episodes4, episodes5, episodes6, 
                 covid19_cc_ind,if(covid19_cc_ind='Ya',1,0) as ytcovid19_cc_ind 
-                from perawatan_corona where no_rawat='".$no_rawat."'");
+                from perawatan_corona where no_rawat='".$norawat."'");
         if($bariscorona = mysqli_fetch_array($hasilcorona)) {
             $episodes1 = $bariscorona["episodes1"];
             $episodes2 = $bariscorona["episodes2"];
@@ -324,7 +324,7 @@
             SetProsedurDRG($nomor_sep, $procedure);
             if(GroupingDRG($nomor_sep)=="Ok"){
                 InacBGToDRG($nomor_sep,$diagnosainacbg,$procedureinacbg);
-                GroupingStage1($nomor_sep,$coder_nik);
+                GroupingStage1($nomor_sep,$diagnosainacbg,$coder_nik);
             }
         }
     }
@@ -395,13 +395,13 @@
             SetDiagnosaDRG($nomor_sep, $diagnosa);
             SetProsedurDRG($nomor_sep, $procedure);
             if(GroupingDRG($nomor_sep)=="Ok"){
-                InacBGToDRG($nomor_sep);
-                GroupingStage1($nomor_sep,$coder_nik);
+                InacBGToDRG($nomor_sep,$diagnosa,$procedure);
+                GroupingStage1($nomor_sep,$diagnosa,$coder_nik);
             }
         }
     }
     
-    function SetDiagnosaDRG($nomorsep,$diagnosa){	
+    function SetDiagnosaDRG($nomorsep,$diagnosa){
         if($diagnosa!=""){
             $request ='{
                             "metadata": {
@@ -422,6 +422,7 @@
                                 "diagnosa": "'.$diagnosa.'"
                             }
                        }';
+            echo $request;
             $msg= Request($request);
         }
     }
@@ -530,8 +531,8 @@
             SetDiagnosaDRG($nomor_sep, $diagnosa);
             SetProsedurDRG($nomor_sep, $procedure);
             if(GroupingDRG($nomor_sep)=="Ok"){
-                InacBGToDRG($nomor_sep);
-                GroupingStage1($nomor_sep,$coder_nik);
+                InacBGToDRG($nomor_sep,$diagnosa,$procedure);
+                GroupingStage1($nomor_sep,$diagnosa,$coder_nik);
             }
         }
     }
@@ -566,7 +567,7 @@
         echo $msg['metadata']['message']."";
     }
     
-     function GroupingStage1($nomor_sep,$coder_nik){	
+     function GroupingStage1($nomor_sep,$penyakit,$coder_nik){	
         $request ='{
                         "metadata": {
                             "method":"grouper",
@@ -582,6 +583,7 @@
             Hapus2("perkiraan_biaya_ranap", "no_rawat='".$nomor_sep."'");
             $cbg = validangka($msg['response_inacbg']['tariff']);
             InsertData2("perkiraan_biaya_ranap","'$nomor_sep','$penyakit','$cbg'");
+            echo "<meta http-equiv='refresh' content='1;URL=?act=Tampil'>";
         }
     }
     
@@ -672,7 +674,7 @@
         }
     }
     
-    function GroupingStage12($nomor_sep,$coder_nik){	
+    function GroupingStage12($nomor_sep,$penyakit,$coder_nik){	
         $request ='{
                         "metadata": {
                             "method":"grouper",
@@ -694,7 +696,7 @@
         }
     }
     
-    function GroupingStage13($nomor_sep,$coder_nik){	
+    function GroupingStage13($nomor_sep,$penyakit,$coder_nik){	
         $request ='{
                         "metadata": {
                             "method":"grouper",

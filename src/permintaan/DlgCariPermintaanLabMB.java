@@ -20,8 +20,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -40,6 +44,8 @@ public class DlgCariPermintaanLabMB extends javax.swing.JDialog {
     private PreparedStatement ps,ps2,ps3;
     private ResultSet rs,rs2,rs3;
     private BackgroundMusic music;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private Date now;
     private boolean aktif=false,semua;
     private String pilihan="",alarm="",formalarm="",nol_detik,detik,tglsampel="",tglhasil="",norm="",kamar="",namakamar="",la="",ld="",pa="",pd="",InformasiTambahan,DiagnosaKlinis,
@@ -279,28 +285,6 @@ public class DlgCariPermintaanLabMB extends javax.swing.JDialog {
         tbLabRanap2.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        pilihTab();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        pilihTab();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        pilihTab();
-                    }
-                }
-            });
-        } 
         
         try {
             alarm=koneksiDB.ALARMLAB();
@@ -432,7 +416,7 @@ public class DlgCariPermintaanLabMB extends javax.swing.JDialog {
         internalFrame5.add(jLabel26);
         jLabel26.setBounds(6, 32, 100, 23);
 
-        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-06-2025 07:55:09" }));
+        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-02-2026 11:58:32" }));
         TanggalPulang.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPulang.setName("TanggalPulang"); // NOI18N
         TanggalPulang.setOpaque(false);
@@ -474,6 +458,9 @@ public class DlgCariPermintaanLabMB extends javax.swing.JDialog {
             }
             public void windowDeactivated(java.awt.event.WindowEvent evt) {
                 formWindowDeactivated(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -1354,7 +1341,7 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }else{
                             Sequel.meghapus("permintaan_labmb","noorder",NoPermintaan);
                             TeksKosong();
-                            tampil();
+                            runBackground(() ->tampil());
                         } 
                     }else{
                         JOptionPane.showMessageDialog(null,"Maaf, Sudah dilakukan pengambilan sampel...!!!!");
@@ -1382,7 +1369,7 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }else{
                             Sequel.meghapus("permintaan_labmb","noorder",NoPermintaan);
                             TeksKosong();
-                            tampil3();
+                            runBackground(() ->tampil3());
                         } 
                     }else{
                         JOptionPane.showMessageDialog(null,"Maaf, Sudah dilakukan pengambilan sampel...!!!!");
@@ -2180,6 +2167,31 @@ private void tbLabRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         WindowTerkirim.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        pilihTab();
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        pilihTab();
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        pilihTab();
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -2534,17 +2546,17 @@ private void tbLabRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     
     private void pilihRalan(){
         if(TabRawatJalan.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabRawatJalan.getSelectedIndex()==1){
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }
     
     private void pilihRanap(){
         if(TabRawatInap.getSelectedIndex()==0){
-            tampil3();
+            runBackground(() ->tampil3());
         }else if(TabRawatInap.getSelectedIndex()==1){
-            tampil4();
+            runBackground(() ->tampil4());
         }
     }
     
@@ -2812,9 +2824,16 @@ private void tbLabRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
                 detik = nol_detik + Integer.toString(nilai_detik);
                 if(detik.equals("05")){
+                    if(formalarm.contains("ralan")){
+                        runBackground(() -> tampil());
+                    }
+                }else if(detik.equals("15")){
+                    if(formalarm.contains("ranap")){
+                        runBackground(() -> tampil3());
+                    }
+                }else if(detik.equals("25")){
                     permintaanbaru=0;
                     if(formalarm.contains("ralan")){
-                        tampil();
                         for(i=0;i<tbLabRalan.getRowCount();i++){
                             if((!tbLabRalan.getValueAt(i,0).toString().equals(""))&&tbLabRalan.getValueAt(i,5).toString().equals("")){
                                 permintaanbaru++;
@@ -2823,7 +2842,6 @@ private void tbLabRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                     }
 
                     if(formalarm.contains("ranap")){
-                        tampil3();
                         for(i=0;i<tbLabRanap.getRowCount();i++){
                             if((!tbLabRanap.getValueAt(i,0).toString().equals(""))&&tbLabRanap.getValueAt(i,5).toString().equals("")){
                                 permintaanbaru++;
@@ -2860,4 +2878,35 @@ private void tbLabRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         }
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

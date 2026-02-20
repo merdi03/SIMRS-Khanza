@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -30,9 +31,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -54,7 +60,9 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;    
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+    private DlgCariPetugas petugas;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private String finger="";
     private StringBuilder htmlContent;
     private String TANGGALMUNDUR="yes";
@@ -236,55 +244,9 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
 
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
-        NIP.setDocument(new batasInput((byte)20).getKata(NIP));
+        KdPetugas.setDocument(new batasInput((byte)20).getKata(KdPetugas));
         Keterangan.setDocument(new batasInput((int)200).getKata(Keterangan));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){                   
-                    NIP.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                    NamaPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
-                }  
-                NIP.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
         
         ChkInput.setSelected(false);
         isForm();
@@ -367,9 +329,9 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         Detik = new widget.ComboBox();
         ChkKejadian = new widget.CekBox();
         jLabel18 = new widget.Label();
-        NIP = new widget.TextBox();
-        NamaPetugas = new widget.TextBox();
-        btnPetugas = new widget.Button();
+        KdPetugas = new widget.TextBox();
+        NmPetugas = new widget.TextBox();
+        BtnPetugas = new widget.Button();
         jLabel8 = new widget.Label();
         TglLahir = new widget.TextBox();
         SDQ1 = new widget.ComboBox();
@@ -561,6 +523,11 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining SDQ Usia 11 - 18 Tahun ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -728,7 +695,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-11-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -742,7 +709,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-11-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -864,7 +831,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         TPasien.setBounds(336, 10, 285, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-11-2024" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -937,33 +904,33 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         FormInput.add(jLabel18);
         jLabel18.setBounds(400, 40, 70, 23);
 
-        NIP.setEditable(false);
-        NIP.setHighlighter(null);
-        NIP.setName("NIP"); // NOI18N
-        FormInput.add(NIP);
-        NIP.setBounds(474, 40, 94, 23);
+        KdPetugas.setEditable(false);
+        KdPetugas.setHighlighter(null);
+        KdPetugas.setName("KdPetugas"); // NOI18N
+        FormInput.add(KdPetugas);
+        KdPetugas.setBounds(474, 40, 94, 23);
 
-        NamaPetugas.setEditable(false);
-        NamaPetugas.setName("NamaPetugas"); // NOI18N
-        FormInput.add(NamaPetugas);
-        NamaPetugas.setBounds(570, 40, 187, 23);
+        NmPetugas.setEditable(false);
+        NmPetugas.setName("NmPetugas"); // NOI18N
+        FormInput.add(NmPetugas);
+        NmPetugas.setBounds(570, 40, 187, 23);
 
-        btnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        btnPetugas.setMnemonic('2');
-        btnPetugas.setToolTipText("ALt+2");
-        btnPetugas.setName("btnPetugas"); // NOI18N
-        btnPetugas.addActionListener(new java.awt.event.ActionListener() {
+        BtnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnPetugas.setMnemonic('2');
+        BtnPetugas.setToolTipText("ALt+2");
+        BtnPetugas.setName("BtnPetugas"); // NOI18N
+        BtnPetugas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPetugasActionPerformed(evt);
+                BtnPetugasActionPerformed(evt);
             }
         });
-        btnPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
+        BtnPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnPetugasKeyPressed(evt);
+                BtnPetugasKeyPressed(evt);
             }
         });
-        FormInput.add(btnPetugas);
-        btnPetugas.setBounds(761, 40, 28, 23);
+        FormInput.add(BtnPetugas);
+        BtnPetugas.setBounds(761, 40, 28, 23);
 
         jLabel8.setText("Tgl.Lahir :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -2153,8 +2120,8 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"Pasien");
-        }else if(NIP.getText().trim().equals("")||NamaPetugas.getText().trim().equals("")){
-            Valid.textKosong(NIP,"Petugas");
+        }else if(KdPetugas.getText().trim().equals("")||NmPetugas.getText().trim().equals("")){
+            Valid.textKosong(KdPetugas,"Petugas");
         }else{
             if(akses.getkode().equals("Admin Utama")){
                 simpan();
@@ -2194,7 +2161,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
             if(akses.getkode().equals("Admin Utama")){
                 hapus();
             }else{
-                if(NIP.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString())){
+                if(KdPetugas.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString())){
                     if(Sequel.cekTanggal48jam(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString(),Sequel.ambiltanggalsekarang())==true){
                         hapus();
                     }
@@ -2218,14 +2185,14 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"Pasien");
-        }else if(NIP.getText().trim().equals("")||NamaPetugas.getText().trim().equals("")){
-            Valid.textKosong(NIP,"Petugas");
+        }else if(KdPetugas.getText().trim().equals("")||NmPetugas.getText().trim().equals("")){
+            Valid.textKosong(KdPetugas,"Petugas");
         }else{
             if(tbObat.getSelectedRow()>-1){
                 if(akses.getkode().equals("Admin Utama")){
                     ganti();
                 }else{
-                    if(NIP.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString())){
+                    if(KdPetugas.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString())){
                         if(Sequel.cekTanggal48jam(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString(),Sequel.ambiltanggalsekarang())==true){
                             if(TanggalRegistrasi.getText().equals("")){
                                 TanggalRegistrasi.setText(Sequel.cariIsi("select concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
@@ -2253,7 +2220,6 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnEditKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        petugas.dispose();
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -2491,7 +2457,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -2504,13 +2470,13 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -2557,20 +2523,44 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     }//GEN-LAST:event_MenitKeyPressed
 
     private void DetikKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DetikKeyPressed
-        Valid.pindah(evt,Menit,btnPetugas);
+        Valid.pindah(evt,Menit,BtnPetugas);
     }//GEN-LAST:event_DetikKeyPressed
 
-    private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-        petugas.emptTeks();
-        petugas.isCek();
-        petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        petugas.setLocationRelativeTo(internalFrame1);
-        petugas.setVisible(true);
-    }//GEN-LAST:event_btnPetugasActionPerformed
+    private void BtnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPetugasActionPerformed
+        if (petugas == null || !petugas.isDisplayable()) {
+            petugas=new DlgCariPetugas(null,false);
+            petugas.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            petugas.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(petugas.getTable().getSelectedRow()!= -1){                   
+                        KdPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                        NmPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                    }  
+                    BtnPetugas.requestFocus();
+                    petugas=null;
+                }
+            });
 
-    private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPetugasKeyPressed
+            petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            petugas.setLocationRelativeTo(internalFrame1);
+        }
+        if (petugas == null) return;
+        if (!petugas.isVisible()) {
+            petugas.isCek();    
+            petugas.emptTeks();
+        }
+        
+        if (petugas.isVisible()) {
+            petugas.toFront();
+            return;
+        }
+        petugas.setVisible(true); 
+    }//GEN-LAST:event_BtnPetugasActionPerformed
+
+    private void BtnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPetugasKeyPressed
         Valid.pindah(evt,Detik,SDQ1);
-    }//GEN-LAST:event_btnPetugasKeyPressed
+    }//GEN-LAST:event_BtnPetugasKeyPressed
 
     private void MnFormulirSkriningInstrumenSDQActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnFormulirSkriningInstrumenSDQActionPerformed
         if(tbObat.getSelectedRow()>-1){
@@ -2626,7 +2616,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     }//GEN-LAST:event_SDQ1ItemStateChanged
 
     private void SDQ1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SDQ1KeyPressed
-        Valid.pindah(evt,btnPetugas,SDQ2);
+        Valid.pindah(evt,BtnPetugas,SDQ2);
     }//GEN-LAST:event_SDQ1KeyPressed
 
     private void SDQ2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_SDQ2ItemStateChanged
@@ -3161,6 +3151,31 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         Valid.pindah(evt,SDQ25,BtnSimpan);
     }//GEN-LAST:event_KeteranganKeyPressed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -3184,6 +3199,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnPetugas;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
@@ -3194,6 +3210,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.PanelBiasa FormInput;
     private widget.ComboBox Jam;
     private widget.TextBox Jk;
+    private widget.TextBox KdPetugas;
     private widget.TextBox KesimpulanKesulitan;
     private widget.TextBox KesimpulanSkorC;
     private widget.TextBox KesimpulanSkorE;
@@ -3205,8 +3222,6 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.editorpane LoadHTML;
     private widget.ComboBox Menit;
     private javax.swing.JMenuItem MnFormulirSkriningInstrumenSDQ;
-    private widget.TextBox NIP;
-    private widget.TextBox NamaPetugas;
     private widget.TextBox NilaiKesimpulanKesulitan;
     private widget.TextBox NilaiKesimpulanSkorC;
     private widget.TextBox NilaiKesimpulanSkorE;
@@ -3238,6 +3253,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.TextBox NilaiSDQ7;
     private widget.TextBox NilaiSDQ8;
     private widget.TextBox NilaiSDQ9;
+    private widget.TextBox NmPetugas;
     private javax.swing.JPanel PanelInput;
     private widget.ComboBox SDQ1;
     private widget.ComboBox SDQ10;
@@ -3273,7 +3289,6 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.TextBox TanggalRegistrasi;
     private widget.TextBox TglLahir;
     private widget.TextBox TotalNilai;
-    private widget.Button btnPetugas;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel16;
     private widget.Label jLabel18;
@@ -3386,7 +3401,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             if(TCari.getText().toString().trim().equals("")){
@@ -3670,6 +3685,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         isRawat(); 
         ChkInput.setSelected(true);
         isForm();
+        runBackground(() ->tampil());
     }
     
     private void isForm(){
@@ -3692,12 +3708,12 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
         BtnEdit.setEnabled(akses.getskrining_instrumen_sdq());
         BtnPrint.setEnabled(akses.getskrining_instrumen_sdq()); 
         if(akses.getjml2()>=1){
-            NIP.setEditable(false);
-            btnPetugas.setEnabled(false);
-            NIP.setText(akses.getkode());
-            NamaPetugas.setText(petugas.tampil3(NIP.getText()));
-            if(NamaPetugas.getText().equals("")){
-                NIP.setText("");
+            KdPetugas.setEditable(false);
+            BtnPetugas.setEnabled(false);
+            KdPetugas.setText(akses.getkode());
+            NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
+            if(NmPetugas.getText().equals("")){
+                KdPetugas.setText("");
                 JOptionPane.showMessageDialog(null,"User login bukan petugas...!!");
             }
         } 
@@ -3775,7 +3791,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
                 "nilai_sdq20=?,pernyataansdq21=?,nilai_sdq21=?,pernyataansdq22=?,nilai_sdq22=?,pernyataansdq23=?,nilai_sdq23=?,pernyataansdq24=?,nilai_sdq24=?,pernyataansdq25=?,nilai_sdq25=?,"+
                 "nilai_total_sdq=?,gejala_emosional=?,nilai_gejala_emosional=?,masalah_perilaku=?,nilai_masalah_perilaku=?,hiperaktivitas=?,nilai_hiperaktivitas=?,teman_sebaya=?,nilai_teman_sebaya=?,"+
                 "kekuatan=?,nilai_kekuatan=?,kesulitan=?,nilai_kesulitan=?,keterangan=?",68,new String[]{
-                TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),NIP.getText(),
+                TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),KdPetugas.getText(),
                 SDQ1.getSelectedItem().toString(),NilaiSDQ1.getText(),SDQ2.getSelectedItem().toString(),NilaiSDQ2.getText(),SDQ3.getSelectedItem().toString(),NilaiSDQ3.getText(),SDQ4.getSelectedItem().toString(),NilaiSDQ4.getText(), 
                 SDQ5.getSelectedItem().toString(),NilaiSDQ5.getText(),SDQ6.getSelectedItem().toString(),NilaiSDQ6.getText(),SDQ7.getSelectedItem().toString(),NilaiSDQ7.getText(),SDQ8.getSelectedItem().toString(),NilaiSDQ8.getText(), 
                 SDQ9.getSelectedItem().toString(),NilaiSDQ9.getText(),SDQ10.getSelectedItem().toString(),NilaiSDQ10.getText(),SDQ11.getSelectedItem().toString(),NilaiSDQ11.getText(),SDQ12.getSelectedItem().toString(),NilaiSDQ12.getText(),
@@ -3791,8 +3807,8 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
             tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
             tbObat.setValueAt(TglLahir.getText(),tbObat.getSelectedRow(),3);
             tbObat.setValueAt(Jk.getText(),tbObat.getSelectedRow(),4);
-            tbObat.setValueAt(NIP.getText(),tbObat.getSelectedRow(),5);
-            tbObat.setValueAt(NamaPetugas.getText(),tbObat.getSelectedRow(),6);
+            tbObat.setValueAt(KdPetugas.getText(),tbObat.getSelectedRow(),5);
+            tbObat.setValueAt(NmPetugas.getText(),tbObat.getSelectedRow(),6);
             tbObat.setValueAt(Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),tbObat.getSelectedRow(),7);
             tbObat.setValueAt(SDQ1.getSelectedItem().toString(),tbObat.getSelectedRow(),8);
             tbObat.setValueAt(NilaiSDQ1.getText(),tbObat.getSelectedRow(),9);
@@ -3998,7 +4014,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
 
     private void simpan() {
         if(Sequel.menyimpantf("skrining_instrumen_sdq","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",67,new String[]{
-            TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),NIP.getText(), 
+            TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),KdPetugas.getText(), 
             SDQ1.getSelectedItem().toString(),NilaiSDQ1.getText(),SDQ2.getSelectedItem().toString(),NilaiSDQ2.getText(),SDQ3.getSelectedItem().toString(),NilaiSDQ3.getText(),SDQ4.getSelectedItem().toString(),NilaiSDQ4.getText(), 
             SDQ5.getSelectedItem().toString(),NilaiSDQ5.getText(),SDQ6.getSelectedItem().toString(),NilaiSDQ6.getText(),SDQ7.getSelectedItem().toString(),NilaiSDQ7.getText(),SDQ8.getSelectedItem().toString(),NilaiSDQ8.getText(), 
             SDQ9.getSelectedItem().toString(),NilaiSDQ9.getText(),SDQ10.getSelectedItem().toString(),NilaiSDQ10.getText(),SDQ11.getSelectedItem().toString(),NilaiSDQ11.getText(),SDQ12.getSelectedItem().toString(),NilaiSDQ12.getText(),
@@ -4009,7 +4025,7 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
             NilaiKesimpulanSkorH.getText(),KesimpulanSkorP.getText(),NilaiKesimpulanSkorP.getText(),KesimpulanSkorPr.getText(),NilaiKesimpulanSkorPr.getText(),KesimpulanKesulitan.getText(),NilaiKesimpulanKesulitan.getText(),Keterangan.getText()
         })==true){
             tabMode.addRow(new Object[]{
-                TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),NIP.getText(),NamaPetugas.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
+                TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),KdPetugas.getText(),NmPetugas.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
                 SDQ1.getSelectedItem().toString(),NilaiSDQ1.getText(),SDQ2.getSelectedItem().toString(),NilaiSDQ2.getText(),SDQ3.getSelectedItem().toString(),NilaiSDQ3.getText(),SDQ4.getSelectedItem().toString(),NilaiSDQ4.getText(), 
                 SDQ5.getSelectedItem().toString(),NilaiSDQ5.getText(),SDQ6.getSelectedItem().toString(),NilaiSDQ6.getText(),SDQ7.getSelectedItem().toString(),NilaiSDQ7.getText(),SDQ8.getSelectedItem().toString(),NilaiSDQ8.getText(), 
                 SDQ9.getSelectedItem().toString(),NilaiSDQ9.getText(),SDQ10.getSelectedItem().toString(),NilaiSDQ10.getText(),SDQ11.getSelectedItem().toString(),NilaiSDQ11.getText(),SDQ12.getSelectedItem().toString(),NilaiSDQ12.getText(),
@@ -4022,5 +4038,37 @@ public final class RMSkriningInstrumenSDQ extends javax.swing.JDialog {
             emptTeks();
             LCount.setText(""+tabMode.getRowCount());
         } 
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

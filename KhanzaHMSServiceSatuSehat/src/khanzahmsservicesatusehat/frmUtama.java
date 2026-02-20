@@ -217,6 +217,11 @@ public class frmUtama extends javax.swing.JFrame {
                     medication();
                 }
                 
+                if(detik.equals("01")&&(nilai_menit%4==0)){
+                    encounter2();
+                    servicerequestradiologi();
+                }
+                
                 if((nilai_jam%4==0)&&(detik.equals("01")&&menit.equals("01"))){
                     encounter();
                     observationTTV();
@@ -228,7 +233,6 @@ public class frmUtama extends javax.swing.JFrame {
                     medicationrequest();
                     medicationdispense();
                     medicationstatement();
-                    servicerequestradiologi();
                     specimenradiologi();
                     observationradiologi();
                     diagnosticreportradiologi();
@@ -2714,7 +2718,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "{" +
                                                     "\"coding\": [" +
                                                         "{" +
-                                                            "\"system\": \"https://terminology.kemkes.go.id/CodeSystem/immunization-reason\"," +
+                                                            "\"system\": \"http://terminology.kemkes.go.id/CodeSystem/immunization-reason\"," +
                                                             "\"code\": \"IM-Program\"," +
                                                             "\"display\" : \"Imunisasi Program\"" +
                                                         "}" +
@@ -2853,7 +2857,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "{" +
                                                     "\"coding\": [" +
                                                         "{" +
-                                                            "\"system\": \"https://terminology.kemkes.go.id/CodeSystem/immunization-reason\"," +
+                                                            "\"system\": \"http://terminology.kemkes.go.id/CodeSystem/immunization-reason\"," +
                                                             "\"code\": \"IM-Program\"," +
                                                             "\"display\" : \"Imunisasi Program\"" +
                                                         "}" +
@@ -3682,7 +3686,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "}" +
                                             "]," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -3846,7 +3850,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "}" +
                                             "]," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -4012,7 +4016,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "}" +
                                             "]," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -4178,7 +4182,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "}" +
                                             "]," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -4337,12 +4341,12 @@ public class frmUtama extends javax.swing.JFrame {
                                             "\"resourceType\": \"MedicationDispense\"," +
                                             "\"identifier\": [" +
                                                 "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/medicationdispense/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/prescription/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                                     "\"use\": \"official\"," +
                                                     "\"value\": \""+rs.getString("no_resep")+"\"" +
                                                 "}," +
                                                 "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/medicationdispense-item/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/prescription-item/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                                     "\"use\": \"official\"," +
                                                     "\"value\": \""+rs.getString("kode_brng")+"\"" +
                                                 "}" +
@@ -4519,12 +4523,12 @@ public class frmUtama extends javax.swing.JFrame {
                                             "\"resourceType\": \"MedicationDispense\"," +
                                             "\"identifier\": [" +
                                                 "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/medicationdispense/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/prescription/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                                     "\"use\": \"official\"," +
                                                     "\"value\": \""+rs.getString("no_resep")+"\"" +
                                                 "}," +
                                                 "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/medicationdispense-item/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/prescription-item/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                                     "\"use\": \"official\"," +
                                                     "\"value\": \""+rs.getString("kode_brng")+"\"" +
                                                 "}" +
@@ -4645,7 +4649,7 @@ public class frmUtama extends javax.swing.JFrame {
     private void servicerequestradiologi() {
         try{
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,pegawai.no_ktp as ktpdokter,"+
+                   "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,reg_periksa.kd_dokter,pegawai.nama,pegawai.no_ktp as ktpdokter,"+
                    "satu_sehat_encounter.id_encounter,permintaan_radiologi.noorder,permintaan_radiologi.tgl_permintaan,permintaan_radiologi.jam_permintaan,permintaan_radiologi.diagnosa_klinis,"+
                    "jns_perawatan_radiologi.nm_perawatan,satu_sehat_mapping_radiologi.code,satu_sehat_mapping_radiologi.system,satu_sehat_mapping_radiologi.display,"+
                    "ifnull(satu_sehat_servicerequest_radiologi.id_servicerequest,'') as id_servicerequest,permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
@@ -4656,7 +4660,7 @@ public class frmUtama extends javax.swing.JFrame {
                    "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
                    "left join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder "+
                    "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "where reg_periksa.status_lanjut='Ralan' and reg_periksa.tgl_registrasi between ? and ? ");
+                   "where reg_periksa.tgl_registrasi between ? and ? ");
             try {
                 ps.setString(1,Tanggal1.getText());
                 ps.setString(2,Tanggal2.getText());
@@ -4674,122 +4678,8 @@ public class frmUtama extends javax.swing.JFrame {
                                             "\"resourceType\": \"ServiceRequest\"," +
                                             "\"identifier\": [" +
                                                 "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/servicerequest/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                                    "\"value\": \""+rs.getString("noorder")+"."+rs.getString("kd_jenis_prw")+"\"" +
-                                                "}" +
-                                            "]," +
-                                            "\"status\": \"active\"," +
-                                            "\"intent\": \"order\"," +
-                                            "\"category\": [" +
-                                                "{" +
-                                                    "\"coding\": [" +
-                                                        "{" +
-                                                            "\"system\": \"http://snomed.info/sct\"," +
-                                                            "\"code\": \"363679005\"," +
-                                                            "\"display\": \"Imaging\"" +
-                                                        "}" +
-                                                    "]" +
-                                                "}" +
-                                            "],"+
-                                            "\"code\": {" +
-                                                "\"coding\": [" +
-                                                    "{" +
-                                                        "\"system\": \""+rs.getString("system")+"\"," +
-                                                        "\"code\": \""+rs.getString("code")+"\"," +
-                                                        "\"display\": \""+rs.getString("display")+"\"" +
-                                                    "}" +
-                                                "]," +
-                                                "\"text\": \""+rs.getString("nm_perawatan")+"\"" +
-                                            "}," +
-                                            "\"subject\": {" +
-                                                "\"reference\": \"Patient/"+idpasien+"\"" +
-                                            "}," +
-                                            "\"encounter\": {" +
-                                                "\"reference\": \"Encounter/"+rs.getString("id_encounter")+"\"," +
-                                                "\"display\": \"Permintaan "+rs.getString("nm_perawatan")+" atas nama pasien "+rs.getString("nm_pasien")+" No.RM "+rs.getString("no_rkm_medis")+" No.Rawat "+rs.getString("no_rawat")+", pada tanggal "+rs.getString("tgl_permintaan")+" "+rs.getString("jam_permintaan")+"\"" +
-                                            "}," +
-                                            "\"authoredOn\" : \""+rs.getString("tgl_permintaan")+"T"+rs.getString("jam_permintaan")+"+07:00\"," +
-                                            "\"requester\": {" +
-                                                "\"reference\": \"Practitioner/"+iddokter+"\"," +
-                                                "\"display\": \""+rs.getString("nama")+"\"" +
-                                            "}," +
-                                            "\"performer\": [{" +
-                                                "\"reference\": \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                                "\"display\": \"Ruang Radiologi/Petugas Radiologi\"" +
-                                            "}]," +
-                                            "\"reasonCode\": [" +
-                                                "{" +
-                                                    "\"text\": \""+rs.getString("diagnosa_klinis")+"\"" +
-                                                "}" +
-                                            "]" +
-                                        "}";
-                                TeksArea.append("URL : "+link+"/ServiceRequest");
-                                TeksArea.append("Request JSON : "+json);
-                                requestEntity = new HttpEntity(json,headers);
-                                json=api.getRest().exchange(link+"/ServiceRequest", HttpMethod.POST, requestEntity, String.class).getBody();
-                                TeksArea.append("Result JSON : "+json);
-                                root = mapper.readTree(json);
-                                response = root.path("id");
-                                if(!response.asText().equals("")){
-                                    Sequel.menyimpan2("satu_sehat_servicerequest_radiologi","?,?,?","No.Rawat",3,new String[]{
-                                        rs.getString("noorder"),rs.getString("kd_jenis_prw"),response.asText()
-                                    });
-                                }
-                            }catch(Exception ea){
-                                TeksArea.append("Notifikasi Bridging : "+ea);
-                            }
-                        } catch (Exception ef) {
-                            System.out.println("Notifikasi : "+ef);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        }catch(Exception e){
-            System.out.println("Notifikasi : "+e);
-        }
-        
-        try{
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,pegawai.no_ktp as ktpdokter,"+
-                   "satu_sehat_encounter.id_encounter,permintaan_radiologi.noorder,permintaan_radiologi.tgl_permintaan,permintaan_radiologi.jam_permintaan,permintaan_radiologi.diagnosa_klinis,"+
-                   "jns_perawatan_radiologi.nm_perawatan,satu_sehat_mapping_radiologi.code,satu_sehat_mapping_radiologi.system,satu_sehat_mapping_radiologi.display,"+
-                   "ifnull(satu_sehat_servicerequest_radiologi.id_servicerequest,'') as id_servicerequest,permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join pegawai on pegawai.nik=reg_periksa.kd_dokter "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat "+
-                   "inner join permintaan_pemeriksaan_radiologi on permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder "+
-                   "inner join jns_perawatan_radiologi on jns_perawatan_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
-                   "left join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder "+
-                   "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "where reg_periksa.status_lanjut='Ranap' and reg_periksa.tgl_registrasi between ? and ? ");
-            try {
-                ps.setString(1,Tanggal1.getText());
-                ps.setString(2,Tanggal2.getText());
-                rs=ps.executeQuery();
-                while(rs.next()){
-                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktpdokter").equals(""))&&rs.getString("id_servicerequest").equals("")){
-                        try {
-                            iddokter=cekViaSatuSehat.tampilIDParktisi(rs.getString("ktpdokter"));
-                            idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
-                            try{
-                                headers = new HttpHeaders();
-                                headers.setContentType(MediaType.APPLICATION_JSON);
-                                headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
-                                json = "{" +
-                                            "\"resourceType\": \"ServiceRequest\"," +
-                                            "\"identifier\": [" +
-                                                "{" +
-                                                    "\"system\": \"http://sys-ids.kemkes.go.id/servicerequest/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                                    "\"value\": \""+rs.getString("noorder")+"."+rs.getString("kd_jenis_prw")+"\"" +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/acsn/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"value\": \""+rs.getString("noorder").toString().replaceAll("PR","")+rs.getString("kd_jenis_prw")+"\"" +
                                                 "}" +
                                             "]," +
                                             "\"status\": \"active\"," +
@@ -7466,7 +7356,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "\"reference\" : \"Encounter/"+rs.getString("id_encounter")+"\","+
                                                 "\"display\" : \"Kunjungan "+rs.getString("nm_pasien")+" pada tanggal "+rs.getString("tgl_registrasi")+" dengan nomor kunjungan "+rs.getString("no_rawat")+"\""+
                                             "}," +
-                                            "\"created\" : \""+rs.getString("tgl_perawatan").replaceAll(" ","T")+"+07:00\"," +
+                                            "\"created\" : \""+rs.getString("tgl_perawatan")+"T"+rs.getString("jam_rawat")+"+07:00\"," +
                                             "\"author\" : {" +
                                                 "\"reference\" : \"Practitioner/"+iddokter+"\"," +
                                                 "\"display\" : \""+rs.getString("nama")+"\"" +
@@ -7557,7 +7447,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "\"reference\" : \"Encounter/"+rs.getString("id_encounter")+"\","+
                                                 "\"display\" : \"Kunjungan "+rs.getString("nm_pasien")+" pada tanggal "+rs.getString("tgl_registrasi")+" dengan nomor kunjungan "+rs.getString("no_rawat")+"\""+
                                             "}," +
-                                            "\"created\" : \""+rs.getString("tgl_perawatan").replaceAll(" ","T")+"+07:00\"," +
+                                            "\"created\" : \""+rs.getString("tgl_perawatan")+"T"+rs.getString("jam_rawat")+"+07:00\"," +
                                             "\"author\" : {" +
                                                 "\"reference\" : \"Practitioner/"+iddokter+"\"," +
                                                 "\"display\" : \""+rs.getString("nama")+"\"" +
@@ -7620,7 +7510,7 @@ public class frmUtama extends javax.swing.JFrame {
                 ps.setString(2,Tanggal2.getText());
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("id_medicationrequest").equals("")){
+                    if((!rs.getString("no_ktp").equals(""))&&rs.getString("id_medicationstatement").equals("")){
                         try {
                             idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
                             arrSplit = rs.getString("aturan_pakai").toLowerCase().split("x");
@@ -7664,7 +7554,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "]" +
                                             "}," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -7763,7 +7653,7 @@ public class frmUtama extends javax.swing.JFrame {
                 ps.setString(2,Tanggal2.getText());
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("id_medicationrequest").equals("")){
+                    if((!rs.getString("no_ktp").equals(""))&&rs.getString("id_medicationstatement").equals("")){
                         try {
                             idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
                             arrSplit = rs.getString("aturan_pakai").toLowerCase().split("x");
@@ -7807,7 +7697,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "]" +
                                             "}," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -7908,7 +7798,7 @@ public class frmUtama extends javax.swing.JFrame {
                 ps.setString(2,Tanggal2.getText());
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("id_medicationrequest").equals("")){
+                    if((!rs.getString("no_ktp").equals(""))&&rs.getString("id_medicationstatement").equals("")){
                         try {
                             idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
                             arrSplit = rs.getString("aturan_pakai").toLowerCase().split("x");
@@ -7952,7 +7842,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "]" +
                                             "}," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -8053,7 +7943,7 @@ public class frmUtama extends javax.swing.JFrame {
                 ps.setString(2,Tanggal2.getText());
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktppraktisi").equals(""))&&rs.getString("id_medicationrequest").equals("")){
+                    if((!rs.getString("no_ktp").equals(""))&&rs.getString("id_medicationstatement").equals("")){
                         try {
                             idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
                             arrSplit = rs.getString("aturan_pakai").toLowerCase().split("x");
@@ -8097,7 +7987,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 "]" +
                                             "}," +
                                             "\"medicationReference\": {" +
-                                                "\"reference\": \"Medication/"+rs.getString("id_medicationrequest")+"\"," +
+                                                "\"reference\": \"Medication/"+rs.getString("id_medication")+"\"," +
                                                 "\"display\": \""+rs.getString("obat_display")+"\"" +
                                             "}," +
                                             "\"subject\": {" +
@@ -8177,6 +8067,127 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
+        }
+    }
+    
+    private void encounter2() {
+        //kirim encounter
+        try{
+            ps=koneksi.prepareStatement(
+                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,pasien.nm_pasien,pasien.no_ktp,"+
+                   "pegawai.nama,pegawai.no_ktp as ktpdokter,poliklinik.nm_poli,satu_sehat_mapping_lokasi_ralan.id_lokasi_satusehat,"+
+                   "reg_periksa.status_lanjut,concat(reg_periksa.tgl_registrasi,'T',reg_periksa.jam_reg,'+07:00') as pulang,ifnull(satu_sehat_encounter.id_encounter,'') as id_encounter "+
+                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join pegawai on pegawai.nik=reg_periksa.kd_dokter "+
+                   "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join satu_sehat_mapping_lokasi_ralan on satu_sehat_mapping_lokasi_ralan.kd_poli=poliklinik.kd_poli "+
+                   "left join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+                   "inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat "+
+                   "where reg_periksa.tgl_registrasi between ? and ? group by reg_periksa.no_rawat");
+            try {
+                ps.setString(1,Tanggal1.getText());
+                ps.setString(2,Tanggal2.getText());
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if((!rs.getString("no_ktp").equals(""))&&(!rs.getString("ktpdokter").equals(""))&&rs.getString("id_encounter").equals("")){
+                        try {
+                            iddokter=cekViaSatuSehat.tampilIDParktisi(rs.getString("ktpdokter"));
+                            idpasien=cekViaSatuSehat.tampilIDPasien(rs.getString("no_ktp"));
+                            try{
+                                headers = new HttpHeaders();
+                                headers.setContentType(MediaType.APPLICATION_JSON);
+                                headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
+                                json = "{" +
+                                            "\"resourceType\": \"Encounter\"," +
+                                            "\"status\": \"arrived\"," +
+                                            "\"class\": {" +
+                                                "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActCode\"," +
+                                                "\"code\": \""+(rs.getString("status_lanjut").equals("Ralan")?"AMB":"IMP")+"\"," +
+                                                "\"display\": \""+(rs.getString("status_lanjut").equals("Ralan")?"ambulatory":"inpatient encounter")+"\"" +
+                                            "}," +
+                                            "\"subject\": {" +
+                                                "\"reference\": \"Patient/"+idpasien+"\"," +
+                                                "\"display\": \""+rs.getString("nm_pasien")+"\"" +
+                                            "}," +
+                                            "\"participant\": [" +
+                                                "{" +
+                                                    "\"type\": [" +
+                                                        "{" +
+                                                            "\"coding\": [" +
+                                                                "{" +
+                                                                    "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ParticipationType\"," +
+                                                                    "\"code\": \"ATND\"," +
+                                                                    "\"display\": \"attender\"" +
+                                                                "}" +
+                                                            "]" +
+                                                        "}" +
+                                                    "]," +
+                                                    "\"individual\": {" +
+                                                        "\"reference\": \"Practitioner/"+iddokter+"\"," +
+                                                        "\"display\": \""+rs.getString("nama")+"\"" +
+                                                    "}" +
+                                                "}" +
+                                            "]," +
+                                            "\"period\": {" +
+                                                "\"start\": \""+rs.getString("tgl_registrasi")+"T"+rs.getString("jam_reg")+"+07:00"+"\"" +
+                                            "}," +
+                                            "\"location\": [" +
+                                                "{" +
+                                                    "\"location\": {" +
+                                                        "\"reference\": \"Location/"+rs.getString("id_lokasi_satusehat")+"\"," +
+                                                        "\"display\": \""+rs.getString("nm_poli")+"\"" +
+                                                    "}" +
+                                                "}" +
+                                            "]," +
+                                            "\"statusHistory\": [" +
+                                                "{" +
+                                                    "\"status\": \"arrived\"," +
+                                                    "\"period\": {" +
+                                                        "\"start\": \""+rs.getString("tgl_registrasi")+"T"+rs.getString("jam_reg")+"+07:00"+"\"," +
+                                                        "\"end\": \""+rs.getString("pulang")+"\"" +
+                                                    "}" +
+                                                "}" +
+                                            "]," +
+                                            "\"serviceProvider\": {" +
+                                                "\"reference\": \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"" +
+                                            "}," +
+                                            "\"identifier\": [" +
+                                                "{" +
+                                                    "\"system\": \"http://sys-ids.kemkes.go.id/encounter/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                                    "\"value\": \""+rs.getString("no_rawat")+"\"" +
+                                                "}" +
+                                            "]" +
+                                        "}";
+                                TeksArea.append("URL : "+link+"/Encounter\n");
+                                TeksArea.append("Request JSON : "+json+"\n");
+                                requestEntity = new HttpEntity(json,headers);
+                                json=api.getRest().exchange(link+"/Encounter", HttpMethod.POST, requestEntity, String.class).getBody();
+                                TeksArea.append("Result JSON : "+json+"\n");
+                                root = mapper.readTree(json);
+                                response = root.path("id");
+                                if(!response.asText().equals("")){
+                                    Sequel.menyimpan2("satu_sehat_encounter","?,?","No.Rawat",2,new String[]{
+                                        rs.getString("no_rawat"),response.asText()
+                                    });
+                                }
+                            }catch(Exception ea){
+                                TeksArea.append("Notifikasi Bridging : "+ea);
+                            }
+                        } catch (Exception ef) {
+                            System.out.println("Notifikasi : "+ef);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println("Notif : "+ex);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        }catch(Exception ez){
+            System.out.println("Notifikasi : "+ez);
         }
     }
 }

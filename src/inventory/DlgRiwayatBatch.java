@@ -12,6 +12,10 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -22,6 +26,8 @@ public class DlgRiwayatBatch extends javax.swing.JDialog {
     private final Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs,rs2;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     
     /** Creates new form DlgProgramStudi
@@ -50,29 +56,6 @@ public class DlgRiwayatBatch extends javax.swing.JDialog {
         LoadHTML2.setDocument(doc);
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-
-            });
-        }
     }
    
 
@@ -359,10 +342,6 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         }
 }//GEN-LAST:event_btnCariKeyPressed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        prosesCari();
-    }//GEN-LAST:event_formWindowOpened
-
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             TabRawatMouseClicked(null);
@@ -390,11 +369,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==0){
-            prosesCari();
+            runBackground(() ->prosesCari());
         }else if(TabRawat.getSelectedIndex()==1){
-            prosesCari2();
+            runBackground(() ->prosesCari2());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -920,27 +925,19 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "data_batch.vip,data_batch.vvip,data_batch.beliluar,data_batch.jualbebas,"+
                     "data_batch.karyawan,data_batch.jumlahbeli,data_batch.sisa from databarang "+
                     "inner join data_batch on data_batch.kode_brng=databarang.kode_brng where "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_batch like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.kode_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and databarang.nama_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.asal like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_faktur like ? order by data_batch.tgl_beli");
+                    "data_batch.tgl_beli between ? and ? "+(TCari.getText().trim().equals("")?"":
+                    "and (data_batch.no_batch like ? or data_batch.kode_brng like ? or databarang.nama_brng like ? or "+
+                    "data_batch.asal like ? or data_batch.no_faktur like ?)")+" order by data_batch.tgl_beli");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText().trim()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText().trim()+"%");
-                ps.setString(13,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(14,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(15,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    ps.setString(5,"%"+TCari.getText().trim()+"%");
+                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    ps.setString(7,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     htmlContent.append(
@@ -1024,4 +1021,35 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         BtnPrint.setEnabled(akses.getriwayat_data_batch());
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

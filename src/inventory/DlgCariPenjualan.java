@@ -24,8 +24,12 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -46,9 +50,6 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private riwayatobat Trackobat=new riwayatobat();
     private int i=0,no=1;
-    public  DlgCariPasien pasien=new DlgCariPasien(null,false);
-    public  DlgCariPetugas petugas=new DlgCariPetugas(null,false);
-    public  DlgBarang barang=new DlgBarang(null,false);
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");    
     private double ttljual=0,ttlppn=0,ttlongkir=0,ttldisc=0,ttltambahan=0,ttlembalase=0,ttltuslah=0,ttlsubttl=0,subttljual=0,subttldisc=0,subttlall=0,subttltambahan=0,subttlembalase=0,subttltuslah=0,ttlhpp=0;
     private String totaljual="",notapenjualan="No",verifikasi_penjualan_di_kasir="",statusbayar="",datacari="",
@@ -61,6 +62,8 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgProgramStudi
      * @param parent
      * @param modal */
@@ -127,216 +130,6 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         kdbar.setDocument(new batasInput((byte)15).getKata(kdbar));
         kdsat.setDocument(new batasInput((byte)3).getKata(kdsat));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));  
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        pasien.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(pasien.getTable().getSelectedRow()!= -1){                   
-                        kdmem.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),0).toString());
-                        nmmem.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),1).toString());
-                    }   
-                    kdmem.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        pasien.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                        pasien.dispose();
-                    }
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(petugas.getTable().getSelectedRow()!= -1){                   
-                        kdptg.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                        nmptg.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
-                    }  
-                    kdptg.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        
-        barang.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(barang.getTable().getSelectedRow()!= -1){                   
-                        kdbar.setText(barang.getTable().getValueAt(barang.getTable().getSelectedRow(),1).toString());                    
-                        nmbar.setText(barang.getTable().getValueAt(barang.getTable().getSelectedRow(),2).toString());
-                    }   
-                    kdbar.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        barang.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                        barang.dispose();
-                    }                
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        barang.jenis.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgCariPenjualan")){
-                    if(barang.jenis.getTable().getSelectedRow()!= -1){
-                        kdsat.setText(barang.jenis.getTable().getValueAt(barang.jenis.getTable().getSelectedRow(),0).toString());
-                        nmsat.setText(barang.jenis.getTable().getValueAt(barang.jenis.getTable().getSelectedRow(),1).toString());
-                    }                
-                    kdsat.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });      
-        
-        try {
-            ps=koneksi.prepareStatement("select set_nota.cetaknotasimpanpenjualan,set_nota.verifikasi_penjualan_di_kasir from set_nota");
-            try {
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    notapenjualan=rs.getString("cetaknotasimpanpenjualan");
-                    verifikasi_penjualan_di_kasir=rs.getString("verifikasi_penjualan_di_kasir");
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-            
-            if(notapenjualan.equals("")){
-                notapenjualan="No";
-            }
-            
-            if(verifikasi_penjualan_di_kasir.equals("Yes")){
-                ppVerif.setVisible(true);
-            }else{
-                ppVerif.setVisible(false);
-            }
-        } catch (Exception e) {
-            System.out.println("Notif : "+e);
-            notapenjualan="No"; 
-        }
-        
-        try {
-            ps=koneksi.prepareStatement("select set_akun.Penjualan_Obat,set_akun.HPP_Obat_Jual_Bebas,set_akun.Persediaan_Obat_Jual_Bebas,set_akun.PPN_Keluaran from set_akun");
-            try {
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    Penjualan_Obat=rs.getString("Penjualan_Obat");
-                    HPP_Obat_Jual_Bebas=rs.getString("HPP_Obat_Jual_Bebas");
-                    Persediaan_Obat_Jual_Bebas=rs.getString("Persediaan_Obat_Jual_Bebas");
-                    PPN_Keluaran=rs.getString("PPN_Keluaran");
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notif : "+e);
-        }
         
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML1.setEditable(true);
@@ -973,7 +766,42 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 */
 
     private void btnPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasienActionPerformed
-        akses.setform("DlgCariPenjualan");
+        DlgCariPasien pasien=new DlgCariPasien(null,false);
+        pasien.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(pasien.getTable().getSelectedRow()!= -1){                   
+                    kdmem.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),0).toString());
+                    nmmem.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),1).toString());
+                }   
+                kdmem.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pasien.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    pasien.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        }); 
         pasien.emptTeks();
         pasien.isCek();
         pasien.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -983,7 +811,29 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_btnPasienActionPerformed
 
     private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-        akses.setform("DlgCariPenjualan");
+        DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+        petugas.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(petugas.getTable().getSelectedRow()!= -1){                   
+                    kdptg.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                    nmptg.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                }  
+                kdptg.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        }); 
         petugas.emptTeks();
         petugas.isCek();
         petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -1015,13 +865,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_NoNotaKeyPressed
 
     private void kdptgKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdptgKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            nmptg.setText(petugas.tampil3(kdptg.getText()));           
-        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            nmptg.setText(petugas.tampil3(kdptg.getText())); 
+        if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             Tgl2.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            nmptg.setText(petugas.tampil3(kdptg.getText())); 
             kdbar.requestFocus(); 
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnPetugasActionPerformed(null);
@@ -1047,7 +893,42 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_kdbarKeyPressed
 
     private void btnBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBarangActionPerformed
-        akses.setform("DlgCariPenjualan");
+        DlgBarang barang=new DlgBarang(null,false);
+        barang.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(barang.getTable().getSelectedRow()!= -1){                   
+                    kdbar.setText(barang.getTable().getValueAt(barang.getTable().getSelectedRow(),1).toString());                    
+                    nmbar.setText(barang.getTable().getValueAt(barang.getTable().getSelectedRow(),2).toString());
+                }   
+                kdbar.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        barang.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    barang.dispose();
+                } 
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         barang.emptTeks();
         barang.isCek();
         barang.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -1071,13 +952,35 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_kdsatKeyPressed
 
     private void btnSatuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSatuanActionPerformed
-        akses.setform("DlgCariPenjualan");
-        barang.jenis.emptTeks();
-        barang.jenis.isCek();
-        barang.jenis.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        barang.jenis.setLocationRelativeTo(internalFrame1);
-        barang.jenis.setAlwaysOnTop(false);
-        barang.jenis.setVisible(true);
+        DlgCariJenis jenis = new DlgCariJenis(null, false);
+        jenis.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(jenis.getTable().getSelectedRow()!= -1){
+                    kdsat.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),0).toString());
+                    nmsat.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),1).toString());
+                }                
+                kdsat.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });  
+        jenis.emptTeks();
+        jenis.isCek();
+        jenis.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        jenis.setLocationRelativeTo(internalFrame1);
+        jenis.setAlwaysOnTop(false);
+        jenis.setVisible(true);
     }//GEN-LAST:event_btnSatuanActionPerformed
 
     private void nmsatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmsatKeyPressed
@@ -1354,7 +1257,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
                         Sequel.AutoComitTrue();
                         if(sukses==true){
-                            tampil();
+                            runBackground(() ->tampil());
                         } 
                     }         
                 } catch (Exception e) {
@@ -1375,8 +1278,98 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_ppHapusActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-        tampilAkunBayar();
+        try {
+            ps=koneksi.prepareStatement("select set_nota.cetaknotasimpanpenjualan,set_nota.verifikasi_penjualan_di_kasir from set_nota");
+            try {
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    notapenjualan=rs.getString("cetaknotasimpanpenjualan");
+                    verifikasi_penjualan_di_kasir=rs.getString("verifikasi_penjualan_di_kasir");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+            
+            if(notapenjualan.equals("")){
+                notapenjualan="No";
+            }
+            
+            if(verifikasi_penjualan_di_kasir.equals("Yes")){
+                ppVerif.setVisible(true);
+            }else{
+                ppVerif.setVisible(false);
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+            notapenjualan="No"; 
+        }
+        
+        try {
+            ps=koneksi.prepareStatement("select set_akun.Penjualan_Obat,set_akun.HPP_Obat_Jual_Bebas,set_akun.Persediaan_Obat_Jual_Bebas,set_akun.PPN_Keluaran from set_akun");
+            try {
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    Penjualan_Obat=rs.getString("Penjualan_Obat");
+                    HPP_Obat_Jual_Bebas=rs.getString("HPP_Obat_Jual_Bebas");
+                    Persediaan_Obat_Jual_Bebas=rs.getString("Persediaan_Obat_Jual_Bebas");
+                    PPN_Keluaran=rs.getString("PPN_Keluaran");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        }
+        
+        runBackground(() ->tampilAkunBayar());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void ppVerifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppVerifActionPerformed
@@ -1399,9 +1392,9 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==1){
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
@@ -1662,7 +1655,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             if(notapenjualan.equals("Yes")){
                                 ppCetakNotaActionPerformed(evt);
                             }
-                            tampil();
+                            runBackground(() ->tampil());
                          } 
                       }                        
                   }        
@@ -2264,5 +2257,37 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

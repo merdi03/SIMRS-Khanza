@@ -10,22 +10,26 @@ import inventory.DlgPeresepanDokter;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
 import keuangan.DlgCariDaftarOperasi;
-import permintaan.DlgPermintaanLaboratorium;
 import rekammedis.RMCatatanAnastesiSedasi;
 import rekammedis.RMCatatanPengkajianPaskaOperasi;
 import rekammedis.RMChecklistPostOperasi;
@@ -55,8 +59,13 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private PreparedStatement ps;
+    private DlgCariDokter dokter;
+    private DlgCariDaftarOperasi operasi;
+    private DlgCariRuangOperasi ruangok;
     private ResultSet rs;
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private String status="",bangsal="",lokasistok="",kamar="",diagnosa="",order="",kelas="",penjab="",norawatibu="",posisi="",DEPOAKTIFOBAT="",norm="";
     
 
@@ -129,28 +138,6 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         KdDokter.setDocument(new batasInput((byte)3).getKata(KdDokter));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        } 
         
         ChkInput.setSelected(false);
         isForm();
@@ -1260,7 +1247,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
                     JamSelesai.getSelectedItem()+":"+MenitSelesai.getSelectedItem()+":"+DetikSelesai.getSelectedItem(),
                     Status.getSelectedItem().toString(),KdDokter.getText(),KdRuangOperasi.getText()
                     })==true){
-                    tampil();
+                    runBackground(() ->tampil());
                     emptTeks();
                 }
             }   
@@ -1304,7 +1291,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
                             "and kd_dokter='"+KdDokter.getText()+"' "+
                             "and status='"+Status.getSelectedItem()+"' "+
                             "and kode_paket='"+KdOperasi.getText()+"'");
-                    tampil();
+                    runBackground(() ->tampil());
                     emptTeks();
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih terlebih dulu data yang mau anda hapus...\n Klik data pada table untuk memilih data...!!!!");
@@ -1393,7 +1380,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -1406,13 +1393,13 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
             TCari.setText("");
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -1439,33 +1426,30 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
 }//GEN-LAST:event_tbObatKeyPressed
 
 private void BtnOperatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnOperatorActionPerformed
-    DlgCariDokter dokter=new DlgCariDokter(null,false);
-    dokter.addWindowListener(new WindowListener() {
-        @Override
-        public void windowOpened(WindowEvent e) {;}
-        @Override
-        public void windowClosing(WindowEvent e) {}
-        @Override
-        public void windowClosed(WindowEvent e) {
-            if(dokter.getTable().getSelectedRow()!= -1){                    
-                KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
-                NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
-            }
+    if (dokter == null || !dokter.isDisplayable()) {
+            dokter=new DlgCariDokter(null,false);
+            dokter.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dokter.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(dokter.getTable().getSelectedRow()!= -1){        
+                         KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                         NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+                    }  
+                    KdDokter.requestFocus();
+                    dokter=null;
+                }
+            });
+            dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dokter.setLocationRelativeTo(internalFrame1);
+        }   
+        if (dokter == null) return;
+        dokter.isCek();
+        if (dokter.isVisible()) {
+            dokter.toFront();
+            return;
         }
-        @Override
-        public void windowIconified(WindowEvent e) {}
-        @Override
-        public void windowDeiconified(WindowEvent e) {}
-        @Override
-        public void windowActivated(WindowEvent e) {}
-        @Override
-        public void windowDeactivated(WindowEvent e) {}
-    });
-    dokter.isCek();
-    dokter.TCari.requestFocus();
-    dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-    dokter.setLocationRelativeTo(internalFrame1);
-    dokter.setVisible(true);
+        dokter.setVisible(true);
 }//GEN-LAST:event_BtnOperatorActionPerformed
 
 private void BtnOperatorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnOperatorKeyPressed
@@ -1524,7 +1508,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         tbObat.getValueAt(tbObat.getSelectedRow(),8).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),13).toString(),
                         tbObat.getValueAt(tbObat.getSelectedRow(),16).toString()
                      })==true){
-                    tampil();
+                    runBackground(() ->tampil());
                     emptTeks();
                 }
             }
@@ -1559,32 +1543,34 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             kelas="Rawat Jalan";
         }
     
-        DlgCariDaftarOperasi operasi=new DlgCariDaftarOperasi(null,false);
-        operasi.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {;}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(operasi.getTable().getSelectedRow()!= -1){                    
-                    KdOperasi.setText(operasi.getTable().getValueAt(operasi.getTable().getSelectedRow(),0).toString());
-                    NmOperasi.setText(operasi.getTable().getValueAt(operasi.getTable().getSelectedRow(),1).toString());
+        if (operasi == null || !operasi.isDisplayable()) {
+            operasi=new DlgCariDaftarOperasi(null,false);
+            operasi.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            operasi.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(operasi.getTable().getSelectedRow()!= -1){                   
+                        KdOperasi.setText(operasi.getTable().getValueAt(operasi.getTable().getSelectedRow(),0).toString());
+                        NmOperasi.setText(operasi.getTable().getValueAt(operasi.getTable().getSelectedRow(),1).toString());
+                    } 
+                    KdOperasi.requestFocus();
+                    operasi=null;
                 }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        operasi.setBayar(penjab, kelas);
-        operasi.isCek();
-        operasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        operasi.setLocationRelativeTo(internalFrame1);
+            });
+
+            operasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            operasi.setLocationRelativeTo(internalFrame1);
+        }
+            
+        if (operasi == null) return;
+        if (!operasi.isVisible()) {
+            operasi.isCek();    
+            operasi.setBayar(penjab, kelas);
+        }  
+        if (operasi.isVisible()) {
+            operasi.toFront();
+            return;
+        }    
         operasi.setVisible(true);
     }//GEN-LAST:event_BtnOperasiActionPerformed
 
@@ -1621,7 +1607,28 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_DetikSelesaiKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void DTPCari1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_DTPCari1ItemStateChanged
@@ -1780,31 +1787,33 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_BtnObatBhpActionPerformed
 
     private void BtnRuangOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRuangOperasiActionPerformed
-        DlgCariRuangOperasi ruangok=new DlgCariRuangOperasi(null,false);
-        ruangok.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {;}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(ruangok.getTable().getSelectedRow()!= -1){                    
-                    KdRuangOperasi.setText(ruangok.getTable().getValueAt(ruangok.getTable().getSelectedRow(),0).toString());
-                    NmRuangOperasi.setText(ruangok.getTable().getValueAt(ruangok.getTable().getSelectedRow(),1).toString());
+        if (ruangok == null || !ruangok.isDisplayable()) {
+            ruangok=new DlgCariRuangOperasi(null,false);
+            ruangok.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            ruangok.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(ruangok.getTable().getSelectedRow()!= -1){                   
+                        KdRuangOperasi.setText(ruangok.getTable().getValueAt(ruangok.getTable().getSelectedRow(),0).toString());
+                        NmRuangOperasi.setText(ruangok.getTable().getValueAt(ruangok.getTable().getSelectedRow(),1).toString());
+                    } 
+                    KdRuangOperasi.requestFocus();
+                    ruangok=null;
                 }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        ruangok.isCek();
-        ruangok.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        ruangok.setLocationRelativeTo(internalFrame1);
+            });
+
+            ruangok.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            ruangok.setLocationRelativeTo(internalFrame1);
+        }
+            
+        if (ruangok == null) return;
+        if (!ruangok.isVisible()) {
+            ruangok.isCek();    
+        }  
+        if (ruangok.isVisible()) {
+            ruangok.toFront();
+            return;
+        }    
         ruangok.setVisible(true);
     }//GEN-LAST:event_BtnRuangOperasiActionPerformed
 
@@ -1994,7 +2003,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 form.setVisible(true);
                 form.emptTeks();
                 form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
-                form.tampil();
                 this.setCursor(Cursor.getDefaultCursor());
             }else{
                 JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data...!!!!");
@@ -2016,7 +2024,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 form.setVisible(true);
                 form.emptTeks();
                 form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
-                form.tampil();
                 this.setCursor(Cursor.getDefaultCursor());
             }else{
                 JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data...!!!!");
@@ -2038,7 +2045,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 form.setVisible(true);
                 form.emptTeks();
                 form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
-                form.tampil();
                 this.setCursor(Cursor.getDefaultCursor());
             }else{
                 JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data...!!!!");
@@ -2212,7 +2218,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil() {     
+    private void tampil() {     
         if(R1.isSelected()==true){
             status=" booking_operasi.status='Menunggu' ";
         }else if(R4.isSelected()==true){
@@ -2335,6 +2341,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TCari.setText(norwt);
         ChkInput.setSelected(true);
         isForm();
+        runBackground(() ->tampil());
     }
     
     private void isForm(){
@@ -2388,5 +2395,37 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             FormMenu.setVisible(false);    
             ChkAccor.setVisible(true);
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

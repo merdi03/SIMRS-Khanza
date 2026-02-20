@@ -15,6 +15,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -26,8 +27,13 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -49,7 +55,9 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;
-    private DlgCariDokter dokter=new DlgCariDokter(null,false);
+    private DlgCariDokter dokter;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private StringBuilder htmlContent;
     private String finger="";
     private String TANGGALMUNDUR="yes";
@@ -309,53 +317,6 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         CT.setDocument(new batasInput((byte)30).getKata(CT));
         AsamUrat.setDocument(new batasInput((byte)30).getKata(AsamUrat));
         Edukasi.setDocument(new batasInput((int)1000).getKata(Edukasi));
-        
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        dokter.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(dokter.getTable().getSelectedRow()!= -1){
-                    KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
-                    NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
-                    KdDokter.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
         
         try {
             TANGGALMUNDUR=koneksiDB.TANGGALMUNDUR();
@@ -640,6 +601,11 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Awal Medis Pasien Hemodialisa ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -1133,7 +1099,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         label11.setBounds(380, 40, 52, 23);
 
         TglAsuhan.setForeground(new java.awt.Color(50, 70, 50));
-        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024 18:40:23" }));
+        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026 19:04:35" }));
         TglAsuhan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TglAsuhan.setName("TglAsuhan"); // NOI18N
         TglAsuhan.setOpaque(false);
@@ -1513,7 +1479,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jLabel73.setBounds(44, 620, 100, 23);
 
         TglThorax.setForeground(new java.awt.Color(50, 70, 50));
-        TglThorax.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglThorax.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglThorax.setDisplayFormat("dd-MM-yyyy");
         TglThorax.setEnabled(false);
         TglThorax.setName("TglThorax"); // NOI18N
@@ -1527,7 +1493,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglThorax.setBounds(161, 620, 90, 23);
 
         TglDialisis.setForeground(new java.awt.Color(50, 70, 50));
-        TglDialisis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglDialisis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglDialisis.setDisplayFormat("dd-MM-yyyy");
         TglDialisis.setName("TglDialisis"); // NOI18N
         TglDialisis.setOpaque(false);
@@ -1546,7 +1512,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jLabel74.setBounds(44, 650, 100, 23);
 
         TglEKG.setForeground(new java.awt.Color(50, 70, 50));
-        TglEKG.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglEKG.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglEKG.setDisplayFormat("dd-MM-yyyy");
         TglEKG.setEnabled(false);
         TglEKG.setName("TglEKG"); // NOI18N
@@ -1566,7 +1532,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jLabel75.setBounds(44, 680, 100, 23);
 
         TglBNO.setForeground(new java.awt.Color(50, 70, 50));
-        TglBNO.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglBNO.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglBNO.setDisplayFormat("dd-MM-yyyy");
         TglBNO.setEnabled(false);
         TglBNO.setName("TglBNO"); // NOI18N
@@ -1580,7 +1546,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglBNO.setBounds(161, 680, 90, 23);
 
         TglUSG.setForeground(new java.awt.Color(50, 70, 50));
-        TglUSG.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglUSG.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglUSG.setDisplayFormat("dd-MM-yyyy");
         TglUSG.setEnabled(false);
         TglUSG.setName("TglUSG"); // NOI18N
@@ -1606,7 +1572,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jLabel77.setBounds(345, 620, 105, 23);
 
         TglRenogram.setForeground(new java.awt.Color(50, 70, 50));
-        TglRenogram.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglRenogram.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglRenogram.setDisplayFormat("dd-MM-yyyy");
         TglRenogram.setEnabled(false);
         TglRenogram.setName("TglRenogram"); // NOI18N
@@ -1620,7 +1586,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglRenogram.setBounds(470, 620, 90, 23);
 
         TglLaboratorium.setForeground(new java.awt.Color(50, 70, 50));
-        TglLaboratorium.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglLaboratorium.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglLaboratorium.setDisplayFormat("dd-MM-yyyy");
         TglLaboratorium.setEnabled(false);
         TglLaboratorium.setName("TglLaboratorium"); // NOI18N
@@ -1652,7 +1618,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jLabel80.setBounds(345, 710, 105, 23);
 
         TglKultururin.setForeground(new java.awt.Color(50, 70, 50));
-        TglKultururin.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglKultururin.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglKultururin.setDisplayFormat("dd-MM-yyyy");
         TglKultururin.setEnabled(false);
         TglKultururin.setName("TglKultururin"); // NOI18N
@@ -1666,7 +1632,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglKultururin.setBounds(764, 620, 90, 23);
 
         TglArteriografi.setForeground(new java.awt.Color(50, 70, 50));
-        TglArteriografi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglArteriografi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglArteriografi.setDisplayFormat("dd-MM-yyyy");
         TglArteriografi.setEnabled(false);
         TglArteriografi.setName("TglArteriografi"); // NOI18N
@@ -1680,7 +1646,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglArteriografi.setBounds(470, 710, 90, 23);
 
         TglCTscan.setForeground(new java.awt.Color(50, 70, 50));
-        TglCTscan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglCTscan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglCTscan.setDisplayFormat("dd-MM-yyyy");
         TglCTscan.setEnabled(false);
         TglCTscan.setName("TglCTscan"); // NOI18N
@@ -1694,7 +1660,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglCTscan.setBounds(470, 680, 90, 23);
 
         TglBiopsi.setForeground(new java.awt.Color(50, 70, 50));
-        TglBiopsi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglBiopsi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglBiopsi.setDisplayFormat("dd-MM-yyyy");
         TglBiopsi.setEnabled(false);
         TglBiopsi.setName("TglBiopsi"); // NOI18N
@@ -2096,7 +2062,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jSeparator3.setBounds(0, 310, 880, 1);
 
         TglCAPD.setForeground(new java.awt.Color(50, 70, 50));
-        TglCAPD.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglCAPD.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglCAPD.setDisplayFormat("dd-MM-yyyy");
         TglCAPD.setEnabled(false);
         TglCAPD.setName("TglCAPD"); // NOI18N
@@ -2110,7 +2076,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         TglCAPD.setBounds(414, 330, 90, 23);
 
         TglTransplantasi.setForeground(new java.awt.Color(50, 70, 50));
-        TglTransplantasi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        TglTransplantasi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         TglTransplantasi.setDisplayFormat("dd-MM-yyyy");
         TglTransplantasi.setEnabled(false);
         TglTransplantasi.setName("TglTransplantasi"); // NOI18N
@@ -2422,7 +2388,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -2436,7 +2402,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-05-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -2883,7 +2849,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -2896,13 +2862,13 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -3303,10 +3269,29 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnDokterKeyPressed
 
     private void BtnDokterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDokterActionPerformed
+        if (dokter == null || !dokter.isDisplayable()) {
+            dokter=new DlgCariDokter(null,false);
+            dokter.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dokter.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(dokter.getTable().getSelectedRow()!= -1){        
+                         KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                         NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+                    }  
+                    BtnDokter.requestFocus();
+                    dokter=null;
+                }
+            });
+            dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dokter.setLocationRelativeTo(internalFrame1);
+        }   
+        if (dokter == null) return;
         dokter.isCek();
-        dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        dokter.setLocationRelativeTo(internalFrame1);
-        dokter.setAlwaysOnTop(false);
+        if (dokter.isVisible()) {
+            dokter.toFront();
+            return;
+        }
         dokter.setVisible(true);
     }//GEN-LAST:event_BtnDokterActionPerformed
 
@@ -3417,6 +3402,31 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
             TglLaboratorium.setEnabled(false);
         }
     }//GEN-LAST:event_ChkLaboratItemStateChanged
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -3659,7 +3669,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             if(TCari.getText().trim().equals("")){
@@ -4038,7 +4048,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
             KdDokter.setEditable(false);
             BtnDokter.setEnabled(false);
             KdDokter.setText(akses.getkode());
-            NmDokter.setText(dokter.tampil3(KdDokter.getText()));
+            NmDokter.setText(Sequel.CariDokter(KdDokter.getText()));
             if(NmDokter.getText().equals("")){
                 KdDokter.setText("");
                 JOptionPane.showMessageDialog(null,"User login bukan Dokter...!!");
@@ -4055,7 +4065,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
     
     public void setTampil(){
        TabRawat.setSelectedIndex(1);
-       tampil();
+       runBackground(() ->tampil());
     }
 
     private void hapus() {
@@ -4226,5 +4236,37 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
             LCount.setText(""+tabMode.getRowCount());
             emptTeks();
         } 
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

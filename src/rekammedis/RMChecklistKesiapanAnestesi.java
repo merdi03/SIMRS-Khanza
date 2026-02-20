@@ -16,8 +16,8 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,8 +27,13 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -51,8 +56,12 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;   
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
     private String TANGGALMUNDUR="yes";
+    private DlgCariPetugas petugas;
+    private DlgCariDokter dokter;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
+    /** Creates new form DlgPenyakit
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -117,29 +126,6 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         TeknikAnestesi.setDocument(new batasInput((int)30).getKata(TeknikAnestesi));
         Tindakan.setDocument(new batasInput((int)100).getKata(Tindakan));
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
         ChkInput.setSelected(false);
         isForm();
         
@@ -160,29 +146,6 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){ 
-                    KodePetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                    NamaPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());   
-                    BtnPetugas.requestFocus();
-                }              
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
         
         try {
             TANGGALMUNDUR=koneksiDB.TANGGALMUNDUR();
@@ -241,8 +204,8 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         TglLahir = new widget.TextBox();
         Tanggal = new widget.Tanggal();
         jLabel23 = new widget.Label();
-        KodeDokter = new widget.TextBox();
-        NamaDokter = new widget.TextBox();
+        KdDokter = new widget.TextBox();
+        NmDokter = new widget.TextBox();
         BtnDokter = new widget.Button();
         Listrik3 = new widget.ComboBox();
         jLabel58 = new widget.Label();
@@ -381,6 +344,11 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Check List Kesiapan Anestesi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -548,7 +516,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-06-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -562,7 +530,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-06-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -711,7 +679,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         TglLahir.setBounds(689, 10, 100, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-06-2025 22:09:35" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026 13:40:44" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -728,16 +696,16 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         FormInput.add(jLabel23);
         jLabel23.setBounds(381, 70, 100, 23);
 
-        KodeDokter.setEditable(false);
-        KodeDokter.setHighlighter(null);
-        KodeDokter.setName("KodeDokter"); // NOI18N
-        FormInput.add(KodeDokter);
-        KodeDokter.setBounds(485, 70, 97, 23);
+        KdDokter.setEditable(false);
+        KdDokter.setHighlighter(null);
+        KdDokter.setName("KdDokter"); // NOI18N
+        FormInput.add(KdDokter);
+        KdDokter.setBounds(485, 70, 97, 23);
 
-        NamaDokter.setEditable(false);
-        NamaDokter.setName("NamaDokter"); // NOI18N
-        FormInput.add(NamaDokter);
-        NamaDokter.setBounds(584, 70, 175, 23);
+        NmDokter.setEditable(false);
+        NmDokter.setName("NmDokter"); // NOI18N
+        FormInput.add(NmDokter);
+        NmDokter.setBounds(584, 70, 175, 23);
 
         BtnDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnDokter.setMnemonic('2');
@@ -1653,7 +1621,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"pasien");
-        }else if(KodeDokter.getText().trim().equals("")||NamaDokter.getText().trim().equals("")){
+        }else if(KdDokter.getText().trim().equals("")||NmDokter.getText().trim().equals("")){
             Valid.textKosong(BtnDokter,"Dokter Anestesi");
         }else if(KodePetugas.getText().trim().equals("")||NamaPetugas.getText().trim().equals("")){
             Valid.textKosong(BtnDokter,"Asisten Anestesi");
@@ -1720,7 +1688,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"pasien");
-        }else if(KodeDokter.getText().trim().equals("")||NamaDokter.getText().trim().equals("")){
+        }else if(KdDokter.getText().trim().equals("")||NmDokter.getText().trim().equals("")){
             Valid.textKosong(BtnDokter,"Dokter Anestesi");
         }else if(KodePetugas.getText().trim().equals("")||NamaPetugas.getText().trim().equals("")){
             Valid.textKosong(BtnDokter,"Asisten Anestesi");
@@ -2113,7 +2081,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -2126,13 +2094,13 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
             TCari.setText("");
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -2206,33 +2174,29 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     }//GEN-LAST:event_TanggalKeyPressed
 
     private void BtnDokterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDokterActionPerformed
-        DlgCariDokter dokter=new DlgCariDokter(null,false);
-        dokter.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(dokter.getTable().getSelectedRow()!= -1){  
-                    KodeDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
-                    NamaDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+        if (dokter == null || !dokter.isDisplayable()) {
+            dokter=new DlgCariDokter(null,false);
+            dokter.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dokter.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(dokter.getTable().getSelectedRow()!= -1){        
+                         KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                         NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+                    }  
                     BtnDokter.requestFocus();
-                }  
-                    
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        dokter.emptTeks();
-        dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        dokter.setLocationRelativeTo(internalFrame1);
+                    dokter=null;
+                }
+            });
+            dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dokter.setLocationRelativeTo(internalFrame1);
+        }   
+        if (dokter == null) return;
+        dokter.isCek();
+        if (dokter.isVisible()) {
+            dokter.toFront();
+            return;
+        }
         dokter.setVisible(true);
     }//GEN-LAST:event_BtnDokterActionPerformed
 
@@ -2265,15 +2229,39 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     }//GEN-LAST:event_GasMedis1KeyPressed
 
     private void BtnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPetugasActionPerformed
-        petugas.emptTeks();
-        petugas.isCek();
-        petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        petugas.setLocationRelativeTo(internalFrame1);
-        petugas.setVisible(true);
+        if (petugas == null || !petugas.isDisplayable()) {
+            petugas=new DlgCariPetugas(null,false);
+            petugas.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            petugas.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(petugas.getTable().getSelectedRow()!= -1){                   
+                        KodePetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                        NamaPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                    }  
+                    BtnPetugas.requestFocus();
+                    petugas=null;
+                }
+            });
+
+            petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            petugas.setLocationRelativeTo(internalFrame1);
+        }
+        if (petugas == null) return;
+        if (!petugas.isVisible()) {
+            petugas.isCek();    
+            petugas.emptTeks();
+        }
+        
+        if (petugas.isVisible()) {
+            petugas.toFront();
+            return;
+        }
+        petugas.setVisible(true); 
     }//GEN-LAST:event_BtnPetugasActionPerformed
 
     private void BtnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPetugasKeyPressed
-        //Valid.pindah(evt,PerhatianUtamaFasePemulihan,BtnSimpan);
+        Valid.pindah(evt,TCari,BtnSimpan);
     }//GEN-LAST:event_BtnPetugasKeyPressed
 
     private void GasMedis3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_GasMedis3KeyPressed
@@ -2416,6 +2404,31 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         Valid.pindah(evt,Tindakan,BtnDokter);
     }//GEN-LAST:event_TeknikAnestesiKeyPressed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -2463,8 +2476,8 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private widget.ComboBox JalanNapas7;
     private widget.ComboBox JalanNapas8;
     private widget.ComboBox JalanNapas9;
+    private widget.TextBox KdDokter;
     private widget.TextArea KeteranganLainnya;
-    private widget.TextBox KodeDokter;
     private widget.TextBox KodePetugas;
     private widget.Label LCount;
     private widget.ComboBox LainLain1;
@@ -2486,8 +2499,8 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private widget.ComboBox MesinAnestesi4;
     private widget.ComboBox MesinAnestesi5;
     private javax.swing.JMenuItem MnCetakLaporan;
-    private widget.TextBox NamaDokter;
     private widget.TextBox NamaPetugas;
+    private widget.TextBox NmDokter;
     private widget.ComboBox ObatObat1;
     private widget.ComboBox ObatObat2;
     private widget.ComboBox ObatObat3;
@@ -2586,7 +2599,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             if(TCari.getText().trim().equals("")){
@@ -2816,6 +2829,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         isRawat();
         ChkInput.setSelected(true);
         isForm();
+        runBackground(() ->tampil());
     }
     
     private void isForm(){
@@ -2840,7 +2854,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         if(akses.getjml2()>=1){
             BtnPetugas.setEnabled(false);
             KodePetugas.setText(akses.getkode());
-            NamaPetugas.setText(petugas.tampil3(akses.getkode()));
+            NamaPetugas.setText(Sequel.CariPetugas(akses.getkode()));
             if(NamaPetugas.getText().equals("")){
                 KodePetugas.setText("");
                 JOptionPane.showMessageDialog(null,"User login bukan petugas...!!");
@@ -2859,7 +2873,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
                 "gasmedis1=?,gasmedis2=?,gasmedis3=?,gasmedis4=?,gasmedis5=?,gasmedis6=?,mesinanes1=?,mesinanes2=?,mesinanes3=?,mesinanes4=?,mesinanes5=?,jalannapas1=?,jalannapas2=?,jalannapas3=?,jalannapas4=?,"+
                 "jalannapas5=?,jalannapas6=?,jalannapas7=?,jalannapas8=?,jalannapas9=?,lainlain1=?,lainlain2=?,lainlain3=?,lainlain4=?,lainlain5=?,lainlain6=?,lainlain7=?,lainlain8=?,obatobat1=?,obatobat2=?,"+
                 "obatobat3=?,obatobat4=?,obatobat5=?,obatobat6=?,keterangan_lainnya=?",47,new String[]{
-                TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),KodePetugas.getText(),KodeDokter.getText(),Tindakan.getText(), 
+                TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),KodePetugas.getText(),KdDokter.getText(),Tindakan.getText(), 
                 TeknikAnestesi.getText(),Listrik1.getSelectedItem().toString(),Listrik2.getSelectedItem().toString(),Listrik3.getSelectedItem().toString(),Listrik4.getSelectedItem().toString(),
                 GasMedis1.getSelectedItem().toString(),GasMedis2.getSelectedItem().toString(),GasMedis3.getSelectedItem().toString(),GasMedis4.getSelectedItem().toString(),GasMedis5.getSelectedItem().toString(),
                 GasMedis6.getSelectedItem().toString(),MesinAnestesi1.getSelectedItem().toString(),MesinAnestesi2.getSelectedItem().toString(),MesinAnestesi3.getSelectedItem().toString(),
@@ -2879,8 +2893,8 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
             tbObat.setValueAt(Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),tbObat.getSelectedRow(),5);
             tbObat.setValueAt(KodePetugas.getText(),tbObat.getSelectedRow(),6);
             tbObat.setValueAt(NamaPetugas.getText(),tbObat.getSelectedRow(),7);
-            tbObat.setValueAt(KodeDokter.getText(),tbObat.getSelectedRow(),8);
-            tbObat.setValueAt(NamaDokter.getText(),tbObat.getSelectedRow(),9);
+            tbObat.setValueAt(KdDokter.getText(),tbObat.getSelectedRow(),8);
+            tbObat.setValueAt(NmDokter.getText(),tbObat.getSelectedRow(),9);
             tbObat.setValueAt(Tindakan.getText(),tbObat.getSelectedRow(),10);
             tbObat.setValueAt(TeknikAnestesi.getText(),tbObat.getSelectedRow(),11);
             tbObat.setValueAt(Listrik1.getSelectedItem().toString(),tbObat.getSelectedRow(),12);
@@ -2940,7 +2954,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
 
     private void simpan() {
         if(Sequel.menyimpantf("checklist_kesiapan_anestesi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",45,new String[]{
-            TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),KodePetugas.getText(),KodeDokter.getText(),Tindakan.getText(), 
+            TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),KodePetugas.getText(),KdDokter.getText(),Tindakan.getText(), 
             TeknikAnestesi.getText(),Listrik1.getSelectedItem().toString(),Listrik2.getSelectedItem().toString(),Listrik3.getSelectedItem().toString(),Listrik4.getSelectedItem().toString(),
             GasMedis1.getSelectedItem().toString(),GasMedis2.getSelectedItem().toString(),GasMedis3.getSelectedItem().toString(),GasMedis4.getSelectedItem().toString(),GasMedis5.getSelectedItem().toString(),
             GasMedis6.getSelectedItem().toString(),MesinAnestesi1.getSelectedItem().toString(),MesinAnestesi2.getSelectedItem().toString(),MesinAnestesi3.getSelectedItem().toString(),
@@ -2953,7 +2967,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
         })==true){
             tabMode.addRow(new Object[]{
                 TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),JK.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),
-                KodePetugas.getText(),NamaPetugas.getText(),KodeDokter.getText(),NamaDokter.getText(),Tindakan.getText(),TeknikAnestesi.getText(),Listrik1.getSelectedItem().toString(),Listrik2.getSelectedItem().toString(),
+                KodePetugas.getText(),NamaPetugas.getText(),KdDokter.getText(),NmDokter.getText(),Tindakan.getText(),TeknikAnestesi.getText(),Listrik1.getSelectedItem().toString(),Listrik2.getSelectedItem().toString(),
                 Listrik3.getSelectedItem().toString(),Listrik4.getSelectedItem().toString(),GasMedis1.getSelectedItem().toString(),GasMedis2.getSelectedItem().toString(),GasMedis3.getSelectedItem().toString(),
                 GasMedis4.getSelectedItem().toString(),GasMedis5.getSelectedItem().toString(),GasMedis6.getSelectedItem().toString(),MesinAnestesi1.getSelectedItem().toString(),MesinAnestesi2.getSelectedItem().toString(),
                 MesinAnestesi3.getSelectedItem().toString(),MesinAnestesi4.getSelectedItem().toString(),MesinAnestesi5.getSelectedItem().toString(),JalanNapas1.getSelectedItem().toString(),JalanNapas2.getSelectedItem().toString(),
@@ -2966,5 +2980,37 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
             LCount.setText(""+tabMode.getRowCount());
             emptTeks();
         } 
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

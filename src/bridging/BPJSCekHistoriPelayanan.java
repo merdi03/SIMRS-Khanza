@@ -24,17 +24,17 @@ import fungsi.validasi;
 import fungsi.koneksiDB;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import simrskhanza.DlgCariPasien;
 
 /**
  *
@@ -52,6 +52,8 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
         
     /** Creates new form DlgKamar
      * @param parent
@@ -266,7 +268,7 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
         if(NoKartu.getText().equals("")){
             Valid.textKosong(NoKartu,"No.Kartu");
         }else{
-            tampil(NoKartu.getText());
+            runBackground(() ->tampil(NoKartu.getText()));
         }
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -302,7 +304,7 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(String nomorrujukan) {
+    private void tampil(String nomorrujukan) {
         try {
             headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -350,4 +352,35 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
         this.NoKartu.setText(Kartu);
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

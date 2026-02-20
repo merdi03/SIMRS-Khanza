@@ -20,8 +20,12 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -38,9 +42,10 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
-    private DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
     private String status="";
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private double sisapiutang=0,cicilan=0,diskon=0,tidakterbayar=0,totalpiutang=0,totalcicilan=0,totaluangmuka=0,totaldiskon=0,totaltidakterbayar=0;
 
     /** Creates new form DlgLhtBiaya
@@ -109,68 +114,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         tbBangsal.setDefaultRenderer(Object.class, new WarnaTable());
 
         TKd.setDocument(new batasInput((byte)20).getKata(TKd));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
         MnDetailCicilan.setEnabled(akses.getbayar_piutang());
-        
-        penjab.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
-                    tampil();
-                }      
-                kdpenjab.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {penjab.emptTeks();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });   
-        
-        penjab.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-
     }
      
 
@@ -533,7 +477,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         kdpenjab.setText("");
         nmpenjab.setText("");
         StatusLunas.setSelectedIndex(0);
-        tampil();
+        runBackground(() ->tampil());
 
 }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -559,7 +503,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
                                 String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString() +"'");
                                 String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'"); 
                                 bayarpiutang.setData(tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString(),norm,nama);                   
-                                bayarpiutang.tampil();  
+                                bayarpiutang.tampil2();  
                                 bayarpiutang.setSize(this.getWidth()-20,this.getHeight()-20);
                                 bayarpiutang.setLocationRelativeTo(this);
                                 bayarpiutang.setVisible(true);
@@ -588,7 +532,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
                                 String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString()+"'");
                                 String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'");
                                 bayarpiutang.setData(tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString(),norm,nama);
-                                bayarpiutang.tampil();  
+                                bayarpiutang.tampil2();  
                                 bayarpiutang.setSize(this.getWidth()-20,this.getHeight()-20);
                                 bayarpiutang.setLocationRelativeTo(this);
                                 bayarpiutang.setVisible(true);
@@ -614,12 +558,12 @@ private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCa
 }//GEN-LAST:event_TCariKeyPressed
 
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
 private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, TKd, BtnAll);
         }
@@ -675,7 +619,7 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
                     String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString()+"'");
                     String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'"); 
                     bayarpiutang.setData(tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString(),norm,nama);                   
-                    bayarpiutang.tampil(); 
+                    bayarpiutang.tampil2(); 
                     bayarpiutang.isCek();
                     bayarpiutang.setSize(this.getWidth()-20,this.getHeight()-20);
                     bayarpiutang.setLocationRelativeTo(this);
@@ -686,10 +630,6 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
             }                 
         } 
 }//GEN-LAST:event_MnDetailCicilanActionPerformed
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
 
     private void kdpenjabKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpenjabKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
@@ -704,6 +644,43 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_kdpenjabKeyPressed
 
     private void BtnSeek2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeek2ActionPerformed
+        DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+        penjab.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(penjab.getTable().getSelectedRow()!= -1){
+                    kdpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
+                    nmpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                    runBackground(() ->tampil());
+                }      
+                kdpenjab.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {penjab.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        penjab.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    penjab.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         penjab.isCek();
         penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penjab.setLocationRelativeTo(internalFrame1);
@@ -714,6 +691,31 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void BtnSeek2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSeek2KeyPressed
         //Valid.pindah(evt,DTPCari2,TCari);
     }//GEN-LAST:event_BtnSeek2KeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -763,7 +765,7 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.Table tbBangsal;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){
+    private void tampil(){
         Valid.tabelKosong(tabMode);
         try{
             sisapiutang=0;
@@ -830,6 +832,10 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
             System.out.println("Notifikasi : "+e);
         }
     }
+    
+    public void tampil2(){
+        runBackground(() ->tampil());
+    }
 
     public void setNoRm(String norm, Date tgl){
         TCari.setText(norm);
@@ -840,5 +846,37 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
     public void isCek(){
         TCari.requestFocus();
         MnDetailCicilan.setEnabled(akses.getbayar_piutang());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

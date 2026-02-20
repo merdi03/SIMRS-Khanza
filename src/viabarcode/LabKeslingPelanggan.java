@@ -13,8 +13,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -27,6 +31,8 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -35,7 +41,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Object[] row={"Kode Pelanggan","Nama Pelanggan","Alamat Pelanggan","Kota","No.Telp","Kegiatan Usaha","Personal Yang Dihubungi"};
+        Object[] row={"No.Pelanggan","Nama Pelanggan","Alamat Pelanggan","Kota","No.Telp","Kegiatan Usaha","Personal Yang Dihubungi"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -64,36 +70,14 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
 
-        Kode.setDocument(new batasInput((byte)5).getKata(Kode));
+        Kode.setDocument(new batasInput((byte)6).getKata(Kode));
         Nama.setDocument(new batasInput((byte)50).getKata(Nama));      
         Alamat.setDocument(new batasInput((byte)50).getKata(Alamat));  
         Kota.setDocument(new batasInput((byte)20).getKata(Kota));    
         Telp.setDocument(new batasInput((byte)13).getOnlyAngka(Telp)); 
         PersonalDihubungi.setDocument(new batasInput((byte)30).getKata(PersonalDihubungi));   
         KegiatanUsaha.setDocument(new batasInput((byte)30).getKata(KegiatanUsaha));  
-        TCari.setDocument(new batasInput((byte)100).getKata(TCari));    
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }   
+        TCari.setDocument(new batasInput((byte)100).getKata(TCari));   
         ChkInput.setSelected(false);
         isForm();           
     }
@@ -404,7 +388,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
         FormInput.setPreferredSize(new java.awt.Dimension(660, 107));
         FormInput.setLayout(null);
 
-        label12.setText("Kode :");
+        label12.setText("Nomor :");
         label12.setName("label12"); // NOI18N
         label12.setPreferredSize(new java.awt.Dimension(75, 23));
         FormInput.add(label12);
@@ -548,7 +532,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -584,8 +568,8 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,"Maaf, Pilih dulu data yang akan Anda hapus dengan menklik data pada tabel...!!!");
             tbDokter.requestFocus();
         }else{
-            Valid.hapusTable(tabMode,Kode,"laborat_kesling_pelanggan","kode_pelanggan");
-            tampil();
+            Valid.hapusTable(tabMode,Kode,"labkesling_pelanggan","kode_pelanggan");
+            runBackground(() ->tampil());
             emptTeks();
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
@@ -600,7 +584,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
 
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
         if(Kode.getText().trim().equals("")){
-            Valid.textKosong(Kode,"Kode Pelanggan");
+            Valid.textKosong(Kode,"No.Pelanggan");
         }else if(Nama.getText().trim().equals("")){
             Valid.textKosong(Nama,"Nama Pelanggan");
         }else if(Alamat.getText().trim().equals("")){
@@ -614,10 +598,10 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
         }else if(PersonalDihubungi.getText().trim().equals("")){
             Valid.textKosong(PersonalDihubungi,"Nomer Rekening");
         }else{
-            Valid.editTable(tabMode,"laborat_kesling_pelanggan","kode_pelanggan","?","kode_pelanggan=?,nama_pelanggan=?,alamat=?,kota=?,no_telp=?,kegiatan_usaha=?,personal_dihubungi=?",8,new String[]{
+            Valid.editTable(tabMode,"labkesling_pelanggan","kode_pelanggan","?","kode_pelanggan=?,nama_pelanggan=?,alamat=?,kota=?,no_telp=?,kegiatan_usaha=?,personal_dihubungi=?",8,new String[]{
                 Kode.getText(),Nama.getText(),Alamat.getText(),Kota.getText(),Telp.getText(),KegiatanUsaha.getText(),PersonalDihubungi.getText(),tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()
             });
-            if(tabMode.getRowCount()!=0){tampil();}
+            if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
             emptTeks();
 
         }
@@ -646,15 +630,15 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
             param.put("kontakrs",akses.getkontakrs());
             param.put("emailrs",akses.getemailrs());   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-            Valid.MyReportqry("rptLaboratKeslingPelanggan.jasper","report","::[ Data Pelanggan Laboratorium Kesehatan Lingkungan ]::","select laborat_kesling_pelanggan.kode_pelanggan, laborat_kesling_pelanggan.nama_pelanggan, "+
-                    " laborat_kesling_pelanggan.alamat,laborat_kesling_pelanggan.kota, laborat_kesling_pelanggan.no_telp,laborat_kesling_pelanggan.kegiatan_usaha,laborat_kesling_pelanggan.personal_dihubungi from laborat_kesling_pelanggan "+
-                    (TCari.getText().trim().equals("")?"":"where laborat_kesling_pelanggan.kode_pelanggan like '%"+TCari.getText().trim()+"%' or "+
-                    " laborat_kesling_pelanggan.nama_pelanggan like '%"+TCari.getText().trim()+"%' or "+
-                    " laborat_kesling_pelanggan.alamat like '%"+TCari.getText().trim()+"%' or "+
-                    " laborat_kesling_pelanggan.kota like '%"+TCari.getText().trim()+"%' or "+
-                    " laborat_kesling_pelanggan.kegiatan_usaha like '%"+TCari.getText().trim()+"%' or "+
-                    " laborat_kesling_pelanggan.no_telp like '%"+TCari.getText().trim()+"%' ")+
-                    " order by laborat_kesling_pelanggan.kode_pelanggan",param);            
+            Valid.MyReportqry("rptLaboratKeslingPelanggan.jasper","report","::[ Data Pelanggan Laboratorium Kesehatan Lingkungan ]::","select labkesling_pelanggan.kode_pelanggan, labkesling_pelanggan.nama_pelanggan, "+
+                    " labkesling_pelanggan.alamat,labkesling_pelanggan.kota, labkesling_pelanggan.no_telp,labkesling_pelanggan.kegiatan_usaha,labkesling_pelanggan.personal_dihubungi from labkesling_pelanggan "+
+                    (TCari.getText().trim().equals("")?"":"where labkesling_pelanggan.kode_pelanggan like '%"+TCari.getText().trim()+"%' or "+
+                    " labkesling_pelanggan.nama_pelanggan like '%"+TCari.getText().trim()+"%' or "+
+                    " labkesling_pelanggan.alamat like '%"+TCari.getText().trim()+"%' or "+
+                    " labkesling_pelanggan.kota like '%"+TCari.getText().trim()+"%' or "+
+                    " labkesling_pelanggan.kegiatan_usaha like '%"+TCari.getText().trim()+"%' or "+
+                    " labkesling_pelanggan.no_telp like '%"+TCari.getText().trim()+"%' ")+
+                    " order by labkesling_pelanggan.kode_pelanggan",param);            
         }
         this.setCursor(Cursor.getDefaultCursor());
 }//GEN-LAST:event_BtnPrintActionPerformed
@@ -669,7 +653,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -692,7 +676,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(Kode.getText().trim().equals("")){
-            Valid.textKosong(Kode,"Kode Pelanggan");
+            Valid.textKosong(Kode,"No.Pelanggan");
         }else if(Nama.getText().trim().equals("")){
             Valid.textKosong(Nama,"Nama Pelanggan");
         }else if(Alamat.getText().trim().equals("")){
@@ -706,10 +690,10 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
         }else if(PersonalDihubungi.getText().trim().equals("")){
             Valid.textKosong(PersonalDihubungi,"Nomer Rekening");
         }else{
-            if(Sequel.menyimpantf("laborat_kesling_pelanggan","?,?,?,?,?,?,?","Kode Pelanggan",7,new String[]{
+            if(Sequel.menyimpantf("labkesling_pelanggan","?,?,?,?,?,?,?","No.Pelanggan",7,new String[]{
                 Kode.getText(),Nama.getText(),Alamat.getText(),Kota.getText(),Telp.getText(),KegiatanUsaha.getText(),PersonalDihubungi.getText()        
             })==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }                
         }
@@ -745,7 +729,29 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void KodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KodeKeyPressed
@@ -846,16 +852,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select laborat_kesling_pelanggan.kode_pelanggan, laborat_kesling_pelanggan.nama_pelanggan, "+
-                    "laborat_kesling_pelanggan.alamat,laborat_kesling_pelanggan.kota, laborat_kesling_pelanggan.no_telp,"+
-                    "laborat_kesling_pelanggan.kegiatan_usaha,laborat_kesling_pelanggan.personal_dihubungi from laborat_kesling_pelanggan "+
-                    (TCari.getText().trim().equals("")?"":"where laborat_kesling_pelanggan.kode_pelanggan like ? or "+
-                    "laborat_kesling_pelanggan.nama_pelanggan like ? or "+
-                    "laborat_kesling_pelanggan.alamat like ? or "+
-                    "laborat_kesling_pelanggan.kota like ? or "+
-                    "laborat_kesling_pelanggan.kegiatan_usaha like ? or "+
-                    "laborat_kesling_pelanggan.no_telp like ? ")+
-                    "order by laborat_kesling_pelanggan.kode_pelanggan");
+                    "select labkesling_pelanggan.kode_pelanggan, labkesling_pelanggan.nama_pelanggan, "+
+                    "labkesling_pelanggan.alamat,labkesling_pelanggan.kota, labkesling_pelanggan.no_telp,"+
+                    "labkesling_pelanggan.kegiatan_usaha,labkesling_pelanggan.personal_dihubungi from labkesling_pelanggan "+
+                    (TCari.getText().trim().equals("")?"":"where labkesling_pelanggan.kode_pelanggan like ? or "+
+                    "labkesling_pelanggan.nama_pelanggan like ? or "+
+                    "labkesling_pelanggan.alamat like ? or "+
+                    "labkesling_pelanggan.kota like ? or "+
+                    "labkesling_pelanggan.kegiatan_usaha like ? or "+
+                    "labkesling_pelanggan.no_telp like ? ")+
+                    "order by labkesling_pelanggan.kode_pelanggan");
             try {
                 if(!TCari.getText().trim().equals("")){
                     ps.setString(1,"%"+TCari.getText().trim()+"%");
@@ -897,9 +903,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Telp.setText("0");
         KegiatanUsaha.setText("");
         PersonalDihubungi.setText("");
-        
+        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(labkesling_pelanggan.kode_pelanggan,6),signed)),0) from labkesling_pelanggan","",6,Kode);  
         Kode.requestFocus();
-        Valid.autoNomer("laborat_kesling_pelanggan","P",4,Kode);
     }
 
     private void getData() {
@@ -939,4 +944,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }    
  
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

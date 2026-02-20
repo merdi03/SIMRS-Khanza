@@ -253,7 +253,11 @@ public final class akses {
             kriteria_masuk_picu=false,kriteria_keluar_picu=false,master_sampel_bakumutu=false,skrining_instrumen_amt=false,parameter_pengujian_lab_kesehatan_lingkungan=false,
             nilai_normal_baku_mutu_lab_kesehatan_lingkungan=false,skrining_pneumonia_severity_index=false,permintaan_pengujian_sampel_lab_kesehatan_lingkungan=false,
             penilaian_awal_medis_ralan_jantung=false,penilaian_awal_medis_ralan_urologi=false,hasil_pemeriksaan_treadmill=false,hasil_pemeriksaan_echo_pediatrik=false,
-            template_pelaksanaan_informasi_edukasi=false,skrining_instrumen_esat=false,penilaian_awal_medis_ranap_jantung=false,e_eksekutif=false;
+            template_pelaksanaan_informasi_edukasi=false,skrining_instrumen_esat=false,penilaian_awal_medis_ranap_jantung=false,e_eksekutif=false,penugasan_pengujian_sampel_lab_kesehatan_lingkungan=false,
+            hasil_pengujian_sampel_lab_kesehatan_lingkungan=false,verifikasi_pengujian_sampel_lab_kesehatan_lingkungan=false,validasi_pengujian_sampel_lab_kesehatan_lingkungan=false,
+            rekap_pelayanan_lab_kesehatan_lingkungan=false,pembayaran_pengujian_sampel_lab_kesehatan_lingkungan=false,skrining_curb65=false,bpjs_potensi_prb=false,
+            bpjs_riwayat_pelayanan_obat=false,skrining_gizi_kehamilan=false,bpjs_rekap_peserta_prb_apotek=false,serah_terima_anggota_tubuh_barang=false,pcra_icra_jenis_aktivitas_proyek=false,
+            pcra_icra_lokasi_kelompok_risiko_area=false,pcra_icra_kelas_risiko_pencegahan=false;
     
     public static void setData(String user, String pass) {
         try {        
@@ -1439,6 +1443,21 @@ public final class akses {
                         akses.template_pelaksanaan_informasi_edukasi=true;
                         akses.skrining_instrumen_esat=true;
                         akses.penilaian_awal_medis_ranap_jantung=true;
+                        akses.penugasan_pengujian_sampel_lab_kesehatan_lingkungan=true;
+                        akses.hasil_pengujian_sampel_lab_kesehatan_lingkungan=true;
+                        akses.verifikasi_pengujian_sampel_lab_kesehatan_lingkungan=true;
+                        akses.validasi_pengujian_sampel_lab_kesehatan_lingkungan=true;
+                        akses.rekap_pelayanan_lab_kesehatan_lingkungan=true;
+                        akses.pembayaran_pengujian_sampel_lab_kesehatan_lingkungan=true;
+                        akses.skrining_curb65=true;
+                        akses.bpjs_potensi_prb=true;
+                        akses.bpjs_riwayat_pelayanan_obat=true;
+                        akses.skrining_gizi_kehamilan=true;
+                        akses.bpjs_rekap_peserta_prb_apotek=true;
+                        akses.serah_terima_anggota_tubuh_barang=true;
+                        akses.pcra_icra_jenis_aktivitas_proyek=true;
+                        akses.pcra_icra_lokasi_kelompok_risiko_area=true;
+                        akses.pcra_icra_kelas_risiko_pencegahan=true;
                     }else if(rs2.getRow()>=1){   
                         rs2.beforeFirst();
                         rs2.next();
@@ -2608,6 +2627,21 @@ public final class akses {
                         akses.template_pelaksanaan_informasi_edukasi=rs2.getBoolean("template_pelaksanaan_informasi_edukasi");
                         akses.skrining_instrumen_esat=rs2.getBoolean("skrining_instrumen_esat");
                         akses.penilaian_awal_medis_ranap_jantung=rs2.getBoolean("penilaian_awal_medis_ranap_jantung");
+                        akses.penugasan_pengujian_sampel_lab_kesehatan_lingkungan=rs2.getBoolean("penugasan_pengujian_sampel_lab_kesehatan_lingkungan");
+                        akses.hasil_pengujian_sampel_lab_kesehatan_lingkungan=rs2.getBoolean("hasil_pengujian_sampel_lab_kesehatan_lingkungan");
+                        akses.verifikasi_pengujian_sampel_lab_kesehatan_lingkungan=rs2.getBoolean("verifikasi_pengujian_sampel_lab_kesehatan_lingkungan");
+                        akses.validasi_pengujian_sampel_lab_kesehatan_lingkungan=rs2.getBoolean("validasi_pengujian_sampel_lab_kesehatan_lingkungan");
+                        akses.rekap_pelayanan_lab_kesehatan_lingkungan=rs2.getBoolean("rekap_pelayanan_lab_kesehatan_lingkungan");
+                        akses.pembayaran_pengujian_sampel_lab_kesehatan_lingkungan=rs2.getBoolean("pembayaran_pengujian_sampel_lab_kesehatan_lingkungan");
+                        akses.skrining_curb65=rs2.getBoolean("skrining_curb65");
+                        akses.bpjs_potensi_prb=rs2.getBoolean("bpjs_potensi_prb");
+                        akses.bpjs_riwayat_pelayanan_obat=rs2.getBoolean("bpjs_riwayat_pelayanan_obat");
+                        akses.skrining_gizi_kehamilan=rs2.getBoolean("skrining_gizi_kehamilan");
+                        akses.bpjs_rekap_peserta_prb_apotek=rs2.getBoolean("bpjs_rekap_peserta_prb_apotek");
+                        akses.serah_terima_anggota_tubuh_barang=rs2.getBoolean("serah_terima_anggota_tubuh_barang");
+                        akses.pcra_icra_jenis_aktivitas_proyek=rs2.getBoolean("pcra_icra_jenis_aktivitas_proyek");
+                        akses.pcra_icra_lokasi_kelompok_risiko_area=rs2.getBoolean("pcra_icra_lokasi_kelompok_risiko_area");
+                        akses.pcra_icra_kelas_risiko_pencegahan=rs2.getBoolean("pcra_icra_kelas_risiko_pencegahan");
                     }else if((rs.getRow()==0)&&(rs2.getRow()==0)){
                         setLogOut();
                     }
@@ -3800,6 +3834,21 @@ public final class akses {
         akses.template_pelaksanaan_informasi_edukasi=false;
         akses.skrining_instrumen_esat=false;
         akses.penilaian_awal_medis_ranap_jantung=false;
+        akses.penugasan_pengujian_sampel_lab_kesehatan_lingkungan=false;
+        akses.hasil_pengujian_sampel_lab_kesehatan_lingkungan=false;
+        akses.verifikasi_pengujian_sampel_lab_kesehatan_lingkungan=false;
+        akses.validasi_pengujian_sampel_lab_kesehatan_lingkungan=false;
+        akses.rekap_pelayanan_lab_kesehatan_lingkungan=false;
+        akses.pembayaran_pengujian_sampel_lab_kesehatan_lingkungan=false;
+        akses.skrining_curb65=false;
+        akses.bpjs_potensi_prb=false;
+        akses.bpjs_riwayat_pelayanan_obat=false;
+        akses.skrining_gizi_kehamilan=false;
+        akses.bpjs_rekap_peserta_prb_apotek=false;
+        akses.serah_terima_anggota_tubuh_barang=false;
+        akses.pcra_icra_jenis_aktivitas_proyek=false;
+        akses.pcra_icra_lokasi_kelompok_risiko_area=false;
+        akses.pcra_icra_kelas_risiko_pencegahan=false;
     }
     
     public static int getjml1() {return akses.jml1;}    
@@ -5008,4 +5057,19 @@ public final class akses {
     public static boolean gettemplate_pelaksanaan_informasi_edukasi(){return akses.template_pelaksanaan_informasi_edukasi;}
     public static boolean getskrining_instrumen_esat(){return akses.skrining_instrumen_esat;}
     public static boolean getpenilaian_awal_medis_ranap_jantung(){return akses.penilaian_awal_medis_ranap_jantung;}
+    public static boolean getpenugasan_pengujian_sampel_lab_kesehatan_lingkungan(){return akses.penugasan_pengujian_sampel_lab_kesehatan_lingkungan;}
+    public static boolean gethasil_pengujian_sampel_lab_kesehatan_lingkungan(){return akses.hasil_pengujian_sampel_lab_kesehatan_lingkungan;}
+    public static boolean getverifikasi_pengujian_sampel_lab_kesehatan_lingkungan(){return akses.verifikasi_pengujian_sampel_lab_kesehatan_lingkungan;}
+    public static boolean getvalidasi_pengujian_sampel_lab_kesehatan_lingkungan(){return akses.validasi_pengujian_sampel_lab_kesehatan_lingkungan;}
+    public static boolean getrekap_pelayanan_lab_kesehatan_lingkungan(){return akses.rekap_pelayanan_lab_kesehatan_lingkungan;}
+    public static boolean getpembayaran_pengujian_sampel_lab_kesehatan_lingkungan(){return akses.pembayaran_pengujian_sampel_lab_kesehatan_lingkungan;}
+    public static boolean getskrining_curb65(){return akses.skrining_curb65;}
+    public static boolean getbpjs_potensi_prb(){return akses.bpjs_potensi_prb;}
+    public static boolean getbpjs_riwayat_pelayanan_obat(){return akses.bpjs_riwayat_pelayanan_obat;}
+    public static boolean getskrining_gizi_kehamilan(){return akses.skrining_gizi_kehamilan;}
+    public static boolean getbpjs_rekap_peserta_prb_apotek(){return akses.bpjs_rekap_peserta_prb_apotek;}
+    public static boolean getserah_terima_anggota_tubuh_barang(){return akses.serah_terima_anggota_tubuh_barang;}
+    public static boolean getpcra_icra_jenis_aktivitas_proyek(){return akses.pcra_icra_jenis_aktivitas_proyek;}
+    public static boolean getpcra_icra_lokasi_kelompok_risiko_area(){return akses.pcra_icra_lokasi_kelompok_risiko_area;}
+    public static boolean getpcra_icra_kelas_risiko_pencegahan(){return akses.pcra_icra_kelas_risiko_pencegahan;}
 }   

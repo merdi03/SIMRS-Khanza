@@ -581,7 +581,11 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                     "\"identifier\": [" +
                                         "{" +
                                             "\"system\": \"http://sys-ids.kemkes.go.id/acsn/"+koneksiDB.IDSATUSEHAT()+"\"," +
+<<<<<<< HEAD
                                             "\"value\": \""+tbObat.getValueAt(i,9).toString().replaceAll("PR20","")+tbObat.getValueAt(i,17).toString().replaceAll("RD","")+"\"" +
+=======
+                                            "\"value\": \""+tbObat.getValueAt(i,9).toString().replaceAll("PR","")+tbObat.getValueAt(i,17).toString()+"\"" +
+>>>>>>> master
                                         "}" +
                                     "]," +
                                     "\"status\": \"active\"," +
@@ -682,7 +686,11 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                     "\"identifier\": [" +
                                         "{" +
                                             "\"system\": \"http://sys-ids.kemkes.go.id/acsn/"+koneksiDB.IDSATUSEHAT()+"\"," +
+<<<<<<< HEAD
                                             "\"value\": \""+tbObat.getValueAt(i,9).toString().replaceAll("PR20","")+tbObat.getValueAt(i,17).toString().replaceAll("RD","")+"\"" +
+=======
+                                            "\"value\": \""+tbObat.getValueAt(i,9).toString().replaceAll("PR","")+tbObat.getValueAt(i,17).toString()+"\"" +
+>>>>>>> master
                                         "}" +
                                     "]," +
                                     "\"status\": \"active\"," +

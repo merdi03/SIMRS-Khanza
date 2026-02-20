@@ -8,8 +8,9 @@ import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -20,8 +21,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.Document;
@@ -35,8 +41,7 @@ public class DlgDetailJMDokter extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
-    private DlgCariDokter dokter=new DlgCariDokter(null,false);
-    private DlgCariCaraBayar carabayar=new DlgCariCaraBayar(null,false);
+    private DlgCariCaraBayar carabayar;
     private int i=0,a=0,c=0;
     private double ttljml=0,ttlbhp=0,ttlbiaya=0,ttljm=0,ttluangrs=0,detailjm=0,detailbhp=0,detailrs=0,detailtotal=0,biayaitem=0;
     private PreparedStatement ps,pspasienranap,pskamar,pstindakanranap,pspasienradiologi,pspasienralan,pstindakanralan,pstindakanradiologi,
@@ -49,6 +54,8 @@ public class DlgDetailJMDokter extends javax.swing.JDialog {
     private String jml="",biaya="",jm="",uangrs="",bhp="",tarif="",tanggal="",kamar="",penjab="",norm="",pasien="",pilihancarabayar="",norawatbayi="";
     private boolean kelas=false,ranapgabung=false;
     private StringBuilder htmlContent;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -107,67 +114,6 @@ public class DlgDetailJMDokter extends javax.swing.JDialog {
         
         kddokter.setDocument(new batasInput((byte)10).getKata(kddokter));
                 
-        dokter.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(dokter.getTable().getSelectedRow()!= -1){
-                    kddokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
-                    nmdokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
-                    kelas=false;
-                    ranapgabung=false;
-                    prosesCari();
-                }   
-                kddokter.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {dokter.emptTeks();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        carabayar.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(carabayar.getTable().getSelectedRow()!= -1){
-                    pilihancarabayar=carabayar.getTable().getValueAt(carabayar.getTable().getSelectedRow(),1).toString();
-                }     
-                prosesCari();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {carabayar.onCari();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });   
-        
-        carabayar.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    carabayar.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
         LoadHTML.setEditable(true);
         LoadHTML2.setEditable(true);
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -315,6 +261,7 @@ public class DlgDetailJMDokter extends javax.swing.JDialog {
         label17.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi4.add(label17);
 
+        kddokter.setEditable(false);
         kddokter.setName("kddokter"); // NOI18N
         kddokter.setPreferredSize(new java.awt.Dimension(80, 23));
         kddokter.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -738,13 +685,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void kddokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kddokterKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            nmdokter.setText(dokter.tampil3(kddokter.getText()));
-        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            nmdokter.setText(dokter.tampil3(kddokter.getText()));
+        if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             Tgl2.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            nmdokter.setText(dokter.tampil3(kddokter.getText()));
             BtnAll.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnSeek2ActionPerformed(null);
@@ -757,7 +700,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         kelas=false;
         ranapgabung=false;
         pilihancarabayar="";
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -769,6 +712,32 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_BtnAllKeyPressed
 
 private void BtnSeek2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeek2ActionPerformed
+        DlgCariDokter dokter=new DlgCariDokter(null,false);
+        dokter.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(dokter.getTable().getSelectedRow()!= -1){
+                    kddokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                    nmdokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+                    kelas=false;
+                    ranapgabung=false;
+                    runBackground(() ->prosesCari());
+                }   
+                kddokter.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {dokter.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         dokter.isCek();
         dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         dokter.setLocationRelativeTo(internalFrame1);
@@ -783,7 +752,7 @@ private void BtnSeek2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
 }//GEN-LAST:event_BtnCariActionPerformed
 
 private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -812,31 +781,31 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void chkRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRalanActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_chkRalanActionPerformed
 
     private void chkRadiologiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRadiologiActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_chkRadiologiActionPerformed
 
     private void chkLaboratActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLaboratActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_chkLaboratActionPerformed
 
     private void chkOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkOperasiActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_chkOperasiActionPerformed
 
     private void chkRanapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRanapActionPerformed
         kelas=false;
         ranapgabung=false;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_chkRanapActionPerformed
 
     private void BtnGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGajiActionPerformed
@@ -846,7 +815,6 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             kelas=false;
             if(TabRawat.getSelectedIndex()==0){
-                prosesCari();
                 if(tabMode.getRowCount()==0){
                     JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
                     //TCari.requestFocus();
@@ -1004,7 +972,6 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             kelas=true;
             if(TabRawat.getSelectedIndex()==0){
-                prosesCari();
                 if(tabMode.getRowCount()==0){
                     JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
                     //TCari.requestFocus();
@@ -1152,19 +1119,51 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }//GEN-LAST:event_BtnGaji1KeyPressed
 
     private void ppTampilkanSeleksiBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppTampilkanSeleksiBtnPrintActionPerformed
-        carabayar.isCek();
-        carabayar.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        carabayar.setLocationRelativeTo(internalFrame1);
+        if (carabayar == null || !carabayar.isDisplayable()) {
+            carabayar=new DlgCariCaraBayar(null,false);
+            carabayar.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            carabayar.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(carabayar.getTable().getSelectedRow()!= -1){
+                        pilihancarabayar=carabayar.getTable().getValueAt(carabayar.getTable().getSelectedRow(),1).toString();
+                    }     
+                    runBackground(() ->prosesCari());
+                    carabayar=null;
+                }
+            }); 
+
+            carabayar.getTable().addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                        carabayar.dispose();
+                    } 
+                }
+            });   
+            carabayar.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            carabayar.setLocationRelativeTo(internalFrame1);
+        }
+               
+        if (carabayar == null) return;
+        if (!carabayar.isVisible()) {
+            carabayar.emptTeks();
+            carabayar.isCek();
+        }  
+        if (carabayar.isVisible()) {
+            carabayar.toFront();
+            return;
+        }    
         carabayar.setVisible(true);
     }//GEN-LAST:event_ppTampilkanSeleksiBtnPrintActionPerformed
 
     private void ppTampilkanRanapGabungBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppTampilkanRanapGabungBtnPrintActionPerformed
         ranapgabung=true;
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_ppTampilkanRanapGabungBtnPrintActionPerformed
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_TabRawatMouseClicked
 
     /**
@@ -2819,7 +2818,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void laporan2() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter like ? order by nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
            try {
                 ps.setString(1,"%"+kddokter.getText()+"%");
                 rs=ps.executeQuery();
@@ -5077,7 +5076,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void laporan3() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter like ? order by nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
            try {
                 ps.setString(1,"%"+kddokter.getText()+"%");
                 rs=ps.executeQuery();
@@ -7335,7 +7334,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void jasamedis() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter like ? order by nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
            try {
                 ps.setString(1,"%"+kddokter.getText()+"%");
                 rs=ps.executeQuery();
@@ -9464,7 +9463,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void jasamedis2() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter like ? order by nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
            try {
                 ps.setString(1,"%"+kddokter.getText()+"%");
                 rs=ps.executeQuery();
@@ -11588,5 +11587,37 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }catch(Exception e){
             System.out.println("Catatan  "+e);
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

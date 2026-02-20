@@ -28,7 +28,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -52,6 +56,8 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
     private double totalbiaya=0;
     private int i,baris=0,no=0,sesuai=0,x=0,y=0;
     private String carabayardicari="",diagnosa="",kddiangnosa="",pilihan="";
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgLhtBiaya
      * @param parent
@@ -63,29 +69,6 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
         setSize(885,674);
 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
         LoadHTML.setEditable(true);
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditorKit(kit);
@@ -536,16 +519,12 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
         }else{Valid.pindah(evt,BtnKeluar,TCari);}
 }//GEN-LAST:event_BtnKeluarKeyPressed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
-
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
         nmpoli.setText("");
         nmdokter.setText("");
         nmpenjab.setText("");
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -559,7 +538,7 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            tampil();
+            runBackground(() ->tampil());
             this.setCursor(Cursor.getDefaultCursor());
         }else{
             Valid.pindah(evt,TCari, BtnPrint);
@@ -570,7 +549,7 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
         if(nmpenjab.getText().equals("")){
             JOptionPane.showMessageDialog(null,"Silahkan pilih cara bayar/jenis bayar terlebih dahulu");
         }else{
-            tampil();
+            runBackground(() ->tampil());
         }
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -741,6 +720,31 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnSeek4KeyPressed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -790,31 +794,17 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
     private widget.panelisi panelGlass5;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
+    private void tampil(){
         try{        
             htmlContent = new StringBuilder();
-            htmlContent.append(                             
-                "<tr class='head'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='27px'>No.</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='80px'>Tgl.Periksa</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='170px'>Nama Pasien</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='110px'>NIK</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='250px'>Alamat</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>No.RM</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>Diagnosis</td>"+
-                    (no>0?"<td valign='middle' bgcolor='#FFFAFA' align='center' colspan='"+no+"' width='"+(no*100)+"px'>Cara Bayar</td>":"")+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>Biaya</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='60px'>Status</td>"+
-                "</tr>"
-            );
+            htmlContent.append("<tr class='head'><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='27px'>No.</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='80px'>Tgl.Periksa</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='170px'>Nama Pasien</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='110px'>NIK</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='250px'>Alamat</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>No.RM</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>Diagnosis</td>").append(no>0?"<td valign='middle' bgcolor='#FFFAFA' align='center' colspan='"+no+"' width='"+(no*100)+"px'>Cara Bayar</td>":"").append("<td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='90px'>Biaya</td><td valign='middle' bgcolor='#FFFAFA' align='center' rowspan='2' width='60px'>Status</td></tr>");
             
             if(no>0){
                 htmlContent.append(                             
                     "<tr class='head'>"
                 );
                 for(i=0;i<no;i++){
-                    htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center' width='100px'>"+carabayar[i]+"</td>");
+                    htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center' width='100px'>").append(carabayar[i]).append("</td>");
                 } 
                 htmlContent.append(                             
                     "</tr>"
@@ -863,29 +853,16 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
                         } 
                         
                         totalbiaya=totalbiaya+rs.getDouble("biaya_reg");
-                        htmlContent.append(                             
-                            "<tr class='isi'>"+
-                                "<td valign='middle' align='center'>"+baris+"</td>"+
-                                "<td valign='middle' align='center'>"+rs.getString("tgl_registrasi")+"</td>"+
-                                "<td valign='middle' align='left'>"+rs.getString("nm_pasien")+"</td>"+
-                                "<td valign='middle' align='center'>"+rs.getString("no_ktp")+"</td>"+
-                                "<td valign='middle' align='left'>"+rs.getString("alamat")+"</td>"+
-                                "<td valign='middle' align='center'>"+rs.getString("no_rkm_medis")+"</td>"+
-                                "<td valign='middle' align='left'>"+kddiangnosa+" "+diagnosa+"</td>"
-                        );
+                        htmlContent.append("<tr class='isi'><td valign='middle' align='center'>").append(baris).append("</td><td valign='middle' align='center'>").append(rs.getString("tgl_registrasi")).append("</td><td valign='middle' align='left'>").append(rs.getString("nm_pasien")).append("</td><td valign='middle' align='center'>").append(rs.getString("no_ktp")).append("</td><td valign='middle' align='left'>").append(rs.getString("alamat")).append("</td><td valign='middle' align='center'>").append(rs.getString("no_rkm_medis")).append("</td><td valign='middle' align='left'>").append(kddiangnosa).append(" ").append(diagnosa).append("</td>");
                         for(x=0;x<y;x++){
                             sesuai=0;
                             if(x==i){
                                 sesuai=1;
                             }
                             jumlah[i]=jumlah[i]+sesuai;
-                            htmlContent.append("<td valign='middle' align='center'>"+Integer.toString(sesuai).replaceAll("0","")+"</td>");
+                            htmlContent.append("<td valign='middle' align='center'>").append(Integer.toString(sesuai).replaceAll("0","")).append("</td>");
                         } 
-                        htmlContent.append( 
-                                "<td valign='middle' align='center'>"+Valid.SetAngka(rs.getDouble("biaya_reg"))+"</td>"+
-                                "<td valign='middle' align='center'>"+rs.getString("status_lanjut")+"</td>"+
-                            "</tr>"
-                        );
+                        htmlContent.append("<td valign='middle' align='center'>").append(Valid.SetAngka(rs.getDouble("biaya_reg"))).append("</td><td valign='middle' align='center'>").append(rs.getString("status_lanjut")).append("</td></tr>");
                         baris++;
                     }
                 } catch (Exception e) {
@@ -905,13 +882,9 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
                     "<td valign='middle' align='left' colspan='7'>Total</td>"
             );
             for(x=0;x<y;x++){
-                htmlContent.append("<td valign='middle' align='center'>"+jumlah[x]+"</td>");
+                htmlContent.append("<td valign='middle' align='center'>").append(jumlah[x]).append("</td>");
             } 
-            htmlContent.append( 
-                    "<td valign='middle' align='center'>"+Valid.SetAngka(totalbiaya)+"</td>"+
-                    "<td valign='middle' align='center'>&nbsp;</td>"+
-                "</tr>"
-            );
+            htmlContent.append("<td valign='middle' align='center'>").append(Valid.SetAngka(totalbiaya)).append("</td><td valign='middle' align='center'>&nbsp;</td></tr>");
             
             LoadHTML.setText(
                         "<html>"+
@@ -922,7 +895,6 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
-        this.setCursor(Cursor.getDefaultCursor());
     }    
 
     private void isForm(){
@@ -937,5 +909,37 @@ public final class DlgRekapBiayaRegistrasi extends javax.swing.JDialog {
             FormInput.setVisible(false);      
             ChkInput.setVisible(true);
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

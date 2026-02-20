@@ -31,8 +31,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -51,6 +55,8 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
     private ResultSet rs,rs2;
     private SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -167,29 +173,6 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         JMPerujuk.setDocument(new batasInput((byte)14).getOnlyAngka(JMPerujuk));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         TCariPerujuk.setDocument(new batasInput((byte)100).getKata(TCariPerujuk));           
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
         ChkInput.setSelected(false);
         isForm();
     }
@@ -436,7 +419,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
 
         DTPReg.setEditable(false);
         DTPReg.setForeground(new java.awt.Color(50, 70, 50));
-        DTPReg.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2025" }));
+        DTPReg.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-02-2026" }));
         DTPReg.setDisplayFormat("dd-MM-yyyy");
         DTPReg.setName("DTPReg"); // NOI18N
         DTPReg.setOpaque(false);
@@ -444,6 +427,11 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Rujukan Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -618,7 +606,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -632,7 +620,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -968,7 +956,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
             if(Sequel.menyimpantf("rujuk_masuk","'"+TNoRw.getText()+"','"+TRujukan.getText()+"','"+TAlamat.getText()+"',"+
                              "'"+NoRujuk.getText()+"','"+JMPerujuk.getText()+"','"+Dokter.getText()+"','"+kdDiagnosa.getText()+"',"+
                              "'"+KategoriRujuk.getSelectedItem().toString()+"','"+Keterangan.getText()+"','"+NoBalasan.getText()+"'","No.Rujuk")==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }
         }
@@ -1035,7 +1023,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
                     "jm_perujuk='"+JMPerujuk.getText()+"',dokter_perujuk='"+Dokter.getText()+"',kd_penyakit='"+kdDiagnosa.getText()+"',"+
                     "kategori_rujuk='"+KategoriRujuk.getSelectedItem().toString()+"',keterangan='"+Keterangan.getText()+"',"+
                     "no_balasan='"+NoBalasan.getText()+"'");
-            if(tabMode.getRowCount()!=0){tampil();}
+            if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
             emptTeks();
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -1119,7 +1107,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -1132,12 +1120,12 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
+            runBackground(() ->tampil());
             TCari.setText("");
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
@@ -1172,7 +1160,7 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
     }//GEN-LAST:event_TCariPerujukKeyPressed
 
     private void BtnCari1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCari1ActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
     }//GEN-LAST:event_BtnCari1ActionPerformed
 
     private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCari1KeyPressed
@@ -1185,7 +1173,7 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
 
     private void BtnAll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAll1ActionPerformed
         TCariPerujuk.setText("");
-        tampil2();
+        runBackground(() ->tampil2());
     }//GEN-LAST:event_BtnAll1ActionPerformed
 
     private void BtnAll1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAll1KeyPressed
@@ -1202,7 +1190,7 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
 
     private void btnCariRujukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariRujukActionPerformed
         akses.setform("DlgRujukMasuk");
-        tampil2();
+        runBackground(() ->tampil2());
         TCariPerujuk.requestFocus();
         WindowPerujuk.setSize(this.getWidth()-20,this.getHeight()-20);
         WindowPerujuk.setLocationRelativeTo(internalFrame1);
@@ -1665,6 +1653,31 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
         }
     }//GEN-LAST:event_tbObatKeyReleased
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }  
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -1751,7 +1764,7 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
     public widget.Table tbPerujuk;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil() {        
+    private void tampil() {        
         Valid.tabelKosong(tabMode);
         try{
             pstampil=koneksi.prepareStatement(
@@ -1763,27 +1776,30 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
                     "inner join rujuk_masuk on reg_periksa.no_rawat=rujuk_masuk.no_rawat "+
                     "inner join penyakit on penyakit.kd_penyakit=rujuk_masuk.kd_penyakit "+
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli where "+
-                    "reg_periksa.tgl_registrasi between ? and ? and "+
+                    "reg_periksa.tgl_registrasi between ? and ? "+(TCari.getText().trim().equals("")?"":"and "+
                     "(rujuk_masuk.perujuk like ? or reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                    "pasien.nm_pasien like ? or reg_periksa.almt_pj like ? or rujuk_masuk.no_rujuk like ? or "+
+                    "pasien.nm_pasien like ? or poliklinik.nm_poli like ? or rujuk_masuk.no_rujuk like ? or "+
                     "rujuk_masuk.dokter_perujuk like ? or penyakit.nm_penyakit like ? or rujuk_masuk.kategori_rujuk like ? or "+
-                    "rujuk_masuk.keterangan like ? or rujuk_masuk.no_balasan like ? or rujuk_masuk.kd_penyakit like ?) "+
+                    "rujuk_masuk.keterangan like ? or rujuk_masuk.no_balasan like ? or rujuk_masuk.kd_penyakit like ?) ")+
                     "order by reg_periksa.tgl_registrasi ");
             try {
                 pstampil.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 pstampil.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
-                pstampil.setString(3,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(4,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(5,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(6,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(7,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(8,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(9,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(10,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(11,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(12,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(13,"%"+TCari.getText().trim()+"%");
-                pstampil.setString(14,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    pstampil.setString(3,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(4,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(5,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(6,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(7,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(8,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(9,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(10,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(11,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(12,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(13,"%"+TCari.getText().trim()+"%");
+                    pstampil.setString(14,"%"+TCari.getText().trim()+"%");
+                }
+                    
                 rs=pstampil.executeQuery();
                 while(rs.next()){
                     keluar="";diagnosa="";status="";diagnosa2="";
@@ -1834,6 +1850,10 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
             System.out.println("Notifikasi : "+e);
         }
         LCount.setText(""+tabMode.getRowCount());
+    }
+    
+    public void tampil3() { 
+        runBackground(() ->tampil());
     }
 
     public void emptTeks() {
@@ -1905,8 +1925,7 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
         isRawat();   
         ChkInput.setSelected(true);
         isForm();
-    }
-      
+    } 
     
     public void isCek(){
         BtnSimpan.setEnabled(akses.getrujukan_masuk());
@@ -1916,14 +1935,15 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
         
     }
     
-    public void tampil2() {        
+    private void tampil2() {        
         Valid.tabelKosong(tabMode2);
         try{
-            psperujuk=koneksi.prepareStatement("select rujuk_masuk.perujuk,rujuk_masuk.alamat from rujuk_masuk where "+
-                    "rujuk_masuk.perujuk like ? or rujuk_masuk.alamat like ? group by rujuk_masuk.perujuk order by rujuk_masuk.perujuk");
+            psperujuk=koneksi.prepareStatement("select rujuk_masuk.perujuk,rujuk_masuk.alamat from rujuk_masuk "+(TCariPerujuk.getText().trim().equals("")?"":"where rujuk_masuk.perujuk like ? or rujuk_masuk.alamat like ? ")+"group by rujuk_masuk.perujuk order by rujuk_masuk.perujuk");
             try {
-                psperujuk.setString(1,"%"+TCariPerujuk.getText()+"%");
-                psperujuk.setString(2,"%"+TCariPerujuk.getText()+"%");
+                if(!TCariPerujuk.getText().trim().equals("")){
+                    psperujuk.setString(1,"%"+TCariPerujuk.getText()+"%");
+                    psperujuk.setString(2,"%"+TCariPerujuk.getText()+"%");
+                }
                 rs=psperujuk.executeQuery();
                 while(rs.next()){                              
                     tabMode2.addRow(new Object[]{rs.getString(1),rs.getString(2)});
@@ -1942,6 +1962,10 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
             System.out.println("Notifikasi : "+e);
         }
         LCount1.setText(""+tabMode2.getRowCount());
+    }
+    
+    public void tampil4() { 
+        runBackground(() ->tampil2());
     }
     
     private void getData2() {
@@ -1965,4 +1989,35 @@ private void TAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_T
         }
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

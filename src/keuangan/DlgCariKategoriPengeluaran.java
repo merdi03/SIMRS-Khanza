@@ -27,7 +27,12 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -43,11 +48,12 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
     private ResultSet rs;
     private File file;
     private FileWriter fileWriter;
-    public String Host_to_Host_Bank_Mandiri="",Akun_Biaya_Mandiri="",kodemcm="",norekening="",akun="",kontraakun="";
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgPenyakit
      * @param parent
@@ -77,14 +83,6 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        try {
-            if(Valid.daysOld("./cache/akunbankmandiri.iyem")<30){
-                tampilAkunBankMandiri2();
-            }else{
-                tampilAkunBankMandiri();
-            }
-        } catch (Exception e) {
-        }
     }
 
 
@@ -239,7 +237,7 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
     }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -252,8 +250,33 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
-        tampilAkunBankMandiri();
+        try{     
+            ps=koneksi.prepareStatement(
+                    "select set_akun_mandiri.kd_rek,set_akun_mandiri.kd_rek_biaya,set_akun_mandiri.kode_mcm,set_akun_mandiri.no_rekening from set_akun_mandiri");
+            try {
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    file=new File("./cache/akunbankmandiri.iyem");
+                    file.createNewFile();
+                    fileWriter = new FileWriter(file);
+                    fileWriter.write("{\"akunbankmandiri\":\""+rs.getString("kd_rek")+"\",\"kodemcm\":\""+rs.getString("kode_mcm")+"\",\"akunbiayabankmandiri\":\""+rs.getString("kd_rek_biaya")+"\",\"norekening\":\""+rs.getString("no_rekening")+"\"}");
+                    fileWriter.flush();
+                    fileWriter.close();
+                }
+            } catch (Exception e) {
+                System.out.println("Notif Nota : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+             System.out.println("Notif Nota : "+e);
+        }
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -269,7 +292,6 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
         DlgKategoriPengeluaran penjab=new DlgKategoriPengeluaran(null,false);
         penjab.emptTeks();
         penjab.isCek();
-        penjab.tampil();
         penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penjab.setLocationRelativeTo(internalFrame1);
         penjab.setAlwaysOnTop(false);
@@ -285,12 +307,34 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             if(Valid.daysOld("./cache/kategoripengeluaran.iyem")<30){
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
-                tampil();
+                runBackground(() ->tampil());
             }
         } catch (Exception e) {
         }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -406,68 +450,39 @@ public final class DlgCariKategoriPengeluaran extends javax.swing.JDialog {
         return tbKamar;
     }
     
-    public void tampilAkunBankMandiri() { 
-        try{     
-            ps=koneksi.prepareStatement(
-                    "select set_akun_mandiri.kd_rek,set_akun_mandiri.kd_rek_biaya,set_akun_mandiri.kode_mcm,set_akun_mandiri.no_rekening from set_akun_mandiri");
-            try {
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    file=new File("./cache/akunbankmandiri.iyem");
-                    file.createNewFile();
-                    fileWriter = new FileWriter(file);
-                    Host_to_Host_Bank_Mandiri=rs.getString("kd_rek");
-                    Akun_Biaya_Mandiri=rs.getString("kd_rek_biaya");
-                    kodemcm=rs.getString("kode_mcm");
-                    norekening=rs.getString("no_rekening");
-                    fileWriter.write("{\"akunbankmandiri\":\""+Host_to_Host_Bank_Mandiri+"\",\"kodemcm\":\""+kodemcm+"\",\"akunbiayabankmandiri\":\""+Akun_Biaya_Mandiri+"\",\"norekening\":\""+norekening+"\"}");
-                    fileWriter.flush();
-                    fileWriter.close();
-                }
-            } catch (Exception e) {
-                Host_to_Host_Bank_Mandiri="";
-                Akun_Biaya_Mandiri="";
-                kodemcm="";
-                norekening="";
-                System.out.println("Notif Nota : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-             Host_to_Host_Bank_Mandiri="";
-             Akun_Biaya_Mandiri="";
-             kodemcm="";
-             norekening="";
-        }
-    }
-    
-    public void tampilAkunBankMandiri2() { 
-        try{      
-             myObj = new FileReader("./cache/akunbankmandiri.iyem");
-             root = mapper.readTree(myObj);
-             response = root.path("akunbankmandiri");
-             Host_to_Host_Bank_Mandiri=response.asText();
-             response = root.path("akunbiayabankmandiri");
-             Akun_Biaya_Mandiri=response.asText();
-             response = root.path("kodemcm");
-             kodemcm=response.asText();
-             response = root.path("norekening");
-             norekening=response.asText();
-             myObj.close();
-        } catch (Exception e) {
-             Host_to_Host_Bank_Mandiri="";
-             Akun_Biaya_Mandiri="";
-             kodemcm="";
-             norekening="";
-        }
-    }
-    
     public void isCek(){
         BtnTambah.setEnabled(akses.getkategori_pengeluaran_harian());     
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

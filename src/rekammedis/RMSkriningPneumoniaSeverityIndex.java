@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -30,9 +31,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -54,7 +60,9 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;    
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+    private DlgCariPetugas petugas;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private String finger="";
     private StringBuilder htmlContent;
     private String TANGGALMUNDUR="yes";
@@ -195,52 +203,6 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         SkorInterpretasi.setDocument(new batasInput((byte)40).getKata(SkorInterpretasi));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){                   
-                    KdPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                    NmPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
-                }  
-                KdPetugas.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        
         ChkInput.setSelected(false);
         isForm();
         
@@ -325,7 +287,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         jLabel18 = new widget.Label();
         KdPetugas = new widget.TextBox();
         NmPetugas = new widget.TextBox();
-        btnPetugas = new widget.Button();
+        BtnPetugas = new widget.Button();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel100 = new widget.Label();
         jLabel101 = new widget.Label();
@@ -469,6 +431,11 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Pneumonia Severity Index ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -638,7 +605,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-10-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -652,7 +619,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-10-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -773,7 +740,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         TPasien.setBounds(336, 10, 285, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-10-2025" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -857,22 +824,22 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         FormInput.add(NmPetugas);
         NmPetugas.setBounds(570, 40, 187, 23);
 
-        btnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        btnPetugas.setMnemonic('2');
-        btnPetugas.setToolTipText("ALt+2");
-        btnPetugas.setName("btnPetugas"); // NOI18N
-        btnPetugas.addActionListener(new java.awt.event.ActionListener() {
+        BtnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnPetugas.setMnemonic('2');
+        BtnPetugas.setToolTipText("ALt+2");
+        BtnPetugas.setName("BtnPetugas"); // NOI18N
+        BtnPetugas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPetugasActionPerformed(evt);
+                BtnPetugasActionPerformed(evt);
             }
         });
-        btnPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
+        BtnPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnPetugasKeyPressed(evt);
+                BtnPetugasKeyPressed(evt);
             }
         });
-        FormInput.add(btnPetugas);
-        btnPetugas.setBounds(761, 40, 28, 23);
+        FormInput.add(BtnPetugas);
+        BtnPetugas.setBounds(761, 40, 28, 23);
 
         jSeparator1.setBackground(new java.awt.Color(239, 244, 234));
         jSeparator1.setForeground(new java.awt.Color(239, 244, 234));
@@ -1833,7 +1800,6 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
 }//GEN-LAST:event_BtnEditKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        petugas.dispose();
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -2029,7 +1995,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -2042,12 +2008,12 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
+            runBackground(() ->tampil());
             TCari.setText("");
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
@@ -2091,20 +2057,44 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     }//GEN-LAST:event_MenitKeyPressed
 
     private void DetikKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DetikKeyPressed
-        Valid.pindah(evt,Menit,btnPetugas);
+        Valid.pindah(evt,Menit,BtnPetugas);
     }//GEN-LAST:event_DetikKeyPressed
 
-    private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-        petugas.emptTeks();
-        petugas.isCek();
-        petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        petugas.setLocationRelativeTo(internalFrame1);
-        petugas.setVisible(true);
-    }//GEN-LAST:event_btnPetugasActionPerformed
+    private void BtnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPetugasActionPerformed
+        if (petugas == null || !petugas.isDisplayable()) {
+            petugas=new DlgCariPetugas(null,false);
+            petugas.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            petugas.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(petugas.getTable().getSelectedRow()!= -1){                   
+                        KdPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                        NmPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                    }  
+                    BtnPetugas.requestFocus();
+                    petugas=null;
+                }
+            });
 
-    private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPetugasKeyPressed
+            petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            petugas.setLocationRelativeTo(internalFrame1);
+        }
+        if (petugas == null) return;
+        if (!petugas.isVisible()) {
+            petugas.isCek();    
+            petugas.emptTeks();
+        }
+        
+        if (petugas.isVisible()) {
+            petugas.toFront();
+            return;
+        }
+        petugas.setVisible(true); 
+    }//GEN-LAST:event_BtnPetugasActionPerformed
+
+    private void BtnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPetugasKeyPressed
         Valid.pindah(evt,Detik,Jk);
-    }//GEN-LAST:event_btnPetugasKeyPressed
+    }//GEN-LAST:event_BtnPetugasKeyPressed
 
     private void MnSkriningPSIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnSkriningPSIActionPerformed
         if(tbObat.getSelectedRow()>-1){
@@ -2139,7 +2129,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     }//GEN-LAST:event_ChkInputActionPerformed
 
     private void TinggalDiPantiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TinggalDiPantiKeyPressed
-        Valid.pindah(evt,btnPetugas,GagalJantung);
+        Valid.pindah(evt,BtnPetugas,GagalJantung);
     }//GEN-LAST:event_TinggalDiPantiKeyPressed
 
     private void GagalJantungKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_GagalJantungKeyPressed
@@ -2372,6 +2362,31 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         TotalNilai();
     }//GEN-LAST:event_EfusiPleuraItemStateChanged
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -2396,6 +2411,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnPetugas;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
@@ -2462,7 +2478,6 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     private widget.ComboBox TinggalDiPanti;
     private widget.TextBox TotalSkorPSI;
     private widget.TextBox Umur;
-    private widget.Button btnPetugas;
     private javax.swing.ButtonGroup buttonGroup1;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
@@ -2553,7 +2568,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             if(TCari.getText().trim().equals("")){
@@ -2786,6 +2801,7 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         ChkInput.setSelected(true);
         isForm();
         TotalNilai();
+        runBackground(() ->tampil());
     }
     
     private void TotalNilai(){
@@ -2878,9 +2894,9 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
         BtnPrint.setEnabled(akses.getskrining_pneumonia_severity_index()); 
         if(akses.getjml2()>=1){
             KdPetugas.setEditable(false);
-            btnPetugas.setEnabled(false);
+            BtnPetugas.setEnabled(false);
             KdPetugas.setText(akses.getkode());
-            NmPetugas.setText(petugas.tampil3(KdPetugas.getText()));
+            NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
             if(NmPetugas.getText().equals("")){
                 KdPetugas.setText("");
                 JOptionPane.showMessageDialog(null,"User login bukan petugas...!!");
@@ -3054,5 +3070,37 @@ public final class RMSkriningPneumoniaSeverityIndex extends javax.swing.JDialog 
             LCount.setText(""+tabMode.getRowCount());
             emptTeks();
         } 
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

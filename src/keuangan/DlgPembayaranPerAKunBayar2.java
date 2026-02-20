@@ -24,7 +24,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -42,9 +46,11 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
     private ResultSet rs,rsakunbayar;
     private double all=0,bayar=0;
     private int i,kolom=0,no=0;
-    private String status="",nopemasukanlain="",nonota="",petugas="",norawatjalan="",norawatinap="",notajual="",nodeposit="";
+    private String status="",nopemasukanlain="",nonota="",petugas="",norawatjalan="",norawatinap="",notajual="",nodeposit="",notakesling="";
     private String[] akunbayar;
     private double[] totalbayar;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgLhtBiaya
      * @param parent
@@ -57,72 +63,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         User.setDocument(new batasInput((byte)100).getKata(User));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-            });
-            User.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(User.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(User.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(User.getText().length()>2){
-                        if(TabRawat.getSelectedIndex()==0){
-                            tampil();
-                        }else if(TabRawat.getSelectedIndex()==1){
-                            tampil2();
-                        }
-                    }
-                }
-            });
-        }  
+         
         LoadHTML.setEditable(true);
         LoadHTML2.setEditable(true);
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -525,9 +466,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
         if(TabRawat.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else{
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -543,9 +484,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             if(TabRawat.getSelectedIndex()==0){
-                tampil();
+                runBackground(() ->tampil());
             }else{
-                tampil2();
+                runBackground(() ->tampil2());
             }
             this.setCursor(Cursor.getDefaultCursor());
         }else{
@@ -555,9 +496,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         if(TabRawat.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else{
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -601,9 +542,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==1){
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
@@ -630,6 +571,72 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+            });
+            User.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(User.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(User.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(User.getText().length()>2){
+                        if(TabRawat.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabRawat.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -721,9 +728,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
             );   
             
             all=0;
-            ps= koneksi.prepareStatement(
-                    "select no_nota,tgl_bayar,nama_pasien,jumlah_bayar,petugas from tagihan_sadewa "+
-                    "where tgl_bayar between ? and ? order by tgl_bayar,no_nota");
+            ps= koneksi.prepareStatement("select tagihan_sadewa.no_nota,tagihan_sadewa.tgl_bayar,tagihan_sadewa.nama_pasien,tagihan_sadewa.jumlah_bayar,tagihan_sadewa.petugas from tagihan_sadewa where tagihan_sadewa.tgl_bayar between ? and ? order by tagihan_sadewa.tgl_bayar,tagihan_sadewa.no_nota");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem());
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+"")+" "+CmbJam2.getSelectedItem()+":"+CmbMenit2.getSelectedItem()+":"+CmbDetik2.getSelectedItem());
@@ -737,6 +742,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                     nopemasukanlain="";
                     status="";
                     nodeposit="";
+                    notakesling="";
                     nonota=Sequel.cariIsi("select nota_inap.no_nota from nota_inap where nota_inap.no_rawat=?",rs.getString("no_nota"));
                     if(!nonota.equals("")){
                         norawatinap=rs.getString("no_nota");
@@ -757,8 +763,13 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                                     if(!nonota.equals("")){
                                         nopemasukanlain=rs.getString("no_nota");
                                     }else{
-                                        nopemasukanlain="";
-                                        status="Transaksi Tidak Ditemukan";
+                                        nonota=Sequel.cariIsi("select labkesling_pembayaran_pengujian_sampel.no_pembayaran from labkesling_pembayaran_pengujian_sampel where labkesling_pembayaran_pengujian_sampel.no_pembayaran=?",rs.getString("no_nota"));
+                                        if(!nonota.equals("")){
+                                            notakesling=rs.getString("no_nota");
+                                        }else{
+                                            notakesling="";
+                                            status="Transaksi Tidak Ditemukan";
+                                        }
                                     }
                                 }
                             }                                            
@@ -790,6 +801,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                                 htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(bayar)).append("</td>");
                             }else if(!nopemasukanlain.equals("")){
                                 bayar=Sequel.cariIsiAngka("select sum(pemasukan_lain.besar) from pemasukan_lain inner join kategori_pemasukan_lain on kategori_pemasukan_lain.kode_kategori=pemasukan_lain.kode_kategori where pemasukan_lain.no_masuk='"+nopemasukanlain+"' and kategori_pemasukan_lain.kd_rek2='"+akunbayar[i]+"'");
+                                htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(bayar)).append("</td>");
+                            }else if(!notakesling.equals("")){
+                                bayar=Sequel.cariIsiAngka("select sum(labkesling_detail_pembayaran_pengujian_sampel.besar_bayar) from labkesling_detail_pembayaran_pengujian_sampel inner join akun_bayar on labkesling_detail_pembayaran_pengujian_sampel.nama_bayar=akun_bayar.nama_bayar where labkesling_detail_pembayaran_pengujian_sampel.no_pembayaran='"+notakesling+"' and akun_bayar.kd_rek='"+akunbayar[i]+"'");
                                 htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(bayar)).append("</td>");
                             }else{
                                 bayar=0;
@@ -891,9 +905,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
             );   
             
             all=0;
-            ps= koneksi.prepareStatement(
-                    "select no_nota,tgl_bayar,nama_pasien,jumlah_bayar,petugas from tagihan_sadewa "+
-                    "where tgl_bayar between ? and ? order by tgl_bayar,no_nota");
+            ps= koneksi.prepareStatement("select tagihan_sadewa.no_nota,tagihan_sadewa.tgl_bayar,tagihan_sadewa.nama_pasien,tagihan_sadewa.jumlah_bayar,tagihan_sadewa.petugas from tagihan_sadewa where tagihan_sadewa.tgl_bayar between ? and ? order by tagihan_sadewa.tgl_bayar,tagihan_sadewa.no_nota");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem());
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+"")+" "+CmbJam2.getSelectedItem()+":"+CmbMenit2.getSelectedItem()+":"+CmbDetik2.getSelectedItem());
@@ -907,6 +919,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                     nopemasukanlain="";
                     status="";
                     nodeposit="";
+                    notakesling="";
                     nonota=Sequel.cariIsi("select nota_inap.no_nota from nota_inap where nota_inap.no_rawat=?",rs.getString("no_nota"));
                     if(!nonota.equals("")){
                         norawatinap=rs.getString("no_nota");
@@ -927,8 +940,13 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                                     if(!nonota.equals("")){
                                         nopemasukanlain=rs.getString("no_nota");
                                     }else{
-                                        nopemasukanlain="";
-                                        status="Transaksi Tidak Ditemukan";
+                                        nonota=Sequel.cariIsi("select labkesling_pembayaran_pengujian_sampel.no_pembayaran from labkesling_pembayaran_pengujian_sampel where labkesling_pembayaran_pengujian_sampel.no_pembayaran=?",rs.getString("no_nota"));
+                                        if(!nonota.equals("")){
+                                            notakesling=rs.getString("no_nota");
+                                        }else{
+                                            notakesling="";
+                                            status="Transaksi Tidak Ditemukan";
+                                        }
                                     }
                                 }
                             }                                            
@@ -961,6 +979,9 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                             }else if(!nopemasukanlain.equals("")){
                                 bayar=Sequel.cariIsiAngka("select sum(pemasukan_lain.besar) from pemasukan_lain inner join kategori_pemasukan_lain on kategori_pemasukan_lain.kode_kategori=pemasukan_lain.kode_kategori where pemasukan_lain.no_masuk='"+nopemasukanlain+"' and kategori_pemasukan_lain.kd_rek2='"+akunbayar[i]+"'");
                                 htmlContent.append("<td valign='middle' align='right'>").append(Math.round(bayar)).append("</td>");
+                            }else if(!notakesling.equals("")){
+                                bayar=Sequel.cariIsiAngka("select sum(labkesling_detail_pembayaran_pengujian_sampel.besar_bayar) from labkesling_detail_pembayaran_pengujian_sampel inner join akun_bayar on labkesling_detail_pembayaran_pengujian_sampel.nama_bayar=akun_bayar.nama_bayar where labkesling_detail_pembayaran_pengujian_sampel.no_pembayaran='"+notakesling+"' and akun_bayar.kd_rek='"+akunbayar[i]+"'");
+                                htmlContent.append("<td valign='middle' align='right'>").append(Math.round(bayar)).append("</td>");
                             }else{
                                 bayar=0;
                                 htmlContent.append("<td valign='middle' align='right'>Pemasukan Lain</td>");
@@ -982,7 +1003,7 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                 if(ps!=null){
                     ps.close();
                 }
-            }   
+            } 
             
             htmlContent.append(                             
                 "<tr class='isi'>").append(
@@ -1012,11 +1033,43 @@ public final class DlgPembayaranPerAKunBayar2 extends javax.swing.JDialog {
                            htmlContent.toString()+
                           "</table>"+
                         "</html>");
-            }   
+            }  
             htmlContent=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
         this.setCursor(Cursor.getDefaultCursor());
     } 
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }
