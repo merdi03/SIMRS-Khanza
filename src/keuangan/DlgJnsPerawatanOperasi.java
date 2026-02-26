@@ -61,13 +61,9 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
     private PreparedStatement pstampil;
     private ResultSet rs;
     private int i=0;
-<<<<<<< HEAD
-    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
-=======
-    private DlgCariCaraBayar penjab;
+    private DlgKlmpkTrf penjab;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
->>>>>>> master
 
     /** Creates new form DlgJnsPerawatan
      * @param parent
@@ -167,69 +163,6 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         TdrUmum.setDocument(new batasInput((byte)13).getOnlyAngka(TdrUmum));
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-<<<<<<< HEAD
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
-        klmpktrf.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(klmpktrf.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
-                } 
-                kdpnj.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        klmpktrf.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    klmpktrf.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-    
-=======
->>>>>>> master
     }
     
     /** This method is called from within the constructor to
@@ -359,11 +292,11 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -1837,12 +1770,12 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpnjKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
-            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
             Kategori.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            Sequel.cariIsi("select penjab_klmpk_tarif.nm_klmpk_trf from penjab_klmpk_tarif where penjab_klmpk_tarif.kd_klmpk_trf=?",nmpnj,kdpnj.getText());
+            Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",nmpnj,kdpnj.getText());
             TOperator1.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnPenjabActionPerformed(null);
@@ -1850,14 +1783,8 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_kdpnjKeyPressed
 
     private void BtnPenjabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPenjabActionPerformed
-<<<<<<< HEAD
-        klmpktrf.emptTeks();
-        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        klmpktrf.setLocationRelativeTo(internalFrame1);
-        klmpktrf.setVisible(true);
-=======
         if (penjab == null || !penjab.isDisplayable()) {
-            penjab=new DlgCariCaraBayar(null,false);
+            penjab=new DlgKlmpkTrf(null,false);
             penjab.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             penjab.addWindowListener(new WindowAdapter() {
                 @Override
@@ -1886,14 +1813,12 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         if (penjab == null) return;
         if (!penjab.isVisible()) {
             penjab.emptTeks();
-            penjab.isCek();
         }  
         if (penjab.isVisible()) {
             penjab.toFront();
             return;
         }    
         penjab.setVisible(true);
->>>>>>> master
     }//GEN-LAST:event_BtnPenjabActionPerformed
 
     private void MnRestoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRestoreActionPerformed
@@ -2155,7 +2080,7 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                    rs.getDouble("dokter_pjanak"), 
                                    rs.getDouble("dokter_umum"), 
                                    rs.getDouble("jumlah"),
-                                   rs.getString("nm_klmpk_trf"),
+                                   rs.getString("png_jawab"),
                                    rs.getString("kelas")
                     });
                 }  

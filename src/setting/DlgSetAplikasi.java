@@ -732,8 +732,7 @@ public class DlgSetAplikasi extends javax.swing.JDialog {
             Sequel.queryu("delete from setting ");
             Sequel.menyimpan("setting","'"+Nm.getText()+"','"+Almt.getText()+"','"+Kota.getText()+
                              "','"+Propinsi.getText()+"','"+Kontak.getText()+"','"+Email.getText()+
-                             "','"+YesNo.getSelectedItem()+"','"+kdPPK.getText()+"','"+kdPPK1.getText()+"','"+kdPPK2.getText()+"','"+YesNo1.getSelectedItem()+"'","Setting",EGb,ELogo);
-                             "','"+YesNo.getSelectedItem()+"','"+kdPPK.getText()+"','"+kdPPK1.getText()+"','"+kdPPK2.getText()+"'","Setting",EGb,ELogo);
+                             "','"+YesNo.getSelectedItem()+"','"+kdPPK.getText()+"','"+kdPPK1.getText()+"','"+kdPPK2.getText()+"','"+YesNo1.getSelectedItem()+"'","Setting",EGb,ELogo);                           
             runBackground(() ->tampil());
         }
     }//GEN-LAST:event_BtnEditActionPerformed

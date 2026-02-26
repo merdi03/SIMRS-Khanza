@@ -761,7 +761,9 @@ public class DlgPemesanan extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+public void tampilData(String noPesanan) {
+    tampil(noPesanan);
+}
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         DlgCariPemesanan form=new DlgCariPemesanan(null,false);

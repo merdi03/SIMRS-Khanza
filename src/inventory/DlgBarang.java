@@ -1319,7 +1319,18 @@ public class DlgBarang extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+public DlgCariJenis getJenis() {
+    if (jenis == null) {
+        jenis = new DlgCariJenis(null, false);
+    }
+    return jenis;
+}
+public DlgCariIndustriFarmasi getIndustri() {
+    if (industri == null) {
+        industri = new DlgCariIndustriFarmasi(null, false);
+    }
+    return industri;
+}
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             BtnCariActionPerformed(null);

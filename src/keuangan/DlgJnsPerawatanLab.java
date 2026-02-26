@@ -41,15 +41,10 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;    
-<<<<<<< HEAD
-    public DlgKlmpkTrf klmpktrf=new DlgKlmpkTrf(null,false);
-    public DlgTemplateLaboratorium template=new DlgTemplateLaboratorium(null,false);
-=======
->>>>>>> master
     private int i=0;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
-    private DlgCariCaraBayar penjab;
+    private DlgKlmpkTrf penjab;
     
     /** Creates new form DlgJnsPerawatanRalan
      * @param parent
@@ -655,11 +650,6 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
 
         Kelas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Rawat Jalan", "Kelas 1", "Kelas 2", "Kelas 3", "Kelas Utama", "Kelas VIP", "Kelas VVIP" }));
         Kelas.setName("Kelas"); // NOI18N
-        Kelas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                KelasActionPerformed(evt);
-            }
-        });
         Kelas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KelasKeyPressed(evt);
@@ -971,14 +961,8 @@ private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdp
 }//GEN-LAST:event_kdpnjKeyPressed
 
 private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPjActionPerformed
-<<<<<<< HEAD
-        klmpktrf.emptTeks();
-        klmpktrf.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        klmpktrf.setLocationRelativeTo(internalFrame1);
-        klmpktrf.setVisible(true);
-=======
         if (penjab == null || !penjab.isDisplayable()) {
-            penjab=new DlgCariCaraBayar(null,false);
+            penjab=new DlgKlmpkTrf(null,false);
             penjab.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             penjab.addWindowListener(new WindowAdapter() {
                 @Override
@@ -1007,14 +991,12 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         if (penjab == null) return;
         if (!penjab.isVisible()) {
             penjab.emptTeks();
-            penjab.isCek();
         }  
         if (penjab.isVisible()) {
             penjab.toFront();
             return;
         }    
         penjab.setVisible(true);
->>>>>>> master
 }//GEN-LAST:event_btnPjActionPerformed
 
     private void ppTemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppTemplateActionPerformed
@@ -1035,55 +1017,6 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         }            
     }//GEN-LAST:event_ppTemplateActionPerformed
 
-<<<<<<< HEAD
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        klmpktrf.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(klmpktrf.getTable().getSelectedRow()!= -1){
-                    kdpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),1).toString());
-                    nmpnj.setText(klmpktrf.getTable().getValueAt(klmpktrf.getTable().getSelectedRow(),2).toString());
-                }    
-                kdpnj.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {klmpktrf.emptTeks();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });  
-        klmpktrf.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    klmpktrf.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-    }//GEN-LAST:event_formWindowActivated
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        klmpktrf.removeWindowListener(null);
-        klmpktrf.getTable().removeKeyListener(null);
-    }//GEN-LAST:event_formWindowClosed
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
-
-=======
->>>>>>> master
     private void BagianRsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BagianRsKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
             isjml();
@@ -1198,11 +1131,6 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         Valid.pindah(evt,Kelas,BtnSimpan);
     }//GEN-LAST:event_KategoriKeyPressed
 
-<<<<<<< HEAD
-    private void KelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KelasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_KelasActionPerformed
-=======
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -1227,7 +1155,6 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
             });
         } 
     }//GEN-LAST:event_formWindowOpened
->>>>>>> master
 
     /**
     * @param args the command line arguments
@@ -1304,17 +1231,6 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-<<<<<<< HEAD
-                        "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan,jns_perawatan_lab.bagian_rs,jns_perawatan_lab.bhp,"+
-                        "jns_perawatan_lab.tarif_perujuk,jns_perawatan_lab.tarif_tindakan_dokter,jns_perawatan_lab.tarif_tindakan_petugas,"+
-                        "jns_perawatan_lab.kso,jns_perawatan_lab.menejemen,jns_perawatan_lab.total_byr, "+
-                        "penjab_klmpk_tarif.nm_klmpk_trf,jns_perawatan_lab.kelas,jns_perawatan_lab.kategori "+
-                        "from jns_perawatan_lab inner join penjab_klmpk_tarif on penjab_klmpk_tarif.kd_klmpk_trf=jns_perawatan_lab.kd_pj "+
-                        "where jns_perawatan_lab.status='1' and (jns_perawatan_lab.kd_jenis_prw like ? or "+
-                        "jns_perawatan_lab.nm_perawatan like ? or jns_perawatan_lab.kelas like ? or "+
-                        "penjab_klmpk_tarif.nm_klmpk_trf like ? or jns_perawatan_lab.kategori like ?) "+
-                        "order by jns_perawatan_lab.kd_jenis_prw");
-=======
                 "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan,jns_perawatan_lab.bagian_rs,jns_perawatan_lab.bhp,"+
                 "jns_perawatan_lab.tarif_perujuk,jns_perawatan_lab.tarif_tindakan_dokter,jns_perawatan_lab.tarif_tindakan_petugas,"+
                 "jns_perawatan_lab.kso,jns_perawatan_lab.menejemen,jns_perawatan_lab.total_byr, "+
@@ -1323,7 +1239,6 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
                 "where jns_perawatan_lab.status='1' "+(TCari.getText().trim().equals("")?"":"and (jns_perawatan_lab.kd_jenis_prw like ? or "+
                 "jns_perawatan_lab.nm_perawatan like ? or jns_perawatan_lab.kelas like ? or penjab.png_jawab like ? or jns_perawatan_lab.kategori like ?)")+
                 "order by jns_perawatan_lab.kd_jenis_prw");
->>>>>>> master
             try {    
                 if(!TCari.getText().trim().equals("")){
                     ps.setString(1,"%"+TCari.getText().trim()+"%");
