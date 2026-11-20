@@ -257,7 +257,7 @@ public final class akses {
             hasil_pengujian_sampel_lab_kesehatan_lingkungan=false,verifikasi_pengujian_sampel_lab_kesehatan_lingkungan=false,validasi_pengujian_sampel_lab_kesehatan_lingkungan=false,
             rekap_pelayanan_lab_kesehatan_lingkungan=false,pembayaran_pengujian_sampel_lab_kesehatan_lingkungan=false,skrining_curb65=false,bpjs_potensi_prb=false,
             bpjs_riwayat_pelayanan_obat=false,skrining_gizi_kehamilan=false,bpjs_rekap_peserta_prb_apotek=false,serah_terima_anggota_tubuh_barang=false,pcra_icra_jenis_aktivitas_proyek=false,
-            pcra_icra_lokasi_kelompok_risiko_area=false,pcra_icra_kelas_risiko_pencegahan=false;
+            pcra_icra_lokasi_kelompok_risiko_area=false,pcra_icra_kelas_risiko_pencegahan=false,satu_sehat_kirim_allergy_intollerance=false,satu_sehat_kirim_questionnaire_request=false;
     
     public static void setData(String user, String pass) {
         try {        
@@ -1458,6 +1458,8 @@ public final class akses {
                         akses.pcra_icra_jenis_aktivitas_proyek=true;
                         akses.pcra_icra_lokasi_kelompok_risiko_area=true;
                         akses.pcra_icra_kelas_risiko_pencegahan=true;
+                        akses.satu_sehat_kirim_allergy_intollerance=true;
+                        akses.satu_sehat_kirim_questionnaire_request=true;
                     }else if(rs2.getRow()>=1){   
                         rs2.beforeFirst();
                         rs2.next();
@@ -2642,6 +2644,8 @@ public final class akses {
                         akses.pcra_icra_jenis_aktivitas_proyek=rs2.getBoolean("pcra_icra_jenis_aktivitas_proyek");
                         akses.pcra_icra_lokasi_kelompok_risiko_area=rs2.getBoolean("pcra_icra_lokasi_kelompok_risiko_area");
                         akses.pcra_icra_kelas_risiko_pencegahan=rs2.getBoolean("pcra_icra_kelas_risiko_pencegahan");
+                        akses.satu_sehat_kirim_allergy_intollerance=rs2.getBoolean("satu_sehat_kirim_allergy_intollerance");
+                        akses.satu_sehat_kirim_questionnaire_request=rs2.getBoolean("satu_sehat_kirim_questionnaire_request");
                     }else if((rs.getRow()==0)&&(rs2.getRow()==0)){
                         setLogOut();
                     }
@@ -3849,6 +3853,8 @@ public final class akses {
         akses.pcra_icra_jenis_aktivitas_proyek=false;
         akses.pcra_icra_lokasi_kelompok_risiko_area=false;
         akses.pcra_icra_kelas_risiko_pencegahan=false;
+        akses.satu_sehat_kirim_allergy_intollerance=false;
+        akses.satu_sehat_kirim_questionnaire_request=false;        
     }
     
     public static int getjml1() {return akses.jml1;}    
@@ -5072,4 +5078,6 @@ public final class akses {
     public static boolean getpcra_icra_jenis_aktivitas_proyek(){return akses.pcra_icra_jenis_aktivitas_proyek;}
     public static boolean getpcra_icra_lokasi_kelompok_risiko_area(){return akses.pcra_icra_lokasi_kelompok_risiko_area;}
     public static boolean getpcra_icra_kelas_risiko_pencegahan(){return akses.pcra_icra_kelas_risiko_pencegahan;}
+    public static boolean getsatu_sehat_kirim_allergy_intollerance(){return akses.satu_sehat_kirim_allergy_intollerance;}
+    public static boolean getsatu_sehat_kirim_questionnaire_request(){return akses.satu_sehat_kirim_questionnaire_request;}    
 }   

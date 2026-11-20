@@ -4844,7 +4844,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
                                       "<td valign='top' width='41%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='20%' bgcolor='#FFFAF8'>Dokter</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                      //"<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -4855,7 +4855,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("kd_jenis_prw")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                        //    "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -4889,7 +4889,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
                                       "<td valign='top' width='41%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='20%' bgcolor='#FFFAF8'>Paramedis</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                      //"<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -4900,7 +4900,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("kd_jenis_prw")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                        //    "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -4936,7 +4936,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='27%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Dokter</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Paramedis</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                      // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -4948,7 +4948,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                         //   "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -4984,7 +4984,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
                                       "<td valign='top' width='41%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='20%' bgcolor='#FFFAF8'>Dokter</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -4995,7 +4995,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("kd_jenis_prw")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                         //   "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -5031,7 +5031,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
                                       "<td valign='top' width='41%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='20%' bgcolor='#FFFAF8'>Paramedis</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5042,7 +5042,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("kd_jenis_prw")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                       //     "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -5079,7 +5079,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='27%' bgcolor='#FFFAF8'>Nama Tindakan/Perawatan</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Dokter</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Paramedis</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5091,7 +5091,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
+                                         //   "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya_rawat"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya_rawat");
@@ -5128,7 +5128,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Lama Inap</td>").append(
                                       "<td valign='top' width='36%' bgcolor='#FFFAF8'>Kamar</td>").append(
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Status</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5140,7 +5140,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("lama")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("kd_kamar")).append(", ").append(rs2.getString("nm_bangsal")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("stts_pulang")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("ttl_biaya"))).append("</td>").append(
+                                       //     "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("ttl_biaya"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("ttl_biaya");
@@ -5189,7 +5189,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
                                       "<td valign='top' width='51%' bgcolor='#FFFAF8'>Nama Tindakan</td>").append(
                                       "<td valign='top' width='10%' bgcolor='#FFFAF8'>Anastesi</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5271,7 +5271,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                     htmlContent.append(
                                             ")</td>").append(
                                             "<td valign='top'>").append(rs2.getString("jenis_anasthesi")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("total"))).append("</td>").append(
+                                            // "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("total"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("total");
@@ -5382,7 +5382,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='26%' bgcolor='#FFFAF8'>Nama Pemeriksaan</td>").append(
                                       "<td valign='top' width='18%' bgcolor='#FFFAF8'>Dokter PJ</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Petugas</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5394,7 +5394,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("<br>").append(rs2.getString("proyeksi")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
+                                         //   "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
                                          "</tr>"); 
                                     w++;
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya");
@@ -5496,7 +5496,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='26%' bgcolor='#FFFAF8'>Nama Pemeriksaan</td>").append(
                                       "<td valign='top' width='18%' bgcolor='#FFFAF8'>Dokter PJ</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Petugas</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 rs4.beforeFirst();
                                 w=1;
@@ -5520,7 +5520,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                        "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                                        "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                                        "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                                       "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
+                                                      // "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
                                                     "</tr>"
                                                ); 
                                             }else{
@@ -5532,7 +5532,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                         "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                                         "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                                         "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                                        "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
+                                                       // "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
                                                      "</tr>"
                                                 ); 
                                             }
@@ -5684,7 +5684,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                       "<td valign='top' width='26%' bgcolor='#FFFAF8'>Nama Pemeriksaan</td>").append(
                                       "<td valign='top' width='18%' bgcolor='#FFFAF8'>Dokter PJ</td>").append(
                                       "<td valign='top' width='17%' bgcolor='#FFFAF8'>Petugas</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+                                     // "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
                                     "</tr>");
                                 w=1;
                                 do{
@@ -5696,7 +5696,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                             "<td valign='top'>").append(rs2.getString("nm_perawatan")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nm_dokter")).append("</td>").append(
                                             "<td valign='top'>").append(rs2.getString("nama")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
+                                           // "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("biaya"))).append("</td>").append(
                                          "</tr>"
                                     ); 
                                     biayaperawatan=biayaperawatan+rs2.getDouble("biaya");

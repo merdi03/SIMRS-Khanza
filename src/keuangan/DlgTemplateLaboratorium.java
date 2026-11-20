@@ -347,7 +347,7 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             ps=koneksi.prepareStatement(
                     "select urut.id_template,urut.Pemeriksaan,urut.satuan,urut.nilai_rujukan_ld,urut.nilai_rujukan_la,urut.nilai_rujukan_pd,"+
                     "urut.nilai_rujukan_pa,urut.bagian_rs,urut.bhp,urut.bagian_perujuk,urut.bagian_dokter,urut.bagian_laborat,urut.kso,urut.menejemen,"+
-                    "urut.biaya_item,urut.urut from template_laboratorium where urut.kd_jenis_prw=? order urut.by urut");
+                    "urut.biaya_item,urut.urut from template_laboratorium as urut where urut.kd_jenis_prw=? order by urut");
             try {
                 ps.setString(1,KdPeriksa.getText());
                 rs=ps.executeQuery();

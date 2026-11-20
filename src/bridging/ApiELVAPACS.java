@@ -335,7 +335,7 @@ System.out.println("===== END ELVA REQUEST =====");
        SQL CONST
        =============================== */
     private static final String SQL_RALAN = "SELECT reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','M','F') AS jk,pasien.tgl_lahir,'' AS weight,'I',poliklinik.nm_poli,'' AS dpjp,dokter.nm_dokter,'NW',"+
-"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
+"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD',''),'RAD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
 "CONCAT(permintaan_radiologi.tgl_permintaan,' ',if(permintaan_radiologi.jam_permintaan='00:00:00','',permintaan_radiologi.jam_permintaan)) AS tgl_permintaan,"+ "CONCAT(permintaan_radiologi.tgl_sampel,' ',if(permintaan_radiologi.jam_sampel='00:00:00','',permintaan_radiologi.jam_sampel)) AS tgl_sampel,"+
 "permintaan_radiologi.diagnosa_klinis,'','','','','',REPLACE(RIGHT(jns_perawatan_radiologi.nm_perawatan,3),']','') as modality,'',0 "+
 "FROM permintaan_radiologi "+
@@ -346,10 +346,10 @@ System.out.println("===== END ELVA REQUEST =====");
 "INNER JOIN penjab ON reg_periksa.kd_pj=penjab.kd_pj "+
 "INNER JOIN permintaan_pemeriksaan_radiologi ON permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder "+
 "INNER JOIN jns_perawatan_radiologi ON permintaan_pemeriksaan_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
-"WHERE permintaan_radiologi.noorder=? and RIGHT(jns_perawatan_radiologi.nm_perawatan,1)=']'";
+"WHERE permintaan_radiologi.noorder=? and RIGHT(RTRIM(jns_perawatan_radiologi.nm_perawatan),1)=']'";
 
     private static final String SQL_RANAP = "SELECT reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','M','F') AS jk,pasien.tgl_lahir,'' AS weight,'I',bangsal.nm_bangsal as nm_poli,'' AS dpjp,dokter.nm_dokter,'NW',"+
-"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
+"'-' AS dep,concat(replace(permintaan_radiologi.noorder,'PR20',''),replace(replace(permintaan_pemeriksaan_radiologi.kd_jenis_prw,'RD',''),'RAD','')) AS noorder,permintaan_pemeriksaan_radiologi.kd_jenis_prw,jns_perawatan_radiologi.nm_perawatan,"+
 "CONCAT(permintaan_radiologi.tgl_permintaan,' ',if(permintaan_radiologi.jam_permintaan='00:00:00','',permintaan_radiologi.jam_permintaan)) AS tgl_permintaan,"+ "CONCAT(permintaan_radiologi.tgl_sampel,' ',if(permintaan_radiologi.jam_sampel='00:00:00','',permintaan_radiologi.jam_sampel)) AS tgl_sampel,"+
 "permintaan_radiologi.diagnosa_klinis,'','','','','',REPLACE(RIGHT(jns_perawatan_radiologi.nm_perawatan,3),']','') as modality,'',0 "+
 "FROM permintaan_radiologi "+
@@ -362,5 +362,5 @@ System.out.println("===== END ELVA REQUEST =====");
 "INNER JOIN penjab ON reg_periksa.kd_pj=penjab.kd_pj "+
 "INNER JOIN permintaan_pemeriksaan_radiologi ON permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder "+
 "INNER JOIN jns_perawatan_radiologi ON permintaan_pemeriksaan_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
-"WHERE permintaan_radiologi.noorder=? and RIGHT(jns_perawatan_radiologi.nm_perawatan,1)=']'";
+"WHERE permintaan_radiologi.noorder=? and RIGHT(RTRIM(jns_perawatan_radiologi.nm_perawatan),1)=']'";
 }
